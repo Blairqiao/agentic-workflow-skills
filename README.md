@@ -1,6 +1,6 @@
 # Portable agentic workflow skills
 
-A spec-to-commit development workflow, packaged as thirteen Agent Skills. They use the open `SKILL.md` format, so they load in Claude Code, Codex, Antigravity, Gemini CLI, opencode and other harnesses that read it.
+A spec-to-commit development workflow, packaged as sixteen Agent Skills. They use the open `SKILL.md` format, so they load in Claude Code, Codex, Antigravity, Gemini CLI, opencode and other harnesses that read it.
 
 The skills contain guidelines and checklists, not project-specific values. On first use, `project-discovery` records how your repository builds, tests and runs in `docs/agent-profile.md`, and every other skill reads from that file. To change how the workflow behaves in a repository, edit its profile rather than the skills.
 
@@ -10,16 +10,19 @@ The skills contain guidelines and checklists, not project-specific values. On fi
 | --- | --- |
 | `full-track` | Entry point: full workflow with spec and plan approval gates |
 | `fast-track` | Entry point: small changes, no spec gates, same safety rules |
-| `one-shot` | Entry point: autonomous run from one prompt, proof still mandatory |
+| `one-shot` | Entry point: autonomous run from one prompt, proof and walkthrough mandatory |
 | `workflow-core` | Phase map, guardrails, roles, state and resume rules |
 | `project-discovery` | Profiles the codebase and calibrates its commands |
-| `spec-alignment` | Focused questioning and numbered acceptance criteria |
+| `grilling` | Stress-tests thinking, decisions, and tradeoffs in rounds |
+| `spec-alignment` | Focused questioning, invokes grilling, and builds numbered criteria |
 | `implementation-planning` | Task slices, verification modes, TDD style |
 | `worktree-setup` | Isolated workspace, env files, shared resources, sync, teardown |
 | `tdd-integrity` | Red-green rules that stop tests being weakened or gamed |
-| `task-dispatch` | Orchestration loop, taskboard, fresh contexts, limits |
+| `human-tdd` | Collaborative, intentional TDD with `[Specific]`, `[Intermediate]`, `[Global]` tags |
+| `task-dispatch` | Orchestration loop, taskboard, subagent model tiering, limits |
 | `independent-review` | Fresh-context verdicts with evidence, gaming and security checks |
 | `verification-evidence` | Clean-checkout verification, proof and walkthrough |
+| `unslop` | Cut AI tells, filler, and buzzwords from specs, plans, and code |
 | `integration-handoff` | Staged delivery, content check, user-owned commit, cleanup |
 
 ## Install

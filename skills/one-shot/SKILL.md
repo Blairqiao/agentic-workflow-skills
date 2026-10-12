@@ -12,7 +12,7 @@ The user trades mid-run feedback for speed. Load `workflow-core` first. Guardrai
 
 - The user's request counts as approval for the spec and plan. Write both anyway, because review and evidence check against them, but don't wait at their gates.
 - TDD runs in autopilot mode.
-- The proof is mandatory. Unsupervised runs are where agents most often mark work done without checking it end to end. Write the walkthrough only if the user asked for it.
+- Proof and walkthrough are both mandatory in `verification-evidence`. Unsupervised runs are where an audit trail matters most: the proof records clean-checkout verification commands and terminal outputs, and the walkthrough records architectural decisions and diffs.
 - The stop conditions in `workflow-core` still stop the run. Ask instead of guessing.
 
 ## Steps

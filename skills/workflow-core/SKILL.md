@@ -17,14 +17,14 @@ Each phase names a skill. Load it by name when the phase starts. If your harness
 | Phase | Skill | Produces | Gate |
 | --- | --- | --- | --- |
 | 0. Discover | project-discovery | `docs/agent-profile.md` | User confirms the profile on first run |
-| 1. Align | spec-alignment | `docs/spec/<feature>.md` | User approves the spec |
+| 1. Align | spec-alignment, grilling | `docs/spec/<feature>.md` | User approves the spec |
 | 2. Plan | implementation-planning | `docs/plans/<feature>.md` | User approves the plan |
 | 3. Isolate | worktree-setup | Workspace and allocation record | Baseline recorded |
-| 4. Execute | task-dispatch, tdd-integrity, independent-review | Commits in the workspace | Each task passes review |
-| 5. Verify | verification-evidence | `docs/proofs/`, `docs/walkthroughs/` | Full checks pass on a clean checkout |
+| 4. Execute | task-dispatch, tdd-integrity, human-tdd, independent-review | Commits in the workspace | Each task passes review |
+| 5. Verify | verification-evidence, unslop | `docs/proofs/`, `docs/walkthroughs/` | Full checks pass on a clean checkout |
 | 6. Hand off | integration-handoff | Staged changes, a branch or a patch | User makes the commit |
 
-If the project profile names other locations for these files, use those.
+Across all phases, apply `unslop` to strip AI tells, buzzwords, and boilerplate from specifications, plans, proofs, and walkthroughs. If the project profile names other locations for these files, use those.
 
 ## Guardrails
 

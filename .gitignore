@@ -20,3 +20,8 @@ Desktop.ini
 *.log
 tmp/
 .temp/
+
+# Repository-local worktrees
+.worktrees/*
+.worktrees
+

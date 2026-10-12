@@ -20,7 +20,11 @@ Statuses: `todo`, `active`, `red`, `green`, `review`, `done`, `blocked`.
 ## Running a role in a fresh context
 
 Use the first option your harness supports, and note which one in the taskboard:
-1. **Native subagent** with its own context.
+1. **Native subagent** with its own context. In harnesses supporting model selection (e.g. Antigravity), tier by role:
+   - **Task Implementer:** `"flash"` for fast generation and lower thinking overhead on concrete specs.
+   - **Explorer / Scanner:** `"flash_lite"` for broad directory scans and symbol searches.
+   - **Task Reviewer:** `"inherit"` or `"pro"` for adversarial spec checks and anti-gaming audits.
+   - **Fix Escalation:** Promoted to `"inherit"` or `"pro"` if an implementer struggles after round 2.
 2. **Separate headless session** of this harness or another, started from the shell with the brief as its prompt.
 3. **Same session.** Write the brief to a file and work strictly from it. Tell the user that review independence is reduced in this mode.
 
@@ -29,7 +33,7 @@ Use the first option your harness supports, and note which one in the taskboard:
 1. **Sync and baseline.** Merge the target branch into the workspace as `worktree-setup` describes, then confirm the baseline. Failures at this point belong to the base. Report them and don't start the task on a broken base.
 2. **Brief.** Build the implementer's brief from `assets/implementer-brief.md`: the task slice, the full text of its criteria, files in scope, the red expectation, profile commands, the `tdd-integrity` rules and what to return. Point it at the spec, plan and taskboard as read-only context, because shared context prevents conflicting decisions between tasks.
 3. **Questions.** If the implementer asks something the spec and plan don't answer, ask the user. Don't guess on their behalf.
-4. **Red, then green.** The implementer follows `tdd-integrity`. After each step, check it yourself: rerun the checks, read the diff, confirm the commit. Never accept "tests pass" without your own run.
+4. **Red, then green.** The implementer follows `tdd-integrity`. For web/UI tasks, require multimodal verification via `agent-browser` (viewport sizing such as mobile 390x844, DOM accessibility snapshot, annotated screenshots) to verify layout and prevent visual regressions. After each step, check it yourself: rerun the checks, read the diff, confirm the commit. Never accept "tests pass" without your own run.
 5. **Review.** Send the task to `independent-review`. On failure, pass the findings to an implementer and repeat green.
 6. **Close.** Mark the task done with its commits, then pick the next task whose dependencies are done.
 

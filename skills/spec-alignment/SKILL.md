@@ -11,7 +11,7 @@ The spec is what every later check measures against. Vague criteria here become 
 ## Questioning
 
 - Read the relevant code and the project profile first, so your questions are about choices rather than facts you could look up.
-- Ask at most three questions per message, most important first. Offer concrete options where you can.
+- When architectural tradeoffs, design choices, or edge cases need resolving, invoke the `grilling` skill to work through the decision tree with the user in structured rounds of numbered questions and recommended answers before drafting the spec.
 - Cover: user-visible behavior, edge cases and failure modes, data and migrations, permissions and security, performance limits, compatibility, and what is explicitly out of scope.
 - After each round, restate your understanding in a few lines so the user can correct it.
 - Stop when every acceptance criterion is testable and the non-goals are clear.

@@ -49,7 +49,7 @@ When the spec changes behavior that existing tests pin down, those tests have to
 
 ## Human-guided mode
 
-When the plan says human-guided, agree on test design with the user before red, using the plan's `[Specific]`, `[Intermediate]` and `[Global]` tags. If a behavior can only be tested with brittle mocks, propose a manual check in the evidence instead.
+When the plan says human-guided, invoke the `human-tdd` skill to agree on test design with the user before red, using the plan's `[Specific]`, `[Intermediate]` and `[Global]` tags. If a behavior can only be tested with brittle mocks, propose a manual check in the evidence instead.
 
 ## Other verification modes
 
