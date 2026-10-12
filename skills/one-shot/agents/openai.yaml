@@ -1,0 +1,5 @@
+interface:
+  display_name: "One-shot"
+  short_description: "Autonomous run from one prompt, user commits"
+policy:
+  allow_implicit_invocation: false
