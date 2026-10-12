@@ -8,7 +8,7 @@ Inputs: reviewed candidate, relevant commands, acceptance criteria, latest works
 4. Write [proof](templates/proof.md) with exact commands, observed output or clearly marked excerpts, the candidate identity, coverage, and limitations. Keep commands reproducible. Reuse valid evidence from the same candidate rather than rerunning checks to produce a new document.
 5. Write [the walkthrough](templates/walkthrough.md) with changes, design decisions, risks, and manual steps with expected results. Full/fast produce separate proof and walkthrough files. One-shot includes both sections in its run document.
 
-Use configured artifact paths. Defaults for full/fast are `docs/spec/`, `docs/plans/`, `docs/taskboard/`, `docs/proofs/`, and `docs/walkthroughs/`. One-shot defaults to `docs/runs/<feature>.md`. Use external storage when artifacts are sensitive or repository guidance requires it; do not invent another preference gate.
+Place all workflow artifacts in the parent (main) repository's `<main-repo>/docs/` directory (or through a `<worktree>/docs -> <main-repo>/docs` symlink), never as isolated files inside a worktree. Defaults for full/fast are `<main-repo>/docs/spec/`, `<main-repo>/docs/plans/`, `<main-repo>/docs/taskboard/`, `<main-repo>/docs/proofs/`, and `<main-repo>/docs/walkthroughs/`. One-shot defaults to `<main-repo>/docs/runs/<feature>.md`. Use external storage when artifacts are sensitive or repository guidance requires it; do not invent another preference gate.
 
 Recheck affected behavior if implementation, tests, config, dependencies, or target integration changes after verification. Evidence-only edits do not recursively invalidate the code checks; validate those edits for accuracy and links.
 

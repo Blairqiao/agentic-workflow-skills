@@ -8,11 +8,13 @@ Inputs: track, repository state, relevant configuration and service needs.
 4. Install existing locked dependencies only when needed. Keep dependency directories separate; shared download caches are acceptable. If setup fails, diagnose rather than rewriting the lockfile reflexively.
 5. Run relevant baseline checks when needed and record existing failures. Do not rerun a valid baseline merely because another procedure begins.
 
-## Worktree placement and `.gitignore` rules
+## Worktree placement, documentation location, and `.gitignore` rules
 
 Use `<main-repo>/.worktrees/<run-id>`. Identify the main repository checkout from `git worktree list --porcelain`; when already in a linked worktree, its top-level directory is not the main repository root. Reuse an existing worktree only when its resolved path is inside that main repository's `.worktrees/` directory and it suits the task. Do not nest a new worktree under another linked worktree.
 
 Whenever creating or updating a repository's `.gitignore` (and before creating a worktree or writing workflow `docs/`), ensure both `.worktrees` (`.worktrees/*`, `.worktrees`) and `docs` (`docs/*`, `docs`) are present in the main checkout's root `.gitignore`, preserving existing entries, so all files within `docs/` and `.worktrees/` remain hidden from Git. Verify exclusion of both folders with `git check-ignore` from that checkout. Keep this ignore-file edit visible in the handoff and include it in the candidate delivery without losing unrelated changes; do not make a setup commit. A global ignore rule or `.git/info/exclude` is not a substitute for the repository's `.gitignore`.
+
+All workflow documentation (`docs/spec/`, `docs/plans/`, `docs/taskboard/`, `docs/proofs/`, `docs/walkthroughs/`, `docs/runs/`) must reside in the parent (main) repository at `<main-repo>/docs/`, never as isolated files inside `<main-repo>/.worktrees/<run-id>/docs/`. When creating or using a worktree, ensure `<main-repo>/docs` exists and either write directly to `<main-repo>/docs/` or symlink `<worktree>/docs` to `<main-repo>/docs` (`ln -s ../../docs <worktree>/docs`). Because `docs/` is git-ignored, keeping it in `<main-repo>/docs/` ensures all documentation is immediately accessible from the main repository and is never lost when a worktree is cleaned up.
 
 Use a native tool only if it accepts the required repository-local path. Otherwise use `git worktree add` with that explicit destination. Resolve symlinks before creation so the destination cannot escape the main repository. Never create worktrees in `.codex`, `.claude`, `.gemini`, or other harness-owned directories, even when that is a tool's default. If the permitted path is unavailable, resolve the access problem rather than silently switching to a harness directory.
 

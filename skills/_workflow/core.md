@@ -10,7 +10,7 @@ Inputs: the user's request, selected track, existing authorization, and reposito
 | fast | Current workspace | Current session only | Same as full | Same as full |
 | one-shot | Prefer a worktree | Direct or useful independent delegation | No feedback gates | Run document with decisions, plan, progress, proof, walkthrough |
 
-Worktree placement and `.gitignore` exclusion follow [workspace preparation](workspace.md): keep worktrees inside `<main-repo>/.worktrees/<run-id>` (never inside harness directories), and whenever creating or updating `.gitignore`, ensure both `.worktrees` and `docs` (and all files within them) are ignored by Git.
+Worktree placement, documentation location, and `.gitignore` exclusion follow [workspace preparation](workspace.md): keep worktrees inside `<main-repo>/.worktrees/<run-id>` (never inside harness directories), place all workflow documentation in the parent (main) repository at `<main-repo>/docs/` (or symlink `<worktree>/docs -> <main-repo>/docs`, never as isolated files inside a worktree), and whenever creating or updating `.gitignore`, ensure both `.worktrees` and `docs` (and all files within them) are ignored by Git.
 
 Full and one-shot may use the current workspace for a small task or when the user asks. Fast-track always uses the current workspace and retains independent review. All tracks default to autopilot TDD for behavior changes; human-guided TDD requires a user request and does not run within one-shot.
 
@@ -25,8 +25,8 @@ Run relevant checks before claiming success. Report uncertainty, unresolved fail
 ## Phase sequence
 
 1. [Discover](discovery.md) relevant repository facts and the applicable harness adapter.
-2. [Design](design.md) the behavior and [plan](planning.md) its implementation. For full/fast, resolve consequential questions and obtain one approval covering both artifacts. Existing approval satisfies this gate. One-shot records its own decisions and proceeds.
-3. [Prepare the workspace](workspace.md), recording the starting state. Create full/fast artifacts there; if needed before workspace setup, draft them outside the main checkout and transfer them afterwards.
+2. [Design](design.md) the behavior and [plan](planning.md) its implementation. Write specifications, plans, and run documents directly in `<main-repo>/docs/`. For full/fast, resolve consequential questions and obtain one approval covering both artifacts. Existing approval satisfies this gate. One-shot records its own decisions and proceeds.
+3. [Prepare the workspace](workspace.md), recording the starting state. When using a worktree, symlink `<worktree>/docs` to `<main-repo>/docs` (or write directly to `<main-repo>/docs/`) so all documentation lives in the parent (main) repository and survives worktree cleanup.
 4. [Execute](execution.md) dependency-ready tasks using [test integrity](testing.md).
 5. [Review](review.md) the complete candidate. Resolve findings; review risky portions earlier when useful.
 6. Before final [verification](verification.md), inspect whether the target advanced. Sync an isolated workspace when needed, then verify the exact candidate to be delivered. Never auto-merge into a dirty user checkout.

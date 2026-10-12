@@ -58,15 +58,15 @@ Invoke the three tracks explicitly. Codex adapters set `allow_implicit_invocatio
 
 ## Workflow artifacts
 
-Full-track and fast-track produce extensive documentation at these default locations:
+All workflow documentation belongs in the parent (main) repository at `<main-repo>/docs/`—never as isolated files inside a worktree. When working in `.worktrees/<run-id>`, either write directly to `<main-repo>/docs/` or symlink `<worktree>/docs` to `<main-repo>/docs` (`ln -s ../../docs <worktree>/docs`). Full-track and fast-track produce documentation at these default locations:
 
-- `docs/spec/<feature>.md`
-- `docs/plans/<feature>.md`
-- `docs/taskboard/<feature>.md`
-- `docs/proofs/<feature>-proof.md`
-- `docs/walkthroughs/<feature>-walkthrough.md`
+- `<main-repo>/docs/spec/<feature>.md`
+- `<main-repo>/docs/plans/<feature>.md`
+- `<main-repo>/docs/taskboard/<feature>.md`
+- `<main-repo>/docs/proofs/<feature>-proof.md`
+- `<main-repo>/docs/walkthroughs/<feature>-walkthrough.md`
 
-One-shot uses `docs/runs/<feature>.md`, including its material design decisions, proof, and walkthrough. Split it when readability warrants it. A reusable project profile is optional; inspect relevant repository configuration directly when no profile exists. Follow established artifact locations or repository storage requirements.
+One-shot uses `<main-repo>/docs/runs/<feature>.md`, including its material design decisions, proof, and walkthrough. Split it when readability warrants it. A reusable project profile is optional; inspect relevant repository configuration directly when no profile exists. Follow established artifact locations or repository storage requirements.
 
 ## Extending the suite
 
