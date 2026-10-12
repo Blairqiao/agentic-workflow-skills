@@ -1,90 +1,90 @@
 # Portable agentic workflow skills
 
-A spec-to-commit development workflow, packaged as sixteen Agent Skills. They use the open `SKILL.md` format, so they load in Claude Code, Codex, Antigravity, Gemini CLI, opencode and other harnesses that read it.
+Six public skills start documented workflows or provide standalone tools. Internal procedures live in [skills/_workflow](skills/_workflow/README.md), which is installed alongside the skills but has no discoverable `SKILL.md`.
 
-The skills contain guidelines and checklists, not project-specific values. On first use, `project-discovery` records how your repository builds, tests and runs in `docs/agent-profile.md`, and every other skill reads from that file. To change how the workflow behaves in a repository, edit its profile rather than the skills.
+## Choose a track
 
-## Skills
+| Track | Execution | Approval | Documentation |
+| --- | --- | --- | --- |
+| `full-track` | Prefer a worktree; delegate independent implementation when useful | One combined spec-and-plan approval | Detailed spec, plan, taskboard, proof, walkthrough |
+| `fast-track` | Current workspace; one implementer, no implementation subagents | Same as full-track | Same as full-track |
+| `one-shot` | Prefer a worktree; autonomous product and implementation decisions | No feedback gates; pause only for critical access or additional authorization | Run document with design decisions, plan, progress, proof, walkthrough |
 
-| Skill | What it does |
-| --- | --- |
-| `full-track` | Entry point: full workflow with spec and plan approval gates |
-| `fast-track` | Entry point: small changes, no spec gates, same safety rules |
-| `one-shot` | Entry point: autonomous run from one prompt, proof and walkthrough mandatory |
-| `workflow-core` | Phase map, guardrails, roles, state and resume rules |
-| `project-discovery` | Profiles the codebase and calibrates its commands |
-| `grilling` | Stress-tests thinking, decisions, and tradeoffs in rounds |
-| `spec-alignment` | Focused questioning, invokes grilling, and builds numbered criteria |
-| `implementation-planning` | Task slices, verification modes, TDD style |
-| `worktree-setup` | Isolated workspace, env files, shared resources, sync, teardown |
-| `tdd-integrity` | Red-green rules that stop tests being weakened or gamed |
-| `human-tdd` | Collaborative, intentional TDD with `[Specific]`, `[Intermediate]`, `[Global]` tags |
-| `task-dispatch` | Orchestration loop, taskboard, subagent model tiering, limits |
-| `independent-review` | Fresh-context verdicts with evidence, gaming and security checks |
-| `verification-evidence` | Clean-checkout verification, proof and walkthrough |
-| `unslop` | Cut AI tells, filler, and buzzwords from specs, plans, and code |
-| `integration-handoff` | Staged delivery, content check, user-owned commit, cleanup |
+Every track verifies the actual candidate and requires independent review when available. Fast-track retains a review subagent. Full-track and one-shot may use the current workspace for small tasks or explicit in-place requests. One-shot makes reasonable product choices itself, records the reasons, and reports an incomplete result honestly if technical alternatives are exhausted.
+
+Worktrees belong in `<main-repo>/.worktrees/<run-id>`. Whenever creating or updating `.gitignore` (and before creating a worktree or writing workflow `docs/`), ensure both `.worktrees` (`.worktrees/*`, `.worktrees`) and `docs` (`docs/*`, `docs`) are added to the main repository's `.gitignore` and verify that Git ignores all files inside both directories. Use a harness tool only when it can honor that location; otherwise use Git directly. Do not create worktrees under Codex, Claude Code, Antigravity, or other harness directories. See [workspace preparation](skills/_workflow/workspace.md).
+
+Behavior changes default to autopilot TDD (with human-guided TDD opt-in):
+- **In isolated worktrees (`full-track`, `one-shot`):** Use `test(red)` and `feat(green)` commits and verify that the test diff between red and green is strictly empty (`git diff --stat <red>..<green> -- <tests> == 0`).
+- **In the current workspace (`fast-track` or in-place runs):** Avoid intermediate commits so `HEAD` and pre-existing user changes stay untouched; verify red and green via terminal output and rely on independent review to audit the test diff.
+
+Publishing and the final target-branch commit belong to the user.
+
+## Standalone tools
+
+- [grilling](skills/grilling/SKILL.md): stress-test thinking, architectural decisions, and tradeoffs in structured rounds (`❓ Q1 / ➡️`).
+- [human-tdd](skills/human-tdd/SKILL.md): agree on meaningful tests (`[Specific]`, `[Intermediate]`, `[Global]`) before implementation.
+- [unslop](skills/unslop/SKILL.md): cut AI tells, filler, and buzzwords from specs, plans, walkthroughs, and code.
 
 ## Install
 
 ```sh
-./install.sh --project /path/to/repo      # copy into the repo, commit to share
-./install.sh --global                     # link into your user skill folders
-./install.sh --global --harness claude,codex
+./install.sh --project /path/to/repo
+./install.sh --global
+./install.sh --global --harness claude,codex,antigravity
 ```
 
-Where each harness looks:
+The installer preserves existing destinations unless `--force` is supplied. That flag replaces matching installed entries, including `_workflow`; review local customizations first. Installation does not prune retired or unrelated skills.
 
-| Harness | Project level | User level |
+| Harness | Project location | User location |
 | --- | --- | --- |
 | Codex | `.agents/skills/` | `~/.agents/skills/` |
-| Gemini CLI | `.agents/skills/` or `.gemini/skills/` | `~/.agents/skills/` or `~/.gemini/skills/` |
-| opencode | `.agents/skills/`, `.opencode/skills/`, `.claude/skills/` | `~/.agents/skills/`, `~/.config/opencode/skills/`, `~/.claude/skills/` |
-| Antigravity | `.agents/skills/` | `~/.gemini/config/skills/` for the IDE and 2.0, `~/.gemini/antigravity-cli/skills/` for the CLI |
+| Antigravity | `.agents/skills/` | `~/.gemini/config/skills/` and `~/.gemini/antigravity-cli/skills/` |
 | Claude Code | `.claude/skills/` | `~/.claude/skills/` |
+| Gemini CLI | `.agents/skills/` | `~/.agents/skills/` |
+| opencode | `.agents/skills/` | `~/.agents/skills/` |
 
-A project install copies the skills into `.agents/skills/` and links `.claude/skills/` to those copies. A global install links to this folder, so updating this folder updates every harness. On Windows, run the script from Git Bash or WSL, or copy the folders under `skills/` by hand.
+These are the destinations supported by this installer. Project installations copy the bundle. With both Claude and shared harnesses selected, Claude's non-entry skills and documentation link to the shared project copies. Claude-only installations are self-contained.
 
-opencode reads both `.agents/skills/` and `.claude/skills/`, so with both installed it may list each skill twice. If it complains, rerun with `--harness` to leave one out.
+Global installations link to this repository, except Claude's three entry skills, which are copied to add its manual-invocation metadata. Refresh those copies when the entry skills change. Use Git Bash or WSL on Windows, or copy the bundle manually with `_workflow` beside the six skill directories.
 
-## Keeping the entry skills manual-only
+Some harnesses search several skill locations and may display duplicates. Select the required destinations with `--harness`; already installed entries in other locations remain until you remove them.
 
-The three entry skills should start only when you ask for them. Harnesses handle that differently:
+## Explicit entry points and adapters
 
-| Harness | How |
-| --- | --- |
-| Codex | Each entry skill ships `agents/openai.yaml` with `allow_implicit_invocation: false`. Invoke with `$full-track`. |
-| Claude Code | The installer gives Claude Code its own copies of the entry skills with `disable-model-invocation: true`. Invoke with `/full-track`. |
-| Gemini CLI | It asks for consent before activating any skill; decline one you didn't ask for. |
-| Antigravity, opencode | The descriptions say to use them only on explicit request. Antigravity's CLI also exposes skills as slash commands. |
+Invoke the three tracks explicitly. Codex adapters set `allow_implicit_invocation: false`; Claude-specific installed copies add `disable-model-invocation: true`. Other harnesses follow the explicit-invocation descriptions where no adapter enforces them. Shared skill frontmatter contains only `name` and `description`.
 
-Shared copies keep only `name` and `description` in their frontmatter, the two fields every harness reads.
+[Harness adapters](skills/_workflow/adapters/) contain model and tool guidance for Codex, Antigravity, Claude Code, and generic runners. Actual capabilities come from the active session. Skills provide instructions, while the harness supplies sandbox and permission enforcement.
 
-## What skills can and can't enforce
+## Workflow artifacts
 
-Skills are instructions; your harness provides enforcement. For the guardrails in `workflow-core` to hold even when a model slips:
-- block `git push` and publishing commands with the harness's permission or policy rules;
-- run the agent in the harness's sandbox, with network access limited where possible;
-- keep production credentials out of the environment the agent runs in.
+Full-track and fast-track produce extensive documentation at these default locations:
 
-At the start of each run, `workflow-core` has the agent tell you which of these are active.
+- `docs/spec/<feature>.md`
+- `docs/plans/<feature>.md`
+- `docs/taskboard/<feature>.md`
+- `docs/proofs/<feature>-proof.md`
+- `docs/walkthroughs/<feature>-walkthrough.md`
 
-## Files a run creates
+One-shot uses `docs/runs/<feature>.md`, including its material design decisions, proof, and walkthrough. Split it when readability warrants it. A reusable project profile is optional; inspect relevant repository configuration directly when no profile exists. Follow established artifact locations or repository storage requirements.
 
-| Path | Written by |
-| --- | --- |
-| `docs/agent-profile.md` | `project-discovery` |
-| `docs/spec/<feature>.md` | `spec-alignment` |
-| `docs/plans/<feature>.md` | `implementation-planning` |
-| `docs/taskboard/<feature>.md` | `task-dispatch` |
-| `docs/proofs/<feature>-proof.md` | `verification-evidence` |
-| `docs/walkthroughs/<feature>-walkthrough.md` | `verification-evidence` |
+## Extending the suite
 
-The profile can move any of these.
+Add a skill when users need an independently invocable capability. Keep its trigger narrow and place reusable procedures behind relative links. [Procedure extraction](skills/_workflow/README.md) explains the inputs and completion boundaries. The installer automatically discovers directories with `SKILL.md` and carries shared documentation alongside them.
 
-## Coming from v6
+For a new manual-only entry point, add its native adapter metadata and update `ENTRY_SKILLS` in `install.sh` for Claude's generated copy. Internal procedure documents need neither frontmatter nor a public invocation name.
 
-- Settings that lived in `.agent-verify.json`, such as commands, protected paths, boundaries and fast-track limits, now live in `docs/agent-profile.md`, discovered and confirmed per repository.
-- The env allowlist and slot registry became the env and resource guidelines in `worktree-setup`.
-- The JUnit and interval checks became the red and green rules in `tdd-integrity`, which work for any test layout.
-- The supervisor scripts are gone. If you want hard enforcement on top of these skills, the kernel design in the v7 spec is the path for that.
+## Upgrading from the sixteen-skill bundle
+
+The following former skills now live in `_workflow` documentation: `workflow-core`, `project-discovery`, `spec-alignment`, `implementation-planning`, `worktree-setup`, `tdd-integrity`, `task-dispatch`, `independent-review`, `verification-evidence`, and `integration-handoff`.
+
+Inspect existing installations for these entries and preserve custom edits before explicitly removing or moving them out of skill search directories. Refresh the six public entries and `_workflow` together. The installer does not delete old entries because it cannot distinguish an earlier install from user-owned skills. Do not remove similarly named skills from other suites.
+
+## Verification
+
+```sh
+python3 -m unittest discover -s tests -v
+bash -n install.sh
+```
+
+Integration tests exercise fresh project installation for the supported targets, paths containing spaces, manual-only metadata, shared documentation availability, and preservation of existing destinations. Native harness execution needs separate validation in each product.

@@ -1,5 +1,5 @@
 interface:
   display_name: "Fast track"
-  short_description: "Small change with test-first rules and review"
+  short_description: "Full workflow in place, one implementer"
 policy:
   allow_implicit_invocation: false

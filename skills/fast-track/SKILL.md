@@ -1,35 +1,17 @@
 ---
 name: fast-track
-description: >-
-  Run a lightweight version of the workflow for a small, well-understood change such as a bugfix, with no spec or plan gates but the same isolated workspace, test-first rules, review and user-owned commit. Use only when the user explicitly asks for fast-track.
+description: Use when the user explicitly requests fast-track or the full documented workflow in the current workspace with one implementer.
 ---
 
 # Fast track
 
-For small changes where a full spec would be ceremony. Load `workflow-core` first; every guardrail still applies.
+Read [workflow core](../_workflow/core.md) and follow the same phase sequence and requirements as full-track, with track `fast`.
 
-## Fit check
+Only two execution choices differ:
 
-Before starting, confirm the change fits. Use the limits in the project profile. If it sets none, use these:
-- about 100 changed lines and 3 files or fewer, not counting lockfiles and generated files;
-- no paths the profile lists as boundaries, such as auth, payments, migrations or infrastructure;
-- no new dependencies;
-- verification mode is test-first or characterization-first.
+- Implement in the current workspace, preserving existing user changes.
+- Perform implementation in this session; do not delegate implementation to subagents.
 
-If the change doesn't fit, say why and suggest full-track.
+Keep the detailed spec, plan, taskboard, proof, and walkthrough. Present the spec and plan together for one approval before implementation. Use the same test integrity, relevant verification, and mandatory independent review as full-track. A review subagent is required when available; the review procedure defines the fallback.
 
-## Steps
-
-1. Run `project-discovery` if the profile is missing or stale.
-2. Write a mini-spec in the taskboard: the problem in two or three sentences and numbered acceptance criteria. Show it to the user in one message before starting. It is a notice, not a gate, so continue unless they object.
-3. Run `worktree-setup`.
-4. Treat the change as one task. Follow `tdd-integrity` for red and green, then `independent-review`. A fresh-context review still matters for small changes, because small diffs are where a weakened test is easiest to miss.
-5. Run `verification-evidence` in its short form: the proof with commands and outputs, plus manual check steps. Skip the full walkthrough unless the user asks.
-6. Run `integration-handoff`.
-
-## Escalation
-
-If the change outgrows the fit check at any point:
-1. Commit the current work in the workspace and record that commit in the taskboard as `fast-track-wip`.
-2. Stop and tell the user what grew and why.
-3. If they agree, switch to `full-track`, reusing the workspace and any red tests already written.
+Fast-track is an in-place execution choice, not a reduced-documentation or reduced-verification path. There is no arbitrary line-count or file-count limit. If the workspace cannot safely accommodate the change, explain the conflict and seek a different workspace arrangement.

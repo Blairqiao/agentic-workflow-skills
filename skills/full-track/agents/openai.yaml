@@ -1,5 +1,5 @@
 interface:
   display_name: "Full track"
-  short_description: "Spec-to-commit workflow with approval gates"
+  short_description: "Documented workflow with one design approval"
 policy:
   allow_implicit_invocation: false

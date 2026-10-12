@@ -1,5 +1,5 @@
 interface:
-  display_name: "One-shot"
-  short_description: "Autonomous run from one prompt, user commits"
+  display_name: "One shot"
+  short_description: "Autonomous run with decisions and evidence"
 policy:
   allow_implicit_invocation: false

@@ -1,25 +1,16 @@
 ---
 name: one-shot
-description: >-
-  Run the workflow autonomously from a single prompt, with no mid-run approval gates, autopilot TDD, an isolated workspace, independent review, a mandatory proof and a user-owned final commit. Use only when the user explicitly asks for one-shot.
+description: Use only when the user explicitly requests one-shot or autonomous execution from one prompt without human feedback.
 ---
 
 # One-shot
 
-The user trades mid-run feedback for speed. Load `workflow-core` first. Guardrails still apply, and unsupervised runs are where they matter most.
+Read [workflow core](../_workflow/core.md) and follow its phase sequence with track `one-shot`.
 
-## What changes from full-track
+Start immediately. Make product and implementation decisions using your best judgment; record material choices, assumptions, alternatives, and reasons in the run document. Do not ask for confirmation, preference selection, design feedback, spec approval, plan approval, or test-design approval. Do not invoke interactive grilling or human-guided TDD during this run.
 
-- The user's request counts as approval for the spec and plan. Write both anyway, because review and evidence check against them, but don't wait at their gates.
-- TDD runs in autopilot mode.
-- Proof and walkthrough are both mandatory in `verification-evidence`. Unsupervised runs are where an audit trail matters most: the proof records clean-checkout verification commands and terminal outputs, and the walkthrough records architectural decisions and diffs.
-- The stop conditions in `workflow-core` still stop the run. Ask instead of guessing.
+Pause only for critical missing access or additional authorization. Reuse existing authorization. Ordinary product ambiguity, review disagreements, and local test or snapshot revisions are decisions to resolve autonomously.
 
-## Steps
+Prefer a worktree. Delegate independent implementation tasks when useful and obtain independent review. If no independent reviewer can run, disclose self-review. If technical alternatives are exhausted, deliver an honest incomplete result without requesting design feedback.
 
-1. Restate the request in two or three lines and confirm the user wants one-shot. This is the only upfront question.
-2. Run `project-discovery` if needed. If the profile is new, list your assumptions in the final handoff instead of waiting for confirmation.
-3. Write the spec and plan with `spec-alignment` and `implementation-planning`, skipping their gates.
-4. Run `worktree-setup`, then the task loop in `task-dispatch`.
-5. Run `verification-evidence`.
-6. Run `integration-handoff`. Present the spec and plan next to the staged changes so the user can review everything at once.
+Leave a run document containing the design decisions, plan, progress, proof, and walkthrough. Stage candidate changes, report limitations, and leave publishing and the final target-branch commit to the user.

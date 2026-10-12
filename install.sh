@@ -13,7 +13,7 @@ Usage:
   install.sh --project <repo-path> [--harness list] [--force]
   install.sh --global [--harness list] [--force]
 
-  --project <path>  Copy skills into <path>/.agents/skills and link
+  --project <path>  Copy skills and shared docs into <path>/.agents/skills and link
                     <path>/.claude/skills to them. Commit these to share.
   --global          Link skills into your user-level skill directories.
   --harness list    Comma-separated subset of: claude,codex,opencode,gemini,antigravity
@@ -61,24 +61,42 @@ claude_entry_copy() {
     "$src/SKILL.md" > "$dest/SKILL.md"
 }
 
-skill_dirs() { for d in "$SKILLS_SRC"/*/; do echo "${d%/}"; done; }
+skill_dirs() {
+  for d in "$SKILLS_SRC"/*/; do
+    [ -f "$d/SKILL.md" ] || continue
+    echo "${d%/}"
+  done
+}
+
+# Shared procedures have no SKILL.md and must travel beside every bundle.
+install_docs() {
+  local dir="$1" how="$2" base="${3:-$SKILLS_SRC}"
+  free_slot "$dir/_workflow" || return 0
+  if [ "$how" = link ]; then
+    ln -s "$base/_workflow" "$dir/_workflow"
+  else
+    cp -R "$SKILLS_SRC/_workflow" "$dir/_workflow"
+  fi
+}
 
 link_all() {
   local dir="$1"
   mkdir -p "$dir"
-  for src in $(skill_dirs); do
+  install_docs "$dir" link
+  while IFS= read -r src; do
     local name; name="$(basename "$src")"
     free_slot "$dir/$name" || continue
     ln -s "$src" "$dir/$name"
     echo "linked: $dir/$name"
-  done
+  done < <(skill_dirs)
 }
 
 install_claude() {
   # $1 = destination dir, $2 = "link" to link non-entry skills to $3, or "copy"
   local dir="$1" how="$2" base="${3:-}"
   mkdir -p "$dir"
-  for src in $(skill_dirs); do
+  install_docs "$dir" "$how" "${base:-$SKILLS_SRC}"
+  while IFS= read -r src; do
     local name; name="$(basename "$src")"
     free_slot "$dir/$name" || continue
     if is_entry "$name"; then
@@ -91,7 +109,7 @@ install_claude() {
       cp -R "$src" "$dir/$name"
       echo "copied: $dir/$name"
     fi
-  done
+  done < <(skill_dirs)
 }
 
 if [ "$MODE" = project ]; then
@@ -100,13 +118,16 @@ if [ "$MODE" = project ]; then
   if wants codex || wants opencode || wants gemini || wants antigravity; then
     AG="$TARGET/.agents/skills"
     mkdir -p "$AG"
-    for src in $(skill_dirs); do
+    install_docs "$AG" copy
+    while IFS= read -r src; do
       name="$(basename "$src")"
       free_slot "$AG/$name" || continue
       cp -R "$src" "$AG/$name"
       echo "copied: $AG/$name"
-    done
-    wants claude && install_claude "$TARGET/.claude/skills" link "../../.agents/skills"
+    done < <(skill_dirs)
+    if wants claude; then
+      install_claude "$TARGET/.claude/skills" link "../../.agents/skills"
+    fi
   elif wants claude; then
     install_claude "$TARGET/.claude/skills" copy
   fi
