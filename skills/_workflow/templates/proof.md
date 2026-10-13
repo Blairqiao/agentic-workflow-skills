@@ -16,7 +16,7 @@ List every `test(amend)` commit or in-place test revision with its reason, or st
 
 ## UI or manual evidence
 
-Relevant interaction results, screenshots, and expected behavior.
+Relevant interaction results, embedded screenshots, and expected behavior.
 
 ## Limitations
 

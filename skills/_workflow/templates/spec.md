@@ -8,7 +8,7 @@ Status and approval reference:
 
 ## Behavior and interfaces
 
-Describe normal use, relevant edge cases, errors, compatibility, and affected data or permissions. Include examples or diagrams where useful.
+Describe normal use, relevant edge cases, errors, compatibility, and affected data or permissions. Include examples, diagrams, or embedded screenshots where useful.
 
 ## Acceptance criteria
 

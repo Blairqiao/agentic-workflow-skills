@@ -10,7 +10,7 @@ Explain architectural choices and tradeoffs; link the detailed decisions where a
 
 ## Manual verification
 
-Numbered steps, prerequisites, and expected results.
+Numbered steps, prerequisites, expected results, and embedded screenshots.
 
 ## Documentation impact
 

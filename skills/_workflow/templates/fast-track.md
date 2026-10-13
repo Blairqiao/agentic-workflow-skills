@@ -28,7 +28,7 @@ Review method, independence, findings, resolutions, explicit sign-off on any tes
 
 ## Proof and walkthrough
 
-Reproducible commands, verbatim output excerpts, UI or manual verification steps, and staged candidate paths.
+Reproducible commands, verbatim output excerpts, UI or manual verification steps with embedded screenshots, and staged candidate paths.
 
 ### Documentation impact
 

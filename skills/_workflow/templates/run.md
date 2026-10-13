@@ -20,7 +20,7 @@ Method, round count (capped at 3 review-fix rounds), findings, corrections, expl
 
 ## Proof
 
-Reproducible commands, actual results, every `test(amend)` commit or in-place test revision with its reason, UI or manual evidence, candidate identity, and limitations. Follow [verification](../verification.md).
+Reproducible commands, actual results, every `test(amend)` commit or in-place test revision with its reason, UI or manual evidence with embedded screenshots, candidate identity, and limitations. Follow [verification](../verification.md).
 
 ## Walkthrough
 
