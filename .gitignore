@@ -25,6 +25,6 @@ tmp/
 .worktrees/*
 .worktrees
 
-# Documentation
-docs/*
-docs
+# Workflow artifacts
+.agent-docs/*
+.agent-docs

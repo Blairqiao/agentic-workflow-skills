@@ -6,11 +6,11 @@ description: >-
 
 # Unslop
 
-Edit text to remove AI patterns.
+Edit authored prose and comments to remove AI patterns. Never alter fenced code blocks, terminal command output, logs, commit hashes, file paths, or verbatim quotes.
 
 ## Process
 
-1. Scan for the patterns below.
+1. Scan authored prose and comments for the patterns below, skipping code blocks and verbatim evidence.
 2. Rewrite. Preserve meaning, match intended tone.
 3. Self-audit: "What makes this obviously AI generated?" Fix remaining tells.
 

@@ -4,7 +4,7 @@ Track, current phase, update date, spec link, plan link:
 
 ## Workspace and starting state
 
-Location, branch/base revision, pre-existing user changes, relevant baseline, and resource allocations if any.
+Location, branch or base revision, pre-existing user changes, `S0`/`S1`/`S2` tree snapshot hashes for in-place runs, relevant baseline, and resource allocations if any.
 
 ## Tasks
 

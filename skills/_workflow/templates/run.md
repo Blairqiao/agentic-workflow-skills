@@ -12,15 +12,15 @@ For each material choice, record the options considered, chosen behavior, reason
 
 ## Plan and progress
 
-Tasks, dependencies, relevant checks, outcomes, and blockers.
+Tasks, dependencies, attempt counts (capped at 3 failed attempts per task), relevant checks, outcomes, and blockers.
 
 ## Review
 
-Method, findings, corrections, and whether review was independent.
+Method, round count (capped at 3 review-fix rounds), findings, corrections, explicit acceptance or rejection of each `test(amend)`, and whether review was independent.
 
 ## Proof
 
-Reproducible commands, actual results, UI/manual evidence, candidate identity, and limitations. Follow [verification](../verification.md).
+Reproducible commands, actual results, every `test(amend)` commit or in-place test revision with its reason, UI or manual evidence, candidate identity, and limitations. Follow [verification](../verification.md).
 
 ## Walkthrough
 

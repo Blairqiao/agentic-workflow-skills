@@ -31,6 +31,6 @@ When proposing tests in the plan or task brief, tag each test idea:
 
 ### 3. Red-green execution with integrity
 - Follow [test integrity](../_workflow/testing.md) for red, green, and test revisions:
-  - **In an isolated worktree (`full-track`):** Commit the failing test as `test(red): <task-id>`, write the minimal implementation to pass, commit as `feat(green): <task-id>`, and verify the test diff between red and green is strictly empty (`git diff --stat <red>..<green> -- <tests> == 0`).
-  - **In the current workspace (`fast-track` or in-place runs):** Do not make intermediate commits so `HEAD` and pre-existing user changes stay untouched; verify red $\rightarrow$ green via terminal output and review the test diff against the agreed design.
+  - **In an isolated worktree (`full-track`):** Commit the failing test as `test(red): <task-id>`, write the minimal implementation to pass, commit as `feat(green): <task-id>`, and verify the test diff between red and green is strictly empty via `git diff --stat <red>..<green> -- <test-paths>`.
+  - **In the current workspace (`fast-track` or in-place runs):** Do not make intermediate commits so `HEAD` and pre-existing user changes stay untouched. Capture temporary-index `git write-tree` snapshots `S0` at task start, `S1` after red, and `S2` after green, and verify `git diff --stat "$S1" "$S2" -- <test-paths>` prints nothing.
 - Review the test code with the user to verify it remains clear, straightforward, and faithful to actual usage.

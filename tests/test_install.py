@@ -8,7 +8,15 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PUBLIC = {"full-track", "fast-track", "one-shot", "grilling", "human-tdd", "unslop"}
+PUBLIC = {
+    "full-track",
+    "fast-track",
+    "one-shot",
+    "grilling",
+    "human-tdd",
+    "unslop",
+    "domain-modeling",
+}
 
 
 class InstallTests(unittest.TestCase):
@@ -34,7 +42,9 @@ class InstallTests(unittest.TestCase):
     def assert_bundle(self, location, claude=False):
         self.assertEqual({p.parent.name for p in location.glob("*/SKILL.md")}, PUBLIC)
         self.assertTrue((location / "_workflow/core.md").is_file())
+        self.assertTrue((location / "_workflow/templates/fast-track.md").is_file())
         self.assertFalse((location / "_workflow/SKILL.md").exists())
+        self.assertTrue((location / "domain-modeling/references/context-format.md").is_file())
         for name in PUBLIC:
             skill = location / name / "SKILL.md"
             self.assertTrue(skill.is_file(), name)

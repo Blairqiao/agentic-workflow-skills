@@ -1,5 +1,5 @@
 interface:
   display_name: "Fast track"
-  short_description: "Full workflow in place, one implementer"
+  short_description: "Lightweight in-place workflow for one-off bugs and minor UI tweaks"
 policy:
   allow_implicit_invocation: false
