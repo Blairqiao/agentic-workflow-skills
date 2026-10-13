@@ -12,6 +12,10 @@ Explain architectural choices and tradeoffs; link the detailed decisions where a
 
 Numbered steps, prerequisites, and expected results.
 
+## Documentation impact
+
+Link project guides created or updated and record unresolved documentation gaps or contradictions. If no documentation changes were needed, explain why. Keep detailed project explanations in maintained guides and link them from this change record.
+
 ## Risks and remaining work
 
 ## Delivery

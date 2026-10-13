@@ -1,6 +1,6 @@
 # Portable agentic workflow skills
 
-Seven public skills start documented workflows or provide standalone tools. Internal procedures live in [skills/_workflow](skills/_workflow/README.md), which is installed alongside the skills by [install.sh](install.sh) and has no discoverable `SKILL.md`.
+Eight public skills start documented workflows or provide standalone tools. Internal procedures live in [skills/_workflow](skills/_workflow/README.md), which is installed alongside the skills by [install.sh](install.sh) and has no discoverable `SKILL.md`.
 
 ## Choose a track
 
@@ -26,6 +26,15 @@ Publishing and the final target-branch commit belong to the user.
 - [grilling](skills/grilling/SKILL.md): stress-test thinking, architectural decisions, and tradeoffs in structured rounds (`❓ Q1 / ➡️`).
 - [human-tdd](skills/human-tdd/SKILL.md): agree on meaningful tests (`[Specific]`, `[Intermediate]`, `[Global]`) before implementation.
 - [unslop](skills/unslop/SKILL.md): cut AI tells, filler, and buzzwords from authored prose in specs, plans, proofs, walkthroughs, and comments while preserving verbatim code blocks and command output.
+- [research](skills/research/SKILL.md): explain project documentation or audit the maintained codebase against it, creating missing documentation and updating supported factual descriptions.
+
+## Project research and documentation
+
+Request `research explain` to walk through the project's purpose, architecture, important flows, and relevant setup with links to documentation and source. Request `research audit` to examine the maintained codebase, cross-check its documentation, and create or update project guides. Clear natural-language requests select the same modes; ambiguous requests are clarified under the active track's decision policy.
+
+Explain uses existing documentation and targeted source checks. When usable project documentation is absent, it discloses the need to bootstrap it through Audit before explaining the project. Explicit read-only constraints prevent edits. Audit records source coverage, exclusions, command evidence, and unresolved intent conflicts; it reports code defects without fixing them or rewriting requirements to match them.
+
+Existing documentation stays in its established location. New project guides default to versioned `docs/` in the audited checkout, and audit records live at `<main-repo>/.agent-docs/research/<run-id>.md`. The domain dictionary remains under domain-modeling. During development, check and update documentation affected by the change and link it from the walkthrough. A whole-project audit or bootstrap is a separate research request, not an automatic addition to every small fix.
 
 ## Install
 
@@ -35,7 +44,7 @@ Publishing and the final target-branch commit belong to the user.
 ./install.sh --global --harness claude,codex,antigravity
 ```
 
-Use `install.sh` rather than single-skill git fetchers such as `npx skills` or `gemini skills install`. The entry tracks read shared procedures in `_workflow` and invoke sibling tool skills (`domain-modeling`, `grilling`, `human-tdd`, `unslop`), which single-directory installers do not bundle alongside each skill.
+Use `install.sh` rather than single-skill git fetchers such as `npx skills` or `gemini skills install`. The entry tracks read shared procedures in `_workflow` and invoke sibling tool skills (`domain-modeling`, `grilling`, `human-tdd`, `unslop`, `research`), which single-directory installers do not bundle alongside each skill.
 
 The installer preserves existing destinations unless `--force` is supplied. That flag replaces matching installed entries, including `_workflow`; review local customizations first. Installation does not prune retired or unrelated skills.
 
@@ -49,7 +58,7 @@ The installer preserves existing destinations unless `--force` is supplied. That
 
 These are the destinations supported by this installer. Project installations copy the bundle. With both Claude and shared harnesses selected, Claude's non-entry skills and documentation link to the shared project copies. Claude-only installations are self-contained.
 
-Global installations link to this repository, except Claude's three entry skills, which are copied to add its manual-invocation metadata. Refresh those copies when the entry skills change. Use Git Bash or WSL on Windows, or copy the bundle manually with `_workflow` beside the seven skill directories.
+Global installations link to this repository, except Claude's three entry skills, which are copied to add its manual-invocation metadata. Refresh those copies when the entry skills change. Use Git Bash or WSL on Windows, or copy the bundle manually with `_workflow` beside the eight skill directories.
 
 Some harnesses search several skill locations and may display duplicates. Select the required destinations with `--harness`; already installed entries in other locations remain until you remove them.
 
@@ -71,6 +80,7 @@ All workflow documentation belongs in the parent repository at `<main-repo>/.age
 - `<main-repo>/.agent-docs/walkthroughs/<feature>-walkthrough.md` (`full-track`)
 - `<main-repo>/.agent-docs/fast-track/<feature>.md` (`fast-track`)
 - `<main-repo>/.agent-docs/runs/<feature>.md` (`one-shot`)
+- `<main-repo>/.agent-docs/research/<run-id>.md` (research audit evidence and coverage)
 
 A reusable project profile is optional; inspect relevant repository configuration directly when no profile exists. Follow established artifact locations or repository storage requirements.
 
@@ -84,7 +94,7 @@ For a new manual-only entry point, add its native adapter metadata and update `E
 
 The following former skills now live in `_workflow` documentation: `workflow-core`, `project-discovery`, `spec-alignment`, `implementation-planning`, `worktree-setup`, `tdd-integrity`, `task-dispatch`, `independent-review`, `verification-evidence`, and `integration-handoff`.
 
-Inspect existing installations for these entries and preserve custom edits before explicitly removing or moving them out of skill search directories. Refresh the seven public skills and `_workflow` together. The installer does not delete old entries because it cannot distinguish an earlier install from user-owned skills. Do not remove similarly named skills from other suites.
+Inspect existing installations for these entries and preserve custom edits before explicitly removing or moving them out of skill search directories. Refresh the eight public skills and `_workflow` together. The installer does not delete old entries because it cannot distinguish an earlier install from user-owned skills. Do not remove similarly named skills from other suites.
 
 ## Verification
 

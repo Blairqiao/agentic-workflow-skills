@@ -10,4 +10,6 @@ Inputs: requirements, candidate diff, task boundaries, and observed verification
 
 Record the verdict in the taskboard, fast-track record, or run document using the fields in [the review template](templates/review.md). No separate review file or numeric score is required. Re-review corrections that affect findings; do not restart a full audit for unrelated wording changes.
 
+Check affected project documentation against the resulting behavior and source evidence. Verify updated links and relevant instructions, and ensure intended requirements were not silently rewritten to hide code defects. Keep this check scoped to the change; record unrelated documentation gaps for a separate research audit.
+
 Completion: blocking findings are resolved and verified, every test amendment is explicitly accepted or rejected, or unresolved findings explicitly prevent a complete outcome. The record states whether review was independent.

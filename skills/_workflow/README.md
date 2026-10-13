@@ -13,6 +13,8 @@ This directory is documentation, not a discoverable skill. Entry skills select t
 | [Review](review.md) | Requirements and candidate diff | Findings resolved or explicitly reported |
 | [Verification](verification.md) | Reviewed candidate | Relevant checks and reproducible proof |
 | [Handoff](handoff.md) | Verified changes and artifacts | Candidate delivery ready for the user |
+| [Research Explain](research-explain.md) | Project documentation and learning goal | Linked project explanation; missing documentation bootstrapped when permitted |
+| [Research Audit](research-audit.md) | Codebase and current documentation | Documentation maintained with coverage, evidence, and unresolved findings recorded |
 
 ## Extracting a procedure into a skill
 

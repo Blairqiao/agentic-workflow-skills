@@ -29,3 +29,7 @@ Review method, independence, findings, resolutions, explicit sign-off on any tes
 ## Proof and walkthrough
 
 Reproducible commands, verbatim output excerpts, UI or manual verification steps, and staged candidate paths.
+
+### Documentation impact
+
+Link project guides created or updated and record unresolved documentation gaps or contradictions, or explain why no documentation changes were needed. This section stays in the fast-track record; do not create a separate walkthrough.

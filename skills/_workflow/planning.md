@@ -10,4 +10,6 @@ Inputs: spec or one-shot design, discovered commands, selected track.
 
 Expected files are planning aids, not a ban on incidental supporting edits. Reopen full or fast approval for material scope or risk changes, not ordinary implementation details.
 
+Include affected project documentation in the task's files and acceptance criteria when behavior, setup, interfaces, or architecture change. Reuse its established location; create a focused guide when needed rather than expanding a small task into a whole-project documentation bootstrap.
+
 Completion: tasks, verification, dependencies, and authorization boundaries are clear; full has approval covering spec and plan, and fast has approval covering its mini-spec.

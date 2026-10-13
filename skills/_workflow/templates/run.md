@@ -26,6 +26,10 @@ Reproducible commands, actual results, every `test(amend)` commit or in-place te
 
 Resulting behavior, significant changes, manual steps with expected results, risks, and delivery location.
 
+### Documentation impact
+
+Link project guides created or updated and record unresolved documentation gaps or contradictions, or explain why no documentation changes were needed. Keep the project explanation in maintained guides and this walkthrough in the run document.
+
 ## Incomplete work
 
 Include only when requirements remain unfulfilled. Explain the evidence and exhausted alternatives without asking for product feedback.

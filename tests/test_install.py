@@ -1,6 +1,7 @@
 """Exercise installed skill bundles without touching user skill directories."""
 
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tempfile
@@ -16,6 +17,7 @@ PUBLIC = {
     "human-tdd",
     "unslop",
     "domain-modeling",
+    "research",
 }
 
 
@@ -45,6 +47,27 @@ class InstallTests(unittest.TestCase):
         self.assertTrue((location / "_workflow/templates/fast-track.md").is_file())
         self.assertFalse((location / "_workflow/SKILL.md").exists())
         self.assertTrue((location / "domain-modeling/references/context-format.md").is_file())
+        research_files = (
+            location / "research/SKILL.md",
+            location / "_workflow/research-explain.md",
+            location / "_workflow/research-audit.md",
+        )
+        for resource in research_files:
+            self.assertTrue(resource.is_file(), str(resource))
+            for target in re.findall(r"\[[^\]]+\]\(([^)]+)\)", resource.read_text()):
+                if "://" not in target and not target.startswith("#"):
+                    self.assertTrue(
+                        (resource.parent / target.split("#", 1)[0]).is_file(),
+                        f"Broken installed reference in {resource}: {target}",
+                    )
+        frontmatter = research_files[0].read_text().split("---", 2)[1]
+        self.assertEqual(
+            set(re.findall(r"^([a-z][\w-]*):", frontmatter, re.MULTILINE)),
+            {"name", "description"},
+        )
+        self.assertNotIn("allow_implicit_invocation: false", (
+            location / "research/agents/openai.yaml"
+        ).read_text())
         for name in PUBLIC:
             skill = location / name / "SKILL.md"
             self.assertTrue(skill.is_file(), name)
@@ -97,6 +120,18 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(extra.read_text(), "custom skill\n")
         self.assertEqual(old.read_text(), "previous installation\n")
         self.assertTrue((self.project / ".agents/skills/_workflow/core.md").is_file())
+
+    def test_existing_research_resources_are_preserved_without_force(self):
+        self.install("codex")
+        skill = self.project / ".agents/skills/research/SKILL.md"
+        procedure = self.project / ".agents/skills/_workflow/research-audit.md"
+        self.assertTrue(skill.is_file())
+        self.assertTrue(procedure.is_file())
+        skill.write_text("user-owned research skill\n")
+        procedure.write_text("user-owned audit procedure\n")
+        self.install("codex")
+        self.assertEqual(skill.read_text(), "user-owned research skill\n")
+        self.assertEqual(procedure.read_text(), "user-owned audit procedure\n")
 
 
 if __name__ == "__main__":
