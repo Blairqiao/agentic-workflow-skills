@@ -1,7 +1,7 @@
 # Review record
 
-Method: independent agent, independent session, or disclosed self-review.
-Candidate identity:
+Method: independent subagent, independent session, or disclosed self-review.
+Candidate identity and base revision:
 Verdict: pass or blocking findings.
 
 | Criterion | Result | Implementation and verification evidence |
@@ -9,12 +9,12 @@ Verdict: pass or blocking findings.
 
 ## Blocking findings and resolutions
 
-Give locations, consequences, and verification of fixes.
+Give file locations, consequences, and verification of fixes.
 
-## Test integrity and relevant security findings
+## Test integrity and security findings
 
-Verify empty red-to-green test diff (`<red>..<green>` or `S1..S2`), explicitly accept or reject each `test(amend)` listed in the proof, and record relevant security checks.
+Verify that test changes in the candidate diff match the acceptance criteria and recorded red and green outputs, explicitly accept or reject each logged test amendment, and record relevant security checks.
 
 ## Optional polish
 
-Omit empty sections. This record can live in the taskboard, fast-track record, or run document.
+Omit empty sections. This record lives inside the taskboard, fast-track record, or one-shot run document.

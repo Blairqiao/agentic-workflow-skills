@@ -45,6 +45,13 @@ class InstallTests(unittest.TestCase):
         self.assertEqual({p.parent.name for p in location.glob("*/SKILL.md")}, PUBLIC)
         self.assertTrue((location / "_workflow/core.md").is_file())
         self.assertTrue((location / "_workflow/templates/fast-track.md").is_file())
+        self.assertTrue((location / "_workflow/templates/plan.md").is_file())
+        self.assertTrue((location / "_workflow/templates/proof.md").is_file())
+        self.assertTrue((location / "_workflow/templates/taskboard.md").is_file())
+        self.assertTrue((location / "_workflow/templates/reviewer-brief.md").is_file())
+        self.assertTrue((location / "_workflow/templates/research-audit.md").is_file())
+        self.assertFalse((location / "_workflow/templates/spec.md").exists())
+        self.assertFalse((location / "_workflow/templates/walkthrough.md").exists())
         self.assertFalse((location / "_workflow/SKILL.md").exists())
         self.assertTrue((location / "domain-modeling/references/context-format.md").is_file())
         research_files = (
@@ -73,9 +80,17 @@ class InstallTests(unittest.TestCase):
             self.assertTrue(skill.is_file(), name)
             if name in {"full-track", "fast-track", "one-shot"}:
                 self.assertTrue((skill.parent / "../_workflow/core.md").is_file())
+            if name == "one-shot":
                 self.assertEqual("disable-model-invocation: true" in skill.read_text(), claude)
+                if claude:
+                    self.assertFalse((skill.parent / "agents/openai.yaml").exists())
+                else:
+                    adapter = skill.parent / "agents/openai.yaml"
+                    self.assertIn("allow_implicit_invocation: false", adapter.read_text())
+            elif name in {"full-track", "fast-track"}:
+                self.assertNotIn("disable-model-invocation: true", skill.read_text())
                 adapter = skill.parent / "agents/openai.yaml"
-                self.assertIn("allow_implicit_invocation: false", adapter.read_text())
+                self.assertNotIn("allow_implicit_invocation: false", adapter.read_text())
 
     def test_shared_harness_project_installs(self):
         for harness in ("codex", "antigravity", "gemini", "opencode"):
@@ -121,6 +136,32 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(old.read_text(), "previous installation\n")
         self.assertTrue((self.project / ".agents/skills/_workflow/core.md").is_file())
 
+    def test_uninstall_removes_bundle_and_retired_skills_while_preserving_custom(self):
+        self.install("claude,codex")
+        custom = self.project / ".agents/skills/custom/SKILL.md"
+        custom.parent.mkdir()
+        custom.write_text("custom skill\n")
+        retired = self.project / ".agents/skills/task-dispatch/SKILL.md"
+        retired.parent.mkdir()
+        retired.write_text("retired skill\n")
+        self.install("claude,codex", "--uninstall")
+        self.assertTrue(custom.is_file())
+        self.assertFalse(retired.exists())
+        self.assertFalse((self.project / ".agents/skills/_workflow").exists())
+        self.assertFalse((self.project / ".claude/skills/_workflow").exists())
+        for name in PUBLIC:
+            self.assertFalse((self.project / ".agents/skills" / name).exists())
+            self.assertFalse((self.project / ".claude/skills" / name).exists())
+
+    def test_missing_option_arguments_fail_cleanly(self):
+        for flag in ("--project", "--harness"):
+            result = subprocess.run(
+                ["bash", str(self.source / "install.sh"), flag],
+                capture_output=True, text=True,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("Usage:", result.stdout + result.stderr)
+
     def test_existing_research_resources_are_preserved_without_force(self):
         self.install("codex")
         skill = self.project / ".agents/skills/research/SKILL.md"
@@ -142,7 +183,7 @@ class InstallTests(unittest.TestCase):
         fast_track = (self.project / ".agents/skills/fast-track/SKILL.md").read_text()
         self.assertIn("inline in chat", fast_track)
         agents_guide = (ROOT / "AGENTS.md").read_text()
-        self.assertIn("Approval Gates & Inline Presentation", agents_guide)
+        self.assertIn("Approval gates and inline presentation", agents_guide)
 
 
 if __name__ == "__main__":

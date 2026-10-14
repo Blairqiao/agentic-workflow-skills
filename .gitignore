@@ -20,11 +20,3 @@ Desktop.ini
 *.log
 tmp/
 .temp/
-
-# Repository-local worktrees
-.worktrees/*
-.worktrees
-
-# Workflow artifacts
-.agent-docs/*
-.agent-docs

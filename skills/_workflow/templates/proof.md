@@ -1,23 +1,43 @@
-# Verification proof
+# Verification proof and change walkthrough
 
 Candidate identity, base revision, date, and workspace state:
 
 ## Coverage
 
-Map requirements to checks and identify any dependence on pre-existing changes.
+Map each acceptance criterion to the automated or manual check that verified it, and disclose any dependence on pre-existing user changes.
 
-## Commands and observed results
+## Red and green test evidence
 
-Record commands in reproducible order with actual outputs or clearly marked excerpts. Include setup only where needed. State the working directory and non-secret prerequisites.
+Record the targeted test commands, verbatim red failure excerpts observed before implementation, and verbatim green pass outputs observed after implementation.
+
+## Verification commands and observed results
+
+Record full suite, static check, and build commands in reproducible order with actual outputs or clearly marked excerpts. State the working directory and non-secret prerequisites.
 
 ## Test amendments
 
-List every `test(amend)` commit or in-place test revision with its reason, or state that none occurred.
+List every revision made to a test after observing red, or to an existing test expectation, along with its reason and reviewer sign-off, or state that none occurred.
 
 ## UI or manual evidence
 
-Relevant interaction results, embedded screenshots, and expected behavior.
+Record interactive verification steps, expected results, desktop and mobile viewport checks, and embedded screenshots using `![<Descriptive Caption>](<path-to-image.png>)`.
 
-## Limitations
+## Walkthrough of what changed
 
-Unrun checks, known failures, unstable results, and what remains unverified.
+Explain the resulting behavior and significant code changes by task or subsystem.
+
+## Design decisions
+
+Summarize key architectural choices and tradeoffs, or link the decision section in `<main-repo>/.agent-docs/plans/<feature>.md`.
+
+## Documentation impact
+
+Link project guides created or updated and record unresolved documentation gaps or contradictions, or explain why no documentation changes were needed.
+
+## Limitations and remaining work
+
+Record unrun checks, known baseline failures, unstable results, and any remaining risks.
+
+## Delivery
+
+Candidate location, staged paths or worktree merge command, and final commit or cleanup actions left to the user.

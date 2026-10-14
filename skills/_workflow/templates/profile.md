@@ -9,7 +9,7 @@ Last verified:
 
 ## Test layout and services
 
-Record only information that improves later discovery, including test locations, embedded tests, fixtures, runner settings, and service requirements.
+Record only information that speeds up future discovery, including test locations, inline test modules, fixtures, runner settings, and local service requirements.
 
 ## Conventions and boundaries
 
@@ -17,4 +17,4 @@ Relevant repository rules, formatting hooks, generated files, and sensitive area
 
 ## Optional workflow preferences
 
-Artifact locations and delivery preference when established. Refresh affected facts when repository configuration changes.
+Established artifact locations and handoff preferences. Refresh affected facts when repository configuration changes.

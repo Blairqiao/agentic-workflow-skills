@@ -1,5 +1,3 @@
 interface:
   display_name: "Fast track"
-  short_description: "Lightweight in-place workflow for one-off bugs and minor UI tweaks"
-policy:
-  allow_implicit_invocation: false
+  short_description: "Linear single-session workflow in the current workspace"

@@ -1,5 +1,3 @@
 interface:
   display_name: "Full track"
-  short_description: "Documented workflow with one design approval"
-policy:
-  allow_implicit_invocation: false
+  short_description: "Documented workflow with combined spec and plan approval"

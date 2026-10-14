@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
-# Install the portable agentic workflow skills for one or more agent harnesses.
+# Install or uninstall the portable agentic workflow skills for one or more agent harnesses.
 set -euo pipefail
 
 PACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$PACK_DIR/skills"
-ENTRY_SKILLS="full-track fast-track one-shot"
+ENTRY_SKILLS="one-shot"
+RETIRED_SKILLS="workflow-core project-discovery spec-alignment implementation-planning worktree-setup tdd-integrity task-dispatch independent-review verification-evidence integration-handoff"
 ALL_HARNESSES="claude,codex,opencode,gemini,antigravity"
 
 usage() {
   cat <<'USAGE'
 Usage:
-  install.sh --project <repo-path> [--harness list] [--force]
-  install.sh --global [--harness list] [--force]
+  install.sh --project <repo-path> [--harness list] [--force] [--uninstall]
+  install.sh --global [--harness list] [--force] [--uninstall]
 
   --project <path>  Copy skills and shared docs into <path>/.agents/skills and link
                     <path>/.claude/skills to them. Commit these to share.
@@ -19,16 +20,30 @@ Usage:
   --harness list    Comma-separated subset of: claude,codex,opencode,gemini,antigravity
                     (default: all)
   --force           Replace existing entries with the same name.
+  --uninstall       Remove installed workflow skills, _workflow, and retired bundle entries.
 USAGE
 }
 
-MODE=""; TARGET=""; FORCE=0; HARNESSES="$ALL_HARNESSES"
+MODE=""; TARGET=""; FORCE=0; UNINSTALL=0; HARNESSES="$ALL_HARNESSES"
 while [ $# -gt 0 ]; do
   case "$1" in
-    --project) MODE=project; TARGET="${2:-}"; shift 2 ;;
+    --project)
+      if [ $# -lt 2 ] || [ -z "${2:-}" ]; then
+        echo "Missing path for --project" >&2
+        usage
+        exit 1
+      fi
+      MODE=project; TARGET="$2"; shift 2 ;;
     --global) MODE=global; shift ;;
-    --harness) HARNESSES="${2:-}"; shift 2 ;;
+    --harness)
+      if [ $# -lt 2 ] || [ -z "${2:-}" ]; then
+        echo "Missing value for --harness" >&2
+        usage
+        exit 1
+      fi
+      HARNESSES="$2"; shift 2 ;;
     --force) FORCE=1; shift ;;
+    --uninstall) UNINSTALL=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
   esac
@@ -53,12 +68,17 @@ free_slot() {
   return 0
 }
 
-# Claude Code copy of an entry skill, with model invocation disabled.
+# Claude Code copy of a manual-only entry skill, with model invocation disabled and Codex adapter removed.
 claude_entry_copy() {
   local src="$1" dest="$2"
   cp -R "$src" "$dest"
-  awk '!done && /^name:/ { print; print "disable-model-invocation: true"; done = 1; next } { print }' \
-    "$src/SKILL.md" > "$dest/SKILL.md"
+  rm -rf "$dest/agents"
+  awk '
+    NR == 1 && /^---$/ { in_fm = 1; print; next }
+    in_fm && /^---$/ { in_fm = 0; print; next }
+    in_fm && !done && /^name:/ { print; print "disable-model-invocation: true"; done = 1; next }
+    { print }
+  ' "$src/SKILL.md" > "$dest/SKILL.md"
 }
 
 skill_dirs() {
@@ -111,6 +131,49 @@ install_claude() {
     fi
   done < <(skill_dirs)
 }
+
+uninstall_dir() {
+  local dir="$1"
+  [ -d "$dir" ] || return 0
+  if [ -e "$dir/_workflow" ] || [ -L "$dir/_workflow" ]; then
+    rm -rf "$dir/_workflow"
+    echo "removed: $dir/_workflow"
+  fi
+  while IFS= read -r src; do
+    local name; name="$(basename "$src")"
+    if [ -e "$dir/$name" ] || [ -L "$dir/$name" ]; then
+      rm -rf "$dir/$name"
+      echo "removed: $dir/$name"
+    fi
+  done < <(skill_dirs)
+  for retired in $RETIRED_SKILLS; do
+    if [ -e "$dir/$retired" ] || [ -L "$dir/$retired" ]; then
+      rm -rf "$dir/$retired"
+      echo "removed retired: $dir/$retired"
+    fi
+  done
+}
+
+if [ "$UNINSTALL" -eq 1 ]; then
+  if [ "$MODE" = project ]; then
+    [ -n "$TARGET" ] && [ -d "$TARGET" ] || { echo "Not a directory: $TARGET" >&2; exit 1; }
+    TARGET="$(cd "$TARGET" && pwd)"
+    if wants codex || wants opencode || wants gemini || wants antigravity; then
+      uninstall_dir "$TARGET/.agents/skills"
+    fi
+    if wants claude; then
+      uninstall_dir "$TARGET/.claude/skills"
+    fi
+  elif [ "$MODE" = global ]; then
+    if wants codex || wants opencode || wants gemini; then uninstall_dir "$HOME/.agents/skills"; fi
+    if wants claude; then uninstall_dir "$HOME/.claude/skills"; fi
+    if wants antigravity; then
+      uninstall_dir "$HOME/.gemini/config/skills"
+      uninstall_dir "$HOME/.gemini/antigravity-cli/skills"
+    fi
+  fi
+  exit 0
+fi
 
 if [ "$MODE" = project ]; then
   [ -n "$TARGET" ] && [ -d "$TARGET" ] || { echo "Not a directory: $TARGET" >&2; exit 1; }

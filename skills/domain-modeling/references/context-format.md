@@ -27,13 +27,12 @@ _Avoid_: Client, buyer, account
 - **Pick one canonical term.** When multiple words refer to the same concept, choose one canonical name and list rejected synonyms under `_Avoid_`.
 - **Keep definitions tight.** Use one or two sentences that define what the concept is, not how the code implements it.
 - **Include only domain-specific concepts.** Exclude general programming terms such as retry policies, caches, or HTTP handlers.
-- **Group terms under subheadings** when natural clusters emerge. Otherwise keep a flat list.
+- **Group terms under subheadings.** Use subheadings when natural clusters emerge, and otherwise keep a flat list.
 
 ## Single vs multi-context repositories
 
-**Single context.** Maintain one `<main-repo>/.agent-docs/CONTEXT.md` file.
-
-**Multiple contexts.** Maintain `<main-repo>/.agent-docs/CONTEXT-MAP.md` listing each bounded context, its dictionary path, and how contexts relate:
+- **Single context.** Maintain one `<main-repo>/.agent-docs/CONTEXT.md` file.
+- **Multiple contexts.** Maintain `<main-repo>/.agent-docs/CONTEXT-MAP.md` listing each bounded context, its dictionary path, and how contexts relate:
 
 ```md
 # Context map

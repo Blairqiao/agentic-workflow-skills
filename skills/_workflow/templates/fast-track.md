@@ -1,26 +1,25 @@
 # Fast-track record
 
-Feature, status, approval reference, base revision, and date:
+Feature slug, status, approval reference, base revision, and date:
 
 ## Mini-spec and acceptance criteria
 
-Summarize the bug or adjustment in two to three sentences. State whether `.agent-docs/CONTEXT.md` was consulted or updated.
+Summarize the change in two to three sentences, list the target files, and state whether `.agent-docs/CONTEXT.md` was consulted or updated.
 
 | ID | Observable requirement | Verification |
 | --- | --- | --- |
 
-## Workspace and tree snapshots
+## Workspace and starting state
 
-Current workspace state, pre-existing user changes, and temporary-index `git write-tree` hashes:
+Current workspace state and any pre-existing user changes preserved during the run.
 
-- `S0` before task edits:
-- `S1` after red test:
-- `S2` after green implementation:
-- `git diff --stat "$S1" "$S2" -- <test-paths>` output:
+## Red and green test evidence
 
-## Test amendments
+Record the exact test command, verbatim red failure excerpt observed before implementation, and verbatim green pass output observed after implementation.
 
-List every test revision made after `S1` with its snapshot hash and reason, or state that none occurred.
+## Test amendments and attempted approaches
+
+List any test revision made after red with its reason, or state that none occurred. If retry caps were reached and candidate files were restored to their pre-task state, record what was tried and what failed.
 
 ## Review
 
@@ -28,8 +27,8 @@ Review method, independence, findings, resolutions, explicit sign-off on any tes
 
 ## Proof and walkthrough
 
-Reproducible commands, verbatim output excerpts, UI or manual verification steps with embedded screenshots, and staged candidate paths.
+Reproducible verification commands, observed output excerpts, what changed, UI or manual verification steps with embedded screenshots, and staged candidate paths.
 
 ### Documentation impact
 
-Link project guides created or updated and record unresolved documentation gaps or contradictions, or explain why no documentation changes were needed. This section stays in the fast-track record; do not create a separate walkthrough.
+Link project guides created or updated and record unresolved documentation gaps or contradictions, or explain why no documentation changes were needed.

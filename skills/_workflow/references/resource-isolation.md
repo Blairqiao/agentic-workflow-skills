@@ -1,19 +1,19 @@
 # Resource isolation
 
-Read when the change needs local services or shared resources. Record every allocation and verify its identity before modifying or removing it. Cleanup requires authorization and must match recorded resources.
+Read this reference when a change starts local services or touches shared resources. Record every allocation and verify its identity before modifying or removing it. Cleanup requires authorization and must match recorded allocations.
 
 | Resource | Isolation |
 | --- | --- |
-| Ports | Record free ports and pass them through local configuration |
-| SQL | Dedicated database or instance; verify migration targets |
-| SQLite | Database file inside the task's allocated directory |
-| Cache | Dedicated instance/database, or a scoped key prefix |
-| Queues/workers | Unique queue/topic names; no consumption from shared queues |
-| Containers | Unique project identity, volumes, and published ports |
-| Object storage | Dedicated non-production bucket or emulator namespace |
-| Files | Allocated directories for uploads, temporary data, and generated output |
-| Email/webhooks | Local sinks or authorized test endpoints |
+| Ports | Select free ports and pass them through local configuration |
+| SQL | Use a dedicated database or instance and verify migration targets |
+| SQLite | Place the database file inside the task's allocated directory |
+| Cache | Use a dedicated instance or database, or a scoped key prefix |
+| Queues and workers | Use unique queue or topic names and never consume from shared queues |
+| Containers | Set a unique project identity, volume set, and published port mapping |
+| Object storage | Use a dedicated non-production bucket or emulator namespace |
+| Files | Allocate dedicated directories for uploads, temporary data, and generated output |
+| Email and webhooks | Route to local sinks or authorized test endpoints |
 
-A key prefix is not a dedicated cache database: never flush a shared database to clean up prefixed keys. Container project names alone do not isolate explicitly shared volumes or external services. Inspect the actual configuration.
+A key prefix is not a dedicated cache database; never flush a shared cache instance to clean up prefixed keys. Container project names alone do not isolate explicitly named volumes or external services, so inspect the compose or container configuration directly.
 
-Use the installed service versions' documented commands. If safe isolation is unavailable, avoid the shared resource or obtain authorization before affecting it. Keep secret values out of recorded configuration and proof.
+Use the installed service versions' documented commands. If safe isolation is unavailable, avoid touching the shared resource or obtain explicit user authorization first. Keep secret values out of recorded configuration and proof files.

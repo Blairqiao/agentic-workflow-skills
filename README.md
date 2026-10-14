@@ -1,52 +1,50 @@
 # Portable agentic workflow skills
 
-Eight public skills start documented workflows or provide standalone tools. Internal procedures live in [skills/_workflow](skills/_workflow/README.md), which is installed alongside the skills by [install.sh](install.sh) and has no discoverable `SKILL.md`.
+Eight public skills run documented development tracks or provide standalone workflow tools. Shared phase procedures live in [skills/_workflow](skills/_workflow/README.md), which is installed alongside the skills by [install.sh](install.sh) and has no discoverable `SKILL.md`.
 
 ## Choose a track
 
-| Track | Execution | Approval | Documentation |
-| --- | --- | --- | --- |
-| `full-track` | Prefer a worktree; delegate independent implementation when useful | One combined spec-and-plan approval | Detailed spec, plan, taskboard, proof, walkthrough |
-| `fast-track` | Current workspace; one implementer, no implementation subagents; scope fit check for one-off bugs and minor UI tweaks | One mini-spec approval | Single `.agent-docs/fast-track/<feature>.md` record |
-| `one-shot` | Prefer a worktree; autonomous product and implementation decisions | No feedback gates; pause only for critical access or additional authorization | Run document with design decisions, plan, progress, proof, walkthrough |
+| Track | Selection | Execution | Approval | Documentation |
+| --- | --- | --- | --- | --- |
+| `full-track` | User request or automatic model selection for multi-step work | Prefer a worktree; delegate independent tasks when useful | One combined spec-and-plan approval | `plans/<feature>.md`, `taskboard/<feature>.md`, and `proofs/<feature>.md` |
+| `fast-track` | User request or automatic model selection for linear single-session work | Current workspace; single linear execution without implementation subagents | One mini-spec approval | Single `fast-track/<feature>.md` record |
+| `one-shot` | Explicit user request only | Prefer a worktree; autonomous product and technical decisions | No feedback gates; pause only for critical access or authorization | Single `runs/<feature>.md` record |
 
-Every track verifies the actual candidate and requires independent review when available. Fast-track retains a review subagent and escalates to `full-track` if scope outgrows a single focused task. Full-track and one-shot may use the current workspace for small tasks or explicit in-place requests. Failed task implementation attempts are capped at 3 and review-fix cycles are capped at 3 rounds. One-shot makes reasonable product choices itself, records the reasons, and reports an incomplete result honestly if technical alternatives or retry caps are exhausted.
+Every track verifies the delivery candidate and requires [independent review](skills/_workflow/review.md) packaged with [the reviewer brief](skills/_workflow/templates/reviewer-brief.md). Fast-track retains an independent review subagent and escalates to `full-track` if scope outgrows linear single-session execution. Full-track and one-shot may use the current workspace for small tasks or explicit in-place requests. Failed task implementation attempts are capped at 3 and review-fix cycles are capped at 3 rounds. When an in-place run reaches a retry cap, the agent restores modified candidate files to their pre-task state while recording what was tried and what failed in `.agent-docs/`.
 
-Worktrees belong in `<main-repo>/.worktrees/<run-id>`. Before creating a worktree or writing workflow artifacts in `.agent-docs/`, ensure both `.worktrees` (`.worktrees/*`, `.worktrees`) and `.agent-docs` (`.agent-docs/*`, `.agent-docs`) are added to `<main-repo>/.gitignore` and `<main-repo>/.git/info/exclude`, verify with `git check-ignore`, and add root-anchored `.worktrees` exclusions to glob-based project tool configs. Use a harness tool only when it can honor `<main-repo>/.worktrees/<run-id>`; otherwise use Git directly. Do not create worktrees under Codex, Claude Code, Antigravity, or other harness directories. See [workspace preparation](skills/_workflow/workspace.md).
+Worktrees belong in `<main-repo>/.worktrees/<feature>`, using a distinct `<run-id>` only when concurrent checkouts are needed. Before creating a worktree or writing files in `.agent-docs/`, add `.worktrees` and `.agent-docs` ignore rules to `<main-repo>/.git/info/exclude` without modifying `<main-repo>/.gitignore`, verify with `git check-ignore`, and add root-anchored `.worktrees` exclusions to glob-based project tool configs. Use a harness worktree tool only when it honors `<main-repo>/.worktrees/`; otherwise use Git directly. See [workspace preparation](skills/_workflow/workspace.md).
 
-Behavior changes default to autopilot TDD, with human-guided TDD opt-in:
-- **In isolated worktrees (`full-track`, `one-shot`):** Use `test(red)` and `feat(green)` commits and verify that the test diff between red and green is strictly empty via `git diff --stat <red>..<green> -- <test-paths>`. List every `test(amend)` in the proof for explicit reviewer acceptance.
-- **In the current workspace (`fast-track` or in-place runs):** Avoid intermediate commits so `HEAD` and pre-existing user changes stay untouched. Capture temporary-index `git write-tree` snapshots `S0` at task start, `S1` after red, and `S2` after green, verify `git diff --stat "$S1" "$S2" -- <test-paths>` prints nothing, and pass `git diff "$S0" "$S2"` to the reviewer.
-
-Publishing and the final target-branch commit belong to the user.
+Behavior changes default to autopilot TDD, with human-guided TDD opt-in. Following [test integrity](skills/_workflow/testing.md), the agent runs the new or updated test first, records the verbatim red failure output before writing implementation code, implements the behavior without weakening assertions, records the verbatim green pass output, and logs any post-red test revisions under `Test amendments` for explicit reviewer acceptance. No intermediate `test(red)` or `feat(green)` Git commits or temporary-index tree snapshots are created. During in-place runs, the agent enforces a no-commits rule and stages candidate changes during [handoff](skills/_workflow/handoff.md), leaving publishing and the final target-branch commit to the user.
 
 ## Standalone tools
 
 - [domain-modeling](skills/domain-modeling/SKILL.md): build, challenge, and sharpen the project's shared domain dictionary in `<main-repo>/.agent-docs/CONTEXT.md`.
-- [grilling](skills/grilling/SKILL.md): stress-test thinking, architectural decisions, and tradeoffs in structured rounds (`❓ Q1 / ➡️`).
-- [human-tdd](skills/human-tdd/SKILL.md): agree on meaningful tests (`[Specific]`, `[Intermediate]`, `[Global]`) before implementation.
-- [unslop](skills/unslop/SKILL.md): cut AI tells, filler, and buzzwords from authored prose in specs, plans, proofs, walkthroughs, and comments while preserving verbatim code blocks and command output.
-- [research](skills/research/SKILL.md): explain project documentation or audit the maintained codebase against it, creating missing documentation and updating supported factual descriptions.
+- [grilling](skills/grilling/SKILL.md): stress-test thinking, architectural decisions, and tradeoffs in structured rounds.
+- [human-tdd](skills/human-tdd/SKILL.md): agree on meaningful `[Specific]`, `[Intermediate]`, and `[Global]` tests before implementation.
+- [unslop](skills/unslop/SKILL.md): cut AI tells, filler, buzzwords, em dashes, prose parentheses, and decorative emojis from authored prose across user-facing documentation and internal `.agent-docs/` artifacts while preserving verbatim code blocks and command output.
+- [research](skills/research/SKILL.md): explain project documentation or audit the maintained codebase against it, creating missing guides and updating supported factual descriptions.
 
 ## Project research and documentation
 
-Request `research explain` to walk through the project's purpose, architecture, important flows, and relevant setup with links to documentation and source. Request `research audit` to examine the maintained codebase, cross-check its documentation, and create or update project guides. Clear natural-language requests select the same modes; ambiguous requests are clarified under the active track's decision policy.
+Request `research explain` to walk through the project's purpose, architecture, key flows, and setup with links to documentation and source files. Request `research audit` to examine the maintained codebase, cross-check its documentation, and create or update project guides. Clear natural-language requests select the same modes, while ambiguous requests are clarified under the active track's decision policy.
 
-Explain uses existing documentation and targeted source checks. When usable project documentation is absent, it discloses the need to bootstrap it through Audit before explaining the project. Explicit read-only constraints prevent edits. Audit records source coverage, exclusions, command evidence, and unresolved intent conflicts; it reports code defects without fixing them or rewriting requirements to match them.
+Explain uses existing documentation and targeted source checks. When usable project documentation is absent, it discloses the need to bootstrap guides through Audit before explaining the project, while respecting explicit read-only constraints. Audit records subsystem coverage, exclusions, command evidence, and unresolved intent conflicts in `<main-repo>/.agent-docs/research/` using [the research audit template](skills/_workflow/templates/research-audit.md); it reports code defects without fixing them or rewriting requirements to match them.
 
-Existing documentation stays in its established location. New project guides default to versioned `docs/` in the audited checkout, and audit records live at `<main-repo>/.agent-docs/research/<run-id>.md`. The domain dictionary remains under domain-modeling. During development, check and update documentation affected by the change and link it from the walkthrough. A whole-project audit or bootstrap is a separate research request, not an automatic addition to every small fix.
+Existing documentation stays in its established location. New project guides default to versioned `docs/` in the audited checkout, while the domain dictionary remains under domain-modeling. During development, update documentation affected by the change and record its impact in the walkthrough.
 
-## Install
+## Install and uninstall
 
 ```sh
 ./install.sh --project /path/to/repo
 ./install.sh --global
 ./install.sh --global --harness claude,codex,antigravity
+./install.sh --uninstall --project /path/to/repo
+./install.sh --uninstall --global
 ```
 
-Use `install.sh` rather than single-skill git fetchers such as `npx skills` or `gemini skills install`. The entry tracks read shared procedures in `_workflow` and invoke sibling tool skills (`domain-modeling`, `grilling`, `human-tdd`, `unslop`, `research`), which single-directory installers do not bundle alongside each skill.
+Use `install.sh` rather than single-skill fetchers such as `npx skills` or `gemini skills install`. The entry tracks read shared procedures in `_workflow` and invoke sibling tool skills, which single-directory fetchers do not bundle together.
 
-The installer preserves existing destinations unless `--force` is supplied. That flag replaces matching installed entries, including `_workflow`; review local customizations first. Installation does not prune retired or unrelated skills.
+The installer preserves existing destinations unless `--force` is supplied. Supplying `--force` replaces matching installed entries, including `_workflow`. Supplying `--uninstall` removes the installed workflow skills, `_workflow`, and retired entries from the earlier sixteen-skill bundle while leaving unrelated custom skills untouched.
 
 | Harness | Project location | User location |
 | --- | --- | --- |
@@ -56,45 +54,36 @@ The installer preserves existing destinations unless `--force` is supplied. That
 | Gemini CLI | `.agents/skills/` | `~/.agents/skills/` |
 | opencode | `.agents/skills/` | `~/.agents/skills/` |
 
-These are the destinations supported by this installer. Project installations copy the bundle. With both Claude and shared harnesses selected, Claude's non-entry skills and documentation link to the shared project copies. Claude-only installations are self-contained.
+Project installations copy the bundle into `.agents/skills/`. When both Claude and a shared harness are selected, Claude's skills and `_workflow` link to the shared project copies, except `one-shot`, which is copied to inject Claude's manual-invocation metadata. Claude-only installations are self-contained. Global installations link to this repository, with a copied `one-shot` entry for Claude.
 
-Global installations link to this repository, except Claude's three entry skills, which are copied to add its manual-invocation metadata. Refresh those copies when the entry skills change. Use Git Bash or WSL on Windows, or copy the bundle manually with `_workflow` beside the eight skill directories.
+## Invocation policy and adapters
 
-Some harnesses search several skill locations and may display duplicates. Select the required destinations with `--harness`; already installed entries in other locations remain until you remove them.
+Models may automatically select `full-track` or `fast-track` based on task scope, while `one-shot` requires explicit user invocation. In Codex, `skills/one-shot/agents/openai.yaml` sets `allow_implicit_invocation: false`; in Claude Code, the installed `one-shot` copy adds `disable-model-invocation: true`. Shared skill frontmatter contains only `name` and `description`.
 
-## Explicit entry points and adapters
+[Harness adapters](skills/_workflow/adapters/) map subagent roles to universal capability tiers across Codex, Antigravity, Claude Code, and generic runners: lightweight scanning for discovery, standard coding for scoped implementation, and high-reasoning for independent review and escalated fixes.
 
-Invoke the three tracks explicitly. Codex adapters set `allow_implicit_invocation: false`; Claude-specific installed copies add `disable-model-invocation: true`. Other harnesses follow the explicit-invocation descriptions where no adapter enforces them. Shared skill frontmatter contains only `name` and `description`.
+## Workflow artifacts and archival
 
-[Harness adapters](skills/_workflow/adapters/) contain model and tool guidance for Codex, Antigravity, Claude Code, and generic runners. Actual capabilities come from the active session. Skills provide instructions, while the harness supplies sandbox and permission enforcement.
+All workflow documentation belongs in the parent repository at `<main-repo>/.agent-docs/`, never inside a worktree. Keep `<feature>` slugs short and stable in `kebab-case`, and edit active records in place so main sections reflect the current approach while moving lengthy superseded history into `<main-repo>/.agent-docs/archive/`:
 
-## Workflow artifacts
+- `<main-repo>/.agent-docs/CONTEXT.md` and `<main-repo>/.agent-docs/CONTEXT-MAP.md` for the shared domain dictionary.
+- `<main-repo>/.agent-docs/plans/<feature>.md` for the combined `full-track` specification and implementation plan.
+- `<main-repo>/.agent-docs/taskboard/<feature>.md` for `full-track` task orchestration and review status.
+- `<main-repo>/.agent-docs/proofs/<feature>.md` for the combined `full-track` verification proof and walkthrough.
+- `<main-repo>/.agent-docs/fast-track/<feature>.md` for the single-file `fast-track` record.
+- `<main-repo>/.agent-docs/runs/<feature>.md` for the single-file `one-shot` record.
+- `<main-repo>/.agent-docs/research/<feature-or-run-id>.md` for `research audit` coverage and evidence.
+- `<main-repo>/.agent-docs/archive/` for archived plans, detailed completed taskboards, and abandoned attempt details.
 
-All workflow documentation belongs in the parent repository at `<main-repo>/.agent-docs/`, never as isolated files or symlinks inside a worktree. Agents read and write `<main-repo>/.agent-docs/` directly by path:
-
-- `<main-repo>/.agent-docs/CONTEXT.md` (and `<main-repo>/.agent-docs/CONTEXT-MAP.md` when multi-context) for the shared domain dictionary
-- `<main-repo>/.agent-docs/spec/<feature>.md` (`full-track`)
-- `<main-repo>/.agent-docs/plans/<feature>.md` (`full-track`)
-- `<main-repo>/.agent-docs/taskboard/<feature>.md` (`full-track`)
-- `<main-repo>/.agent-docs/proofs/<feature>-proof.md` (`full-track`)
-- `<main-repo>/.agent-docs/walkthroughs/<feature>-walkthrough.md` (`full-track`)
-- `<main-repo>/.agent-docs/fast-track/<feature>.md` (`fast-track`)
-- `<main-repo>/.agent-docs/runs/<feature>.md` (`one-shot`)
-- `<main-repo>/.agent-docs/research/<run-id>.md` (research audit evidence and coverage)
-
-A reusable project profile is optional; inspect relevant repository configuration directly when no profile exists. Follow established artifact locations or repository storage requirements.
+Start each session by reading only the active plan and unfinished tasks, consulting `.agent-docs/archive/` only when historical context is directly needed.
 
 ## Extending the suite
 
-Add a skill when users need an independently invocable capability. Keep its trigger narrow and place reusable procedures behind relative links. [Procedure extraction](skills/_workflow/README.md) explains the inputs and completion boundaries. The installer automatically discovers directories with `SKILL.md` and carries shared documentation alongside them.
-
-For a new manual-only entry point, add its native adapter metadata and update `ENTRY_SKILLS` in `install.sh` for Claude's generated copy. Internal procedure documents need neither frontmatter nor a public invocation name.
+Add a skill when users need an independently invocable capability. Keep its trigger narrow and place reusable phase instructions in `_workflow` behind relative links. [Shared workflow procedures](skills/_workflow/README.md) explains the inputs and completion boundaries. For a new manual-only entry point, add its adapter metadata and append its name to `ENTRY_SKILLS` in `install.sh`.
 
 ## Upgrading from the sixteen-skill bundle
 
-The following former skills now live in `_workflow` documentation: `workflow-core`, `project-discovery`, `spec-alignment`, `implementation-planning`, `worktree-setup`, `tdd-integrity`, `task-dispatch`, `independent-review`, `verification-evidence`, and `integration-handoff`.
-
-Inspect existing installations for these entries and preserve custom edits before explicitly removing or moving them out of skill search directories. Refresh the eight public skills and `_workflow` together. The installer does not delete old entries because it cannot distinguish an earlier install from user-owned skills. Do not remove similarly named skills from other suites.
+The following former skills now live in `_workflow` procedures: `workflow-core`, `project-discovery`, `spec-alignment`, `implementation-planning`, `worktree-setup`, `tdd-integrity`, `task-dispatch`, `independent-review`, `verification-evidence`, and `integration-handoff`. Run `./install.sh --uninstall` followed by a fresh install, or pass `--force` to refresh the eight public skills and `_workflow`.
 
 ## Verification
 
@@ -103,4 +92,4 @@ python3 -m unittest discover -s tests -v
 bash -n install.sh
 ```
 
-Integration tests exercise fresh project installation for the supported targets, paths containing spaces, manual-only metadata, shared documentation availability, and preservation of existing destinations. Native harness execution needs separate validation in each product.
+Integration tests verify fresh project installation across supported targets, paths containing spaces, manual-invocation metadata on `one-shot`, automatic invocation availability on `full-track` and `fast-track`, `--uninstall` cleanup, template and link integrity, and preservation of existing destinations.

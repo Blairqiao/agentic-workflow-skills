@@ -1,47 +1,44 @@
-# Agent Guidelines: Agentic Workflow
+# Agent guidelines for the agentic workflow
 
-> These rules enforce rigorous behavior, planning, test-driven execution, verification, and safety across all projects and tasks using the agentic workflow.
+> These rules govern planning, test-driven execution, independent review, verification, and handoff across projects using the agentic workflow.
 
-## Core Behaviors
+## Core behaviors
 
-1. **Evidence Over Assertions:** Never claim a bug is fixed or a feature works without running the relevant test or command and observing the output. Provide the terminal proof.
-2. **Design First & Track Policy:** Do not write implementation code for complex features without a plan. Read `<main-repo>/.agent-docs/CONTEXT.md` if present, and if architectural or domain terminology decisions are needed, invoke `grilling` or `domain-modeling`. Select the appropriate track:
-   - `full-track`: Prefer an isolated worktree (`.worktrees/<run-id>`); produce a detailed spec, plan, taskboard, proof, and walkthrough in `<main-repo>/.agent-docs/` with one combined spec-and-plan approval.
-   - `fast-track`: Scoped to one-off bug fixes, minor UI adjustments, and small self-contained changes in the **current workspace** without implementation subagents. Record the mini-spec, acceptance criteria, `S0`/`S1`/`S2` tree snapshots, review verdict, and proof in `<main-repo>/.agent-docs/fast-track/<feature>.md`, pause for mini-spec approval, and escalate to `full-track` if scope outgrows a single task.
-   - **Approval Gates & Inline Presentation:** Every approval gate (initial or follow-up defect/pivot) must display the plan or mini-spec inline in chat (scope, affected files, technical strategy, acceptance criteria) and pause for explicit approval before editing code or tests. 
-   - `one-shot`: Start immediately without feedback gates; record autonomous decisions, plan, progress, proof, and walkthrough in `<main-repo>/.agent-docs/runs/<feature>.md`.
-   - Cap failed task implementation attempts at 3 and review-fix cycles at 3 rounds across all tracks.
-3. **No Phantom Edits:** Preserve all existing comments, docstrings, and unrelated logic when making edits. Only modify what is strictly in scope.
-4. **Testing Modes & Track-Aware TDD Integrity:** Default to Autopilot TDD for behavior changes unless the user requests `human-tdd` (`one-shot` always runs Autopilot).
-   - **In an isolated worktree (`full-track`, `one-shot`):** Enforce `test(red)` and `feat(green)` commits; the test code diff between red and green must be strictly empty (`git diff --stat <red>..<green> -- <test-paths>` prints nothing). Every `test(amend)` must be listed in the proof and explicitly accepted by the reviewer.
-   - **In the current workspace (`fast-track` or in-place runs):** Do not make intermediate commits so `HEAD` and pre-existing user changes stay untouched. Capture temporary-index `git write-tree` snapshots `S0` at task start, `S1` after red, and `S2` after green, verify `git diff --stat "$S1" "$S2" -- <test-paths>` prints nothing, and pass `git diff "$S0" "$S2"` to the reviewer.
-5. **Clean Handoff & Git Safety:** Never commit directly to the target branch, deploy, or run `git push`. For in-place runs, stage candidate changes; for isolated worktree runs, keep `test(red)` and `feat(green)` commits on the worktree branch and provide the worktree path, branch name, and `git merge --squash <worktree-branch>` command for the user.
+1. **Evidence over assertions.** Never claim a bug is fixed or a feature works without running the relevant test or verification command and observing the output. Record the terminal proof.
+2. **Design first and track selection.** Do not write implementation code without a plan. Read `<main-repo>/.agent-docs/CONTEXT.md` when present, and invoke [grilling](skills/grilling/SKILL.md) or [domain-modeling](skills/domain-modeling/SKILL.md) when architectural or domain terminology decisions are needed. Select the track automatically between `full-track` and `fast-track` when the user does not specify one, while reserving `one-shot` for explicit user requests:
+   - **Full-track.** Use [full-track](skills/full-track/SKILL.md) for multi-step features, architectural changes, new dependencies, or tasks that benefit from worktree isolation and subagent delegation. Maintain three documents in `<main-repo>/.agent-docs/` using a short, stable `<feature>` slug: the combined spec and plan in `plans/<feature>.md`, the taskboard in `taskboard/<feature>.md`, and the combined proof and walkthrough in `proofs/<feature>.md`.
+   - **Fast-track.** Use [fast-track](skills/fast-track/SKILL.md) for linear, single-session changes in the current workspace that do not require multi-step task decomposition or implementation subagents. Record the mini-spec, acceptance criteria, red and green test evidence, review verdict, and proof in `<main-repo>/.agent-docs/fast-track/<feature>.md`, and escalate to `full-track` if scope outgrows a single linear task.
+   - **Approval gates and inline presentation.** Every approval gate, whether initial or follow-up defect or pivot, must display the plan or mini-spec inline in chat covering scope, affected files, technical strategy, and acceptance criteria, and pause for explicit approval before editing code or tests.
+   - **One-shot.** Use [one-shot](skills/one-shot/SKILL.md) only when explicitly invoked by the user. Start immediately without feedback gates and record autonomous decisions, plan, progress, review, proof, and walkthrough in `<main-repo>/.agent-docs/runs/<feature>.md`.
+   - **Retry caps and rollback.** Cap failed task implementation attempts at 3 and review-fix cycles at 3 rounds across all tracks. If a cap is reached during an in-place run, restore modified candidate files to their pre-task state while recording what was tried and what failed in `.agent-docs/`.
+3. **No phantom edits.** Preserve existing comments, docstrings, and unrelated logic when making edits. Modify only what belongs to the approved scope.
+4. **Evidence-based red and green testing.** Default to autopilot TDD for behavior changes unless the user requests [human-tdd](skills/human-tdd/SKILL.md). One-shot always runs autopilot TDD. Follow [test integrity](skills/_workflow/testing.md): write or update the test first, run it and record the verbatim red failure output before writing implementation code, implement green without weakening assertions, record the verbatim green pass output, and log any post-red test revisions under `Test amendments` for explicit reviewer sign-off. Do not create `test(red)` or `feat(green)` Git commits or temporary-index tree snapshots.
+5. **Clean handoff and Git safety.** Follow [integration and handoff](skills/_workflow/handoff.md). Never run `git commit` on the target branch, deploy, or run `git push`. For in-place runs, enforce a no-commits rule during execution and stage candidate changes with `git add` at handoff. For isolated worktree runs, keep work inside `<main-repo>/.worktrees/<feature>` and provide the worktree path, branch name, and `git merge --squash <worktree-branch>` command for the user.
 
-## Execution & Verification Standards
+## Execution and verification standards
 
-1. **Workflow Tool Skills:** Leverage specialized workflow skills according to task needs:
-   - `domain-modeling`: Build and maintain the shared domain dictionary in `<main-repo>/.agent-docs/CONTEXT.md`.
-   - `grilling`: Stress-test thinking, architectural decisions, and tradeoffs before implementation.
-   - `human-tdd`: Align collaboratively with the user on test cases (`[Specific]`, `[Intermediate]`, `[Global]`) before coding.
-   - `unslop`: Strip AI fluff, buzzwords, and boilerplate from written artifacts while preserving code, commands, and logs.
-   - `research`: Explain codebase architecture or audit maintained code against existing documentation.
-2. **Worktree Placement, Parent-Repo `.agent-docs/`, & Ignore Discipline:** Put worktrees in `<main-repo>/.worktrees/<run-id>`, and place all workflow documentation (`CONTEXT.md`, `CONTEXT-MAP.md`, `spec/`, `plans/`, `taskboard/`, `proofs/`, `walkthroughs/`, `fast-track/`, `runs/`) in the parent repository at `<main-repo>/.agent-docs/` directly by path, never as isolated files or symlinks inside a worktree. Before creating a worktree or writing `.agent-docs/`, ensure both `.worktrees` (`.worktrees/*`, `.worktrees`) and `.agent-docs` (`.agent-docs/*`, `.agent-docs`) are added to `<main-repo>/.gitignore` and `<main-repo>/.git/info/exclude`, and add root-anchored `.worktrees` exclusions to glob-based project tool configs. Never create worktrees inside harness directories (`.codex`, `.claude`, `.gemini`).
-3. **Subagent Model Tiering:** When dispatching subagents in Antigravity or multi-agent runners:
-   - **Task Implementer:** `"flash"` (fast generation, low thinking overhead, strictly scoped to one task; not used in `fast-track`).
-   - **Explorer / Scanner:** `"flash_lite"` (minimal reasoning, directory scans, symbol grepping).
-   - **Task Reviewer & Auditor:** `"inherit"` or `"pro"` (high reasoning budget, adversarial spec compliance, anti-gaming checks; required across all tracks including `fast-track`).
-   - **Fix Escalation:** Promoted to `"inherit"` / `"pro"` after round 2, capped at 3 attempts/rounds.
-4. **Multimodal UI Verification:** For any web or UI tasks, do not rely solely on compiler or build passes (`tsc --noEmit`). Use `agent-browser` with accessibility snapshots (`agent-browser snapshot -i`) and annotated screenshots (`agent-browser screenshot --annotate`) to verify layout, mobile viewports (390x844), and interactive elements. Embed all referenced screenshot proofs in markdown documentation directly using markdown image syntax (`![<Descriptive Caption>](<path-to-image.png>)`) rather than raw file paths or plain text links.
+1. **Workflow tool skills.** Invoke specialized tool skills according to task needs:
+   - **Domain modeling.** Use [domain-modeling](skills/domain-modeling/SKILL.md) to build and maintain the shared domain dictionary in `<main-repo>/.agent-docs/CONTEXT.md`.
+   - **Grilling.** Use [grilling](skills/grilling/SKILL.md) to stress-test requirements, architectural decisions, and tradeoffs in structured rounds before implementation.
+   - **Human TDD.** Use [human-tdd](skills/human-tdd/SKILL.md) to align collaboratively with the user on `[Specific]`, `[Intermediate]`, and `[Global]` tests before coding.
+   - **Unslop.** Apply [unslop](skills/unslop/SKILL.md) across all authored prose in user-facing documentation, code comments, and internal `.agent-docs/` records while preserving code blocks, commands, and verbatim output.
+   - **Research.** Use [research](skills/research/SKILL.md) to explain codebase architecture or audit maintained code against project documentation.
+2. **Worktree placement, parent-repo `.agent-docs/`, and `.git/info/exclude` setup.** Follow [workspace preparation](skills/_workflow/workspace.md) before creating a worktree or writing any file in `.agent-docs/`. Add `.worktrees` and `.agent-docs` ignore patterns exclusively to `<main-repo>/.git/info/exclude` without modifying `<main-repo>/.gitignore`. Keep all `.agent-docs/` files in `<main-repo>/.agent-docs/` directly by path, edit active feature records in place, move lengthy superseded history to `.agent-docs/archive/`, and read archived files only when directly relevant.
+3. **Universal subagent capability tiers.** When dispatching subagents in multi-agent runners, select models by capability tier:
+   - **Lightweight scanning tier.** Use for directory scans, file discovery, and symbol searches.
+   - **Standard coding tier.** Use for scoped task implementation in `full-track` and `one-shot`. Do not use implementation subagents in `fast-track`.
+   - **High-reasoning tier.** Use for architecture tradeoffs, independent review packaged with [the reviewer brief](skills/_workflow/templates/reviewer-brief.md) across all tracks including `fast-track`, and fix escalations after round two.
+4. **Multimodal UI verification.** For web or UI changes, do not rely on compiler or build passes alone. Use available browser inspection tools to check accessibility trees, interactive elements, desktop viewports, and mobile viewports such as 390x844, capturing screenshots as evidence. Embed all referenced screenshot proofs in Markdown documentation using image syntax, `![<Descriptive Caption>](<path-to-image.png>)`, rather than raw file paths or plain text links.
 
-## Transparency & Honesty
+## Transparency and honesty
 
-1. **Admit Knowledge Gaps:** If you don't know how to do something, or if the documentation is missing, be honest. Do not hallucinate APIs or guess.
-2. **Disclose Shortcuts & Debt:** If you take a shortcut to accomplish a goal, or if your solution introduces technical debt or performance risks, explicitly flag it.
-3. **No Silent Assumptions:** If a requirement is vague, stop and ask (unless in `one-shot`, where you record the decision and rationale in `.agent-docs/runs/<feature>.md`).
-4. **No "Yes-Man" Behavior:** If a suggested approach is flawed, insecure, or violates project architecture, respectfully push back and explain why before implementing it.
+1. **Admit knowledge gaps.** When documentation or context is missing, state what is unknown rather than guessing or inventing APIs.
+2. **Disclose shortcuts and debt.** Flag any implementation shortcut, technical debt, or performance risk in the walkthrough.
+3. **No silent assumptions.** When a requirement is ambiguous, stop and ask the user, except in `one-shot` where you record the decision and rationale in `.agent-docs/runs/<feature>.md`.
+4. **Constructive pushback.** When a proposed approach is flawed, insecure, or conflicts with project architecture, explain the issue before implementing it.
 
-## Guardrails & Safety
+## Guardrails and safety
 
-1. **No Placeholders:** Write complete code. Never leave `// TODO`, `/* implement here */`, or truncated snippets unless explicitly told we are prototyping.
-2. **Dependency Discipline:** Do not install new dependencies or third-party packages without prior confirmation and justification.
-3. **Destructive Action Safety:** Never run destructive git operations (`git reset --hard`, `git push --force`), drop databases, or delete directories without explicit user confirmation.
+1. **No placeholders.** Write complete implementations. Never leave `// TODO`, `/* implement here */`, or truncated snippets unless prototyping was explicitly requested.
+2. **Dependency discipline.** Do not install new third-party dependencies without prior user confirmation and justification.
+3. **Destructive action safety.** Never run destructive Git commands such as `git reset --hard` or `git push --force`, drop databases, or delete user directories without explicit confirmation.

@@ -5,11 +5,11 @@ description: Build and sharpen a project's domain model and shared dictionary in
 
 # Domain modeling
 
-Actively build and sharpen the project's domain model and shared dictionary as you design and write code. This skill is an active discipline of challenging vague or conflicting terms, testing boundaries with concrete edge-case scenarios, and recording canonical definitions in `<main-repo>/.agent-docs/CONTEXT.md` as soon as they are settled.
+Build and sharpen the project's domain model and shared dictionary as you design and write code. Challenge vague or conflicting terms, test boundaries with concrete edge-case scenarios, and record canonical definitions in `<main-repo>/.agent-docs/CONTEXT.md` as soon as they are settled.
 
 ## File structure
 
-Most repositories have a single bounded context stored in `<main-repo>/.agent-docs/CONTEXT.md`:
+Most repositories use a single bounded context stored in `<main-repo>/.agent-docs/CONTEXT.md`:
 
 ```text
 <main-repo>/
@@ -17,15 +17,15 @@ Most repositories have a single bounded context stored in `<main-repo>/.agent-do
     └── CONTEXT.md
 ```
 
-If a repository has multiple bounded contexts, `<main-repo>/.agent-docs/CONTEXT-MAP.md` maps each context to its context file under `<main-repo>/.agent-docs/contexts/<context>.md` or the module directory.
+If a repository has multiple bounded contexts, `<main-repo>/.agent-docs/CONTEXT-MAP.md` maps each context to its dictionary under `<main-repo>/.agent-docs/contexts/<context>.md` or the module directory.
 
-Create `.agent-docs/CONTEXT.md` lazily when the first domain term is settled. Ensure `.agent-docs` is ignored in `<main-repo>/.gitignore` and `<main-repo>/.git/info/exclude` following [workspace preparation](../_workflow/workspace.md).
+Create `.agent-docs/CONTEXT.md` lazily when the first domain term is settled. Before writing the file, ensure `.agent-docs` is ignored in `<main-repo>/.git/info/exclude` following [workspace preparation](../_workflow/workspace.md).
 
 ## During the session
 
 ### Challenge against the shared dictionary
 
-When the user or existing code uses a term that conflicts with `<main-repo>/.agent-docs/CONTEXT.md`, surface the conflict immediately. State what `.agent-docs/CONTEXT.md` currently defines and ask which meaning should govern.
+When the user or existing code uses a term that conflicts with `<main-repo>/.agent-docs/CONTEXT.md`, surface the conflict immediately. State what `.agent-docs/CONTEXT.md` currently defines and ask which meaning governs.
 
 ### Sharpen fuzzy language
 
@@ -37,7 +37,7 @@ Probe domain relationships with specific edge-case scenarios that force clear bo
 
 ### Cross-reference with code
 
-When someone states how a domain concept behaves, check whether the codebase agrees. Surface any mismatch between code names, behavior, and spoken terminology.
+When someone states how a domain concept behaves, check whether the codebase agrees. Surface any mismatch between code identifiers, behavior, and spoken terminology.
 
 ### Update `.agent-docs/CONTEXT.md` inline
 

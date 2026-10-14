@@ -1,6 +1,6 @@
 ---
 name: fast-track
-description: Use when the user explicitly requests fast-track for a one-off bug fix, minor UI adjustment, or small self-contained change in the current workspace.
+description: Use for linear, single-session changes in the current workspace that do not require multi-step task decomposition or implementation subagents. Can be invoked by the user or selected automatically by the model.
 ---
 
 # Fast track
@@ -9,15 +9,17 @@ Read [workflow core](../_workflow/core.md) and follow its phase sequence with tr
 
 ## Fit check
 
-Confirm the request fits a localized bug fix, minor UI adjustment, or small self-contained change before starting:
+Confirm the request fits linear execution in the current workspace before starting:
 
+- Implementable as a single linear sequence in the current session without multi-step orchestration or implementation subagents.
 - No new dependencies, database migrations, or changes to security or architectural boundaries.
-- Implementable as a single focused task in the current workspace without implementation subagents.
 
-If the request exceeds this scope at the start or during implementation, stop, explain what outgrew the fit check, and recommend switching to [full-track](../full-track/SKILL.md).
+If the request exceeds this scope at the start or during implementation, stop, explain what outgrew the fit check, and escalate to [full-track](../full-track/SKILL.md).
 
 ## Execution and documentation
 
-Record the entire run in one file at `<main-repo>/.agent-docs/fast-track/<feature>.md` using [the fast-track template](../_workflow/templates/fast-track.md). Do not create separate spec, plan, taskboard, proof, or walkthrough files.
+Record the entire run in one file at `<main-repo>/.agent-docs/fast-track/<feature>.md` using [the fast-track template](../_workflow/templates/fast-track.md) and a short, stable `<feature>` slug. Update the file in place on retries or follow-ups rather than creating separate spec, plan, taskboard, proof, or walkthrough files.
 
-Write a two to three sentence mini-spec and numbered acceptance criteria in `<main-repo>/.agent-docs/fast-track/<feature>.md`, present them inline in chat, and pause for approval before editing code or tests. For follow-up defect reports, present the diagnosis and revised criteria inline and pause for approval before modifying code. Implement in the current session, preserving existing user changes. Enforce deterministic [test integrity](../_workflow/testing.md) with temporary-index `S0`, `S1`, and `S2` tree snapshots, relevant UI verification, and mandatory [independent review](../_workflow/review.md). Stage only candidate changes and leave the final commit to the user.
+Write a two to three sentence mini-spec, numbered acceptance criteria, and target files in `<main-repo>/.agent-docs/fast-track/<feature>.md`, present them inline in chat, and pause for approval before editing code or tests. For follow-up defect reports, update the diagnosis and criteria in place, present them inline, and pause for approval before modifying code.
+
+Implement in the current session without making Git commits, preserving unrelated user changes. Follow [test integrity](../_workflow/testing.md) with recorded red and green command evidence, perform relevant UI verification, and obtain [independent review](../_workflow/review.md). If the three-attempt implementation or review-fix cap is reached, restore modified candidate files to their pre-task state while recording what was tried and what failed in `<main-repo>/.agent-docs/fast-track/<feature>.md`. At handoff, stage candidate changes and leave the final commit to the user.
