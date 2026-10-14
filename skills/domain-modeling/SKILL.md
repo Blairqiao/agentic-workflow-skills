@@ -31,6 +31,8 @@ When the user or existing code uses a term that conflicts with `<main-repo>/.age
 
 When terms are vague or overloaded, propose a precise canonical term and separate distinct concepts. For example, distinguish a billing Customer from an authenticated User instead of calling both an account.
 
+An unsettled meaning blocks only decisions that depend on it. Resolve meanings used by the chosen direction and record their definitions before dependent design continues; independent branches can proceed. Keep unresolved terms for deferred alternatives, out-of-scope areas, or paused branches in the active brief or track record rather than presenting them as canonical definitions.
+
 ### Stress-test with concrete scenarios
 
 Probe domain relationships with specific edge-case scenarios that force clear boundaries between concepts.
@@ -44,3 +46,5 @@ When someone states how a domain concept behaves, check whether the codebase agr
 When a term is settled, update `<main-repo>/.agent-docs/CONTEXT.md` immediately rather than batching updates for the end of the session. Follow the structure in [context format](references/context-format.md).
 
 Keep `.agent-docs/CONTEXT.md` free of implementation mechanics. It is a shared domain dictionary, not a specification, scratchpad, or task log.
+
+Respect an explicit chat-only or read-only request: present settled definitions inline for later persistence rather than writing the dictionary. During one-shot, resolve terminology from evidence and reasonable autonomous decisions, recording the rationale in the run document without asking for product feedback.

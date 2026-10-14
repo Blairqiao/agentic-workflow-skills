@@ -1,10 +1,23 @@
 # Design and specification
 
-Inputs: request, repository facts, selected track, and existing decisions.
+Inputs: request, repository facts, existing decisions or brief, and selected track when one exists.
+
+## Shared decision rules
+
+Apply these rules during standalone [brainstorming](../brainstorm/SKILL.md) and track design. They do not require starting a track or repeating an interview.
+
+- Inspect relevant code, documentation, and the domain dictionary before asking about repository facts. Reuse settled decisions from the conversation and active feature record. If new evidence contradicts one, surface the conflict and revisit only affected decisions under the track's decision policy.
+- Use [domain-modeling](../domain-modeling/SKILL.md) for new, overloaded, or contested domain concepts. Resolve and record meanings required by the chosen direction before making dependent choices. Continue independent branches; keep uncertainties about deferred alternatives, out-of-scope areas, and paused branches explicit in the active record. An explicit chat-only request keeps definitions in the conversation instead of writing files.
+- In full, fast, or standalone interactive exploration, ask only about consequential unresolved choices. Use [grilling](../grilling/SKILL.md) for a decision needing deeper scrutiny, with a named scope and settled prerequisites. Its confirmation establishes shared understanding; the active track owns implementation approval.
+- In one-shot, choose reasonable behavior autonomously and record material assumptions, alternatives, and reasons. Do not invoke interactive brainstorming or grilling.
+
+## Specification in an active track
+
+When a standalone brief exists, read it and incorporate its current decisions into the track's active document. Mark the brief handed off with a link to that document. Subsequent design changes belong in the track document. If the brief is paused, resolve consequential blockers under the selected track's decision policy before completing the specification. Use [brainstorm](../brainstorm/SKILL.md) only when further exploration would help; a sufficiently clear request or brief needs no new interview.
 
 1. Identify observable behavior, non-goals, and relevant failure cases. Consider compatibility, data, security, and performance when the change touches them.
-2. When domain concepts are introduced, overloaded, or contested, invoke [domain-modeling](../domain-modeling/SKILL.md) and create or update `<main-repo>/.agent-docs/CONTEXT.md` inline so specifications and code share canonical terminology.
-3. In full and fast, ask only about consequential unresolved choices. Use [grilling](../grilling/SKILL.md) when an interview would help, researching repository facts before asking. In one-shot, choose reasonable behavior autonomously and record material alternatives and reasons, including rejected options.
+2. Apply the shared domain rules so specifications and code use canonical terminology. Record settled terms in `<main-repo>/.agent-docs/CONTEXT.md` or the relevant bounded-context dictionary.
+3. Apply the shared decision rules to remaining consequential choices, preserving the selected track's interactive or autonomous policy.
 4. Write numbered acceptance criteria, one observable requirement each, and identify automated or manual verification. Add interfaces, examples, or diagrams where they resolve ambiguity.
 5. Record the specification in the track's active document under `<main-repo>/.agent-docs/` using a short, stable `<feature>` slug:
    - **Full-track.** Write the specification sections directly in `<main-repo>/.agent-docs/plans/<feature>.md` using [the combined spec-and-plan template](templates/plan.md).

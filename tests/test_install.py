@@ -18,6 +18,7 @@ PUBLIC = {
     "unslop",
     "domain-modeling",
     "research",
+    "brainstorm",
 }
 
 
@@ -50,6 +51,7 @@ class InstallTests(unittest.TestCase):
         self.assertTrue((location / "_workflow/templates/taskboard.md").is_file())
         self.assertTrue((location / "_workflow/templates/reviewer-brief.md").is_file())
         self.assertTrue((location / "_workflow/templates/research-audit.md").is_file())
+        self.assertTrue((location / "_workflow/templates/brief.md").is_file())
         self.assertFalse((location / "_workflow/templates/spec.md").exists())
         self.assertFalse((location / "_workflow/templates/walkthrough.md").exists())
         self.assertFalse((location / "_workflow/SKILL.md").exists())
@@ -75,6 +77,32 @@ class InstallTests(unittest.TestCase):
         self.assertNotIn("allow_implicit_invocation: false", (
             location / "research/agents/openai.yaml"
         ).read_text())
+        brainstorm = location / "brainstorm/SKILL.md"
+        self.assertNotIn("disable-model-invocation: true", brainstorm.read_text())
+        self.assertNotIn("allow_implicit_invocation: false", (
+            location / "brainstorm/agents/openai.yaml"
+        ).read_text())
+        self.assertEqual(
+            set(re.findall(r"^([a-z][\w-]*):", brainstorm.read_text().split("---", 2)[1], re.MULTILINE)),
+            {"name", "description"},
+        )
+        # Follow the skill's installed references, including shared procedures and templates.
+        pending = [brainstorm]
+        visited = set()
+        while pending:
+            resource = pending.pop().resolve()
+            if resource in visited:
+                continue
+            visited.add(resource)
+            # Code samples can contain illustrative paths that are not resource links.
+            prose = re.sub(r"```.*?```|`[^`\n]*`", "", resource.read_text(), flags=re.DOTALL)
+            for target in re.findall(r"\[[^\]]+\]\(([^)]+)\)", prose):
+                if "://" in target or target.startswith("#"):
+                    continue
+                linked = (resource.parent / target.split("#", 1)[0]).resolve()
+                self.assertTrue(linked.is_file(), f"Broken installed reference in {resource}: {target}")
+                if linked.suffix == ".md":
+                    pending.append(linked)
         for name in PUBLIC:
             skill = location / name / "SKILL.md"
             self.assertTrue(skill.is_file(), name)
@@ -184,6 +212,26 @@ class InstallTests(unittest.TestCase):
         self.assertIn("inline in chat", fast_track)
         agents_guide = (ROOT / "AGENTS.md").read_text()
         self.assertIn("Approval gates and inline presentation", agents_guide)
+
+    def test_existing_brainstorm_resources_are_preserved_then_refreshed(self):
+        self.install("codex")
+        resources = (
+            "brainstorm/SKILL.md",
+            "brainstorm/agents/openai.yaml",
+            "_workflow/templates/brief.md",
+        )
+        for relative in resources:
+            installed = self.project / ".agents/skills" / relative
+            self.assertTrue(installed.is_file(), str(installed))
+            installed.write_text("user-owned brainstorm resource\n")
+        self.install("codex")
+        for relative in resources:
+            installed = self.project / ".agents/skills" / relative
+            self.assertEqual(installed.read_text(), "user-owned brainstorm resource\n")
+        self.install("codex", "--force")
+        for relative in resources:
+            installed = self.project / ".agents/skills" / relative
+            self.assertEqual(installed.read_text(), (self.source / "skills" / relative).read_text())
 
 
 if __name__ == "__main__":

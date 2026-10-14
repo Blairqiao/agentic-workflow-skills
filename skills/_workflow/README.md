@@ -6,7 +6,7 @@ This directory contains internal workflow procedures rather than discoverable sk
 | --- | --- | --- |
 | [Discovery](discovery.md) | Repository and task | Relevant commands, terminology, and constraints identified |
 | [Workspace](workspace.md) | Track and repository state | `.git/info/exclude` configured, safe working location prepared, and baseline recorded |
-| [Design](design.md) | Request and discovered facts | Specification sections and domain terms recorded |
+| [Design](design.md) | Request, discovered facts, and existing brief or decisions | Shared decision rules applied; specification sections and domain terms recorded in the active track |
 | [Planning](planning.md) | Specification and commands | Ordered tasks, verification strategy, and approval completed |
 | [Execution](execution.md) | Plan and workspace | Required tasks implemented or rolled back and documented on cap exhaustion |
 | [Testing](testing.md) | Behavior and existing tests | Recorded red and green command evidence and logged test amendments |
@@ -17,6 +17,8 @@ This directory contains internal workflow procedures rather than discoverable sk
 | [Research Audit](research-audit.md) | Codebase and current documentation | Maintained guides updated and coverage record written in `.agent-docs/research/` |
 
 ## Extracting a procedure into a skill
+
+[Brainstorm](../brainstorm/SKILL.md) owns the optional exploratory conversation. It reads the shared decision rules in [Design](design.md#shared-decision-rules), which also apply to tracks that skip brainstorming. Scoped interview behavior lives in [grilling](../grilling/SKILL.md), and canonical terminology lives under [domain-modeling](../domain-modeling/SKILL.md). A [brief](templates/brief.md) preserves exploration before a track exists; [core](core.md) defines its handoff into the active track artifact.
 
 Keep each procedure's purpose, inputs, steps, and completion criteria in one file. Link to [core](core.md), [workspace](workspace.md), [testing](testing.md), and [handoff](handoff.md) instead of duplicating shared policy. Use relative links so the installed bundle works outside this repository.
 

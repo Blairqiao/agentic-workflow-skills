@@ -1,6 +1,6 @@
 # Portable agentic workflow skills
 
-Eight public skills run documented development tracks or provide standalone workflow tools. Shared phase procedures live in [skills/_workflow](skills/_workflow/README.md), which is installed alongside the skills by [install.sh](install.sh) and has no discoverable `SKILL.md`.
+Nine public skills run documented development tracks or provide standalone workflow tools. Shared phase procedures live in [skills/_workflow](skills/_workflow/README.md), which is installed alongside the skills by [install.sh](install.sh) and has no discoverable `SKILL.md`.
 
 ## Choose a track
 
@@ -18,11 +18,20 @@ Behavior changes default to autopilot TDD, with human-guided TDD opt-in. Followi
 
 ## Standalone tools
 
+- [brainstorm](skills/brainstorm/SKILL.md): explore unclear ideas and design alternatives, save completed or paused briefs, and carry decisions into the chosen track.
 - [domain-modeling](skills/domain-modeling/SKILL.md): build, challenge, and sharpen the project's shared domain dictionary in `<main-repo>/.agent-docs/CONTEXT.md`.
-- [grilling](skills/grilling/SKILL.md): stress-test thinking, architectural decisions, and tradeoffs in structured rounds.
+- [grilling](skills/grilling/SKILL.md): stress-test thinking, architectural decisions, and tradeoffs in structured rounds, bounded to the supplied decision scope when one is given.
 - [human-tdd](skills/human-tdd/SKILL.md): agree on meaningful `[Specific]`, `[Intermediate]`, and `[Global]` tests before implementation.
 - [unslop](skills/unslop/SKILL.md): cut AI tells, filler, buzzwords, em dashes, prose parentheses, and decorative emojis from authored prose across user-facing documentation and internal `.agent-docs/` artifacts while preserving verbatim code blocks and command output.
 - [research](skills/research/SKILL.md): explain project documentation or audit the maintained codebase against it, creating missing guides and updating supported factual descriptions.
+
+## Explore an idea before choosing a track
+
+Use `brainstorm` to work out the intended outcome and compare directions. It checks relevant repository facts first, asks focused steering questions, uses domain-modeling for unclear concepts, and calls grilling when a scoped decision needs deeper scrutiny. Unresolved meanings block dependent choices while independent branches continue. Settled decisions carry forward without repeating the interview.
+
+Every completed brainstorm and paused session is saved, including short ones, unless the user explicitly requests chat-only exploration. Before a track exists, the record lives in `.agent-docs/briefs/<feature>.md`. During a track, the design goes directly into its existing plan, fast-track record, or one-shot run document. When a standalone brief feeds a track, it is marked handed off and links to the authoritative track document. These ignored records persist locally; they are not automatically shared across machines.
+
+Exploration alone does not start an execution track. When implementation planning or implementation is requested, the agent selects or reuses the appropriate track. Full and fast retain their approval gates; one-shot applies the shared design rules autonomously without an interactive interview. A sufficiently clear request can proceed directly to track design.
 
 ## Project research and documentation
 
@@ -58,7 +67,7 @@ Project installations copy the bundle into `.agents/skills/`. When both Claude a
 
 ## Invocation policy and adapters
 
-Models may automatically select `full-track` or `fast-track` based on task scope, while `one-shot` requires explicit user invocation. In Codex, `skills/one-shot/agents/openai.yaml` sets `allow_implicit_invocation: false`; in Claude Code, the installed `one-shot` copy adds `disable-model-invocation: true`. Shared skill frontmatter contains only `name` and `description`.
+Models may automatically select `full-track` or `fast-track` for requested implementation planning or implementation based on task scope, while `one-shot` requires explicit user invocation. `brainstorm` is discoverable for exploration without selecting a track. In Codex, `skills/one-shot/agents/openai.yaml` sets `allow_implicit_invocation: false`; in Claude Code, the installed `one-shot` copy adds `disable-model-invocation: true`. Shared skill frontmatter contains only `name` and `description`.
 
 [Harness adapters](skills/_workflow/adapters/) map subagent roles to universal capability tiers across Codex, Antigravity, Claude Code, and generic runners: lightweight scanning for discovery, standard coding for scoped implementation, and high-reasoning for independent review and escalated fixes.
 
@@ -67,6 +76,7 @@ Models may automatically select `full-track` or `fast-track` based on task scope
 All workflow documentation belongs in the parent repository at `<main-repo>/.agent-docs/`, never inside a worktree. Keep `<feature>` slugs short and stable in `kebab-case`, and edit active records in place so main sections reflect the current approach while moving lengthy superseded history into `<main-repo>/.agent-docs/archive/`:
 
 - `<main-repo>/.agent-docs/CONTEXT.md` and `<main-repo>/.agent-docs/CONTEXT-MAP.md` for the shared domain dictionary.
+- `<main-repo>/.agent-docs/briefs/<feature>.md` for completed or paused exploration before a track starts, using [the brief template](skills/_workflow/templates/brief.md).
 - `<main-repo>/.agent-docs/plans/<feature>.md` for the combined `full-track` specification and implementation plan.
 - `<main-repo>/.agent-docs/taskboard/<feature>.md` for `full-track` task orchestration and review status.
 - `<main-repo>/.agent-docs/proofs/<feature>.md` for the combined `full-track` verification proof and walkthrough.
@@ -75,7 +85,7 @@ All workflow documentation belongs in the parent repository at `<main-repo>/.age
 - `<main-repo>/.agent-docs/research/<feature-or-run-id>.md` for `research audit` coverage and evidence.
 - `<main-repo>/.agent-docs/archive/` for archived plans, detailed completed taskboards, and abandoned attempt details.
 
-Start each session by reading only the active plan and unfinished tasks, consulting `.agent-docs/archive/` only when historical context is directly needed.
+Start each session by reading the feature's active brief before a track exists, or its active plan and unfinished tasks during a track. Follow handed-off briefs to their authoritative document, consulting `.agent-docs/archive/` only when historical context is directly needed.
 
 ## Extending the suite
 
@@ -83,7 +93,7 @@ Add a skill when users need an independently invocable capability. Keep its trig
 
 ## Upgrading from the sixteen-skill bundle
 
-The following former skills now live in `_workflow` procedures: `workflow-core`, `project-discovery`, `spec-alignment`, `implementation-planning`, `worktree-setup`, `tdd-integrity`, `task-dispatch`, `independent-review`, `verification-evidence`, and `integration-handoff`. Run `./install.sh --uninstall` followed by a fresh install, or pass `--force` to refresh the eight public skills and `_workflow`.
+The following former skills now live in `_workflow` procedures: `workflow-core`, `project-discovery`, `spec-alignment`, `implementation-planning`, `worktree-setup`, `tdd-integrity`, `task-dispatch`, `independent-review`, `verification-evidence`, and `integration-handoff`. Run `./install.sh --uninstall` followed by a fresh install, or pass `--force` to refresh the nine public skills and `_workflow`.
 
 ## Verification
 
