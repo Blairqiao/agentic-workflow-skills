@@ -133,6 +133,17 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(skill.read_text(), "user-owned research skill\n")
         self.assertEqual(procedure.read_text(), "user-owned audit procedure\n")
 
+    def test_approval_gate_and_inline_presentation_guidance(self):
+        self.install("codex")
+        core = (self.project / ".agents/skills/_workflow/core.md").read_text()
+        self.assertIn("inline in chat", core)
+        full_track = (self.project / ".agents/skills/full-track/SKILL.md").read_text()
+        self.assertIn("inline in chat", full_track)
+        fast_track = (self.project / ".agents/skills/fast-track/SKILL.md").read_text()
+        self.assertIn("inline in chat", fast_track)
+        agents_guide = (ROOT / "AGENTS.md").read_text()
+        self.assertIn("Approval Gates & Inline Presentation", agents_guide)
+
 
 if __name__ == "__main__":
     unittest.main()
