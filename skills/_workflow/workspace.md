@@ -19,7 +19,7 @@ Inputs: track, repository state, relevant configuration, and service needs.
 
 ## Worktree placement, documentation location, and tool exclusions
 
-All workflow documentation in `.agent-docs/` must reside in `<main-repo>/.agent-docs/` directly by path, never as isolated files or symlinks inside `<main-repo>/.worktrees/<feature>/`. Reading and writing `<main-repo>/.agent-docs/...` directly prevents stray symlinks from being staged and preserves documentation when a worktree is removed.
+All workflow documentation in `.agent-docs/` must reside in `<main-repo>/.agent-docs/` directly by path, never as isolated files or symlinks inside `<main-repo>/.worktrees/<feature>/`. Reading and writing `<main-repo>/.agent-docs/...` directly prevents stray symlinks from being staged and preserves documentation when a worktree is removed. In all repository documentation (`.agent-docs/`, `docs/`, `AGENTS.md`), links to files must use repository-rooted local paths starting with `/` (e.g. `/.agent-docs/...`, `/src/...`), never host-absolute `file:///` URLs.
 
 When creating a worktree in a repository whose linters, typecheckers, or test runners discover files by directory globs rather than Git, add a root-anchored `.worktrees` exclusion to the project's tool ignore configuration, such as `.worktrees/**` in `tsconfig.json` and ESLint, `<rootDir>/.worktrees/` in Jest, or `norecursedirs = [".worktrees"]` in `pytest`. Never use an unanchored `**/.worktrees/**` or substring `.worktrees` pattern that matches the worktree's own absolute path and silences checks run inside the worktree. Verify that tool discovery works from both `<main-repo>` and the worktree.
 

@@ -71,6 +71,8 @@ Models may automatically select `full-track` or `fast-track` for requested imple
 
 [Harness adapters](skills/_workflow/adapters/) map subagent roles to universal capability tiers across Codex, Antigravity, Claude Code, and generic runners: lightweight scanning for discovery, standard coding for scoped implementation, and high-reasoning for independent review and escalated fixes.
 
+[Code exploration](skills/_workflow/discovery.md#code-exploration-and-delegation) defaults broad code reading to scoped read-only subagents in every track, including fast-track. The orchestrator may read documentation and make purposeful small code reads directly. It chooses supported models and reasoning settings by capability: lightweight retrieval, standard investigation, or demanding reasoning. Reports retain evidence, exceptions, uncertainties, and search coverage; findings require verification only when they support critical decisions. Focused follow-up and capability escalation preserve evidence quality while stronger-model usage remains a soft target. The shared procedure defines fallbacks when delegation is unavailable. The policy is adopted without a benchmark prerequisite; context and usage savings have not been measured.
+
 ## Workflow artifacts and archival
 
 All workflow documentation belongs in the parent repository at `<main-repo>/.agent-docs/`, never inside a worktree. Keep `<feature>` slugs short and stable in `kebab-case`, and edit active records in place so main sections reflect the current approach while moving lengthy superseded history into `<main-repo>/.agent-docs/archive/`:

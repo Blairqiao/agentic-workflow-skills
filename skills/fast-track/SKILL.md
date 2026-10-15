@@ -14,6 +14,8 @@ Confirm the request fits linear execution in the current workspace before starti
 - Implementable as a single linear sequence in the current session without multi-step orchestration or implementation subagents.
 - No new dependencies, database migrations, or changes to security or architectural boundaries.
 
+Read-only code exploration subagents are permitted under [discovery](../_workflow/discovery.md#code-exploration-and-delegation). They do not count as implementation subagents or multi-step implementation orchestration. The orchestrator may read documentation directly.
+
 If the request exceeds this scope at the start or during implementation, stop, explain what outgrew the fit check, and escalate to [full-track](../full-track/SKILL.md).
 
 ## Execution and documentation
