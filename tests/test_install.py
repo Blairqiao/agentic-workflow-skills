@@ -233,6 +233,15 @@ class InstallTests(unittest.TestCase):
             installed = self.project / ".agents/skills" / relative
             self.assertEqual(installed.read_text(), (self.source / "skills" / relative).read_text())
 
+    def test_antigravity_boost_guidance_and_gemini_rules(self):
+        self.install("antigravity")
+        adapter = (self.project / ".agents/skills/_workflow/adapters/antigravity.md").read_text()
+        self.assertIn("/boost", adapter)
+        self.assertIn("workflow invariants", adapter)
+        gemini_rules = ROOT / "GEMINI.md"
+        self.assertTrue(gemini_rules.is_file(), "GEMINI.md must exist at root")
+        self.assertIn("/boost", gemini_rules.read_text())
+
 
 if __name__ == "__main__":
     unittest.main()

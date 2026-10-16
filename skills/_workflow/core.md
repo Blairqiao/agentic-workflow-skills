@@ -6,13 +6,13 @@ Inputs: the user's request, selected or inferred track, existing authorization, 
 
 | Track | Selection | Workspace | Implementation | Approval | Documentation |
 | --- | --- | --- | --- | --- | --- |
-| `full` | User request or automatic model selection for multi-step work | Prefer a worktree | Direct or independent subagent delegation | One combined spec-and-plan approval | Combined spec-and-plan in `plans/<feature>.md`, `taskboard/<feature>.md`, and combined proof-and-walkthrough in `proofs/<feature>.md` |
+| `full` | User request or automatic model selection for multi-step work | Prefer a worktree | Mandated subagent delegation | One combined spec-and-plan approval | Combined spec-and-plan in `plans/<feature>.md`, `taskboard/<feature>.md`, and combined proof-and-walkthrough in `proofs/<feature>.md` |
 | `fast` | User request or automatic model selection for linear single-session work | Current workspace | Current session only, no implementation subagents | One mini-spec approval after scope fit check | Single `fast-track/<feature>.md` record |
 | `one-shot` | Explicit user request only | Prefer a worktree | Direct or independent subagent delegation | No feedback gates | Single `runs/<feature>.md` record |
 
 When the user requests implementation planning or implementation without naming a track, select `fast` for linear, single-session changes without new dependencies, migrations, or boundary shifts, and select `full` for multi-step features or architectural changes. A request to explore an idea through [brainstorm](../brainstorm/SKILL.md) does not by itself start a track or authorize implementation. Never enter `one-shot` unless the user explicitly asks for it.
 
-Full and one-shot may use the current workspace for a small task or when the user asks. Fast-track escalates to `full-track` if scope outgrows linear single-session execution. All tracks default to autopilot TDD for behavior changes; human-guided TDD requires a user request and never runs in `one-shot`.
+Full and one-shot may use the current workspace for a small task or when the user asks. Fast-track escalates to `full-track` if scope outgrows linear single-session execution. Full-track mandates subagent delegation for task implementation. All tracks default to autopilot TDD for behavior changes; human-guided TDD requires a user request and never runs in `one-shot`.
 
 All tracks permit read-only code exploration subagents under [discovery](discovery.md#code-exploration-and-delegation). This is distinct from implementation delegation and does not by itself require fast-track escalation. The orchestrator may read documentation directly.
 
