@@ -1,15 +1,25 @@
 # Antigravity adapter
 
-Use the tools and model identifiers exposed in the active runner. Map subagent tasks by universal capability tier rather than hardcoded model IDs:
+Use only tools and model identifiers exposed by the active runner. Do not invent a boost API or assume model controls exist.
 
-- **Lightweight scanning tier.** Use for bounded code retrieval, directory discovery, file searches, and symbol lookup.
-- **Standard coding tier.** Use for scoped behavioral investigations and task implementation in `full-track` and `one-shot`. Full-track mandates subagents for task implementation. Fast-track permits read-only investigations, not implementation subagents.
-- **High-reasoning tier.** Use for demanding investigations, architecture tradeoffs, independent review across all tracks, and fix escalations after round two.
+## Native boost entry
 
-Follow [discovery](../discovery.md#code-exploration-and-delegation) for read-only code exploration in every track. The orchestrator may read documentation directly. Select among supported models and reasoning settings according to the question's scope; use the shared fallback when delegation or explicit model selection is unavailable.
+For boost-track, enter `/boost` in Antigravity and instruct the active session to execute the exact ready plan path. For boosted one-shot, enter `/boost` and explicitly invoke one-shot with the request. Record the executor and confirm the session is actually boosted through available runner evidence. Do not claim a skill activates a slash command. If boost is unavailable or inactive, stop that entry and offer full-track for non-boost execution; do not silently switch executors.
 
-Give independent reviewers requirements, the candidate diff, and recorded test evidence in a fresh context using [the reviewer brief](../templates/reviewer-brief.md). Delegate implementation in full-track where subagents are mandated for task implementation, and in one-shot when independent tasks justify coordination. Follow [repository-local worktree placement](../workspace.md), using a native worktree tool only when it accepts `<main-repo>/.worktrees/` and Git directly otherwise. Harness-owned directories are not fallback locations. Use available browser inspection tools for UI verification.
+Boost owns its internal workstreams, workers, scheduling, and review rounds. Supply plan path, plan revision, execution slug, persistent candidate checkout, protected files, content sources, acceptance criteria, required checks, evidence locations, and completion format. Do not impose custom worker-per-task dispatch, model allocation, a mandatory taskboard, or duplicate review. Follow [execution](../execution.md), [observable independent review](../review.md), and [verification](../verification.md). A native review satisfies the requirement only when its independent role, scope, findings, and disposition are observable.
 
-Recommend that the user invoke `/boost` for demanding investigations, subtle concurrency or race conditions, and fix escalations after round two. When running inside an active `/boost` session, enforce all standard workflow invariants: keep changes confined to `<main-repo>/.worktrees/<feature>` for full-track and one-shot runs or the current workspace for fast-track runs, record decisions in `/.agent-docs/`, enforce red and green test evidence capture, and obtain independent review. Do not permit `/boost` to bypass test discipline or make unverified direct edits.
+Follow [workspace preparation](../workspace.md). Native ephemeral worker locations are harness-managed; the final candidate belongs in the named repository-local persistent checkout. Verify actual containment and integration rather than asserting all native workers use repository-local worktrees. Keep workflow records directly at the main repository root. Live smoke validation remains required before claiming native behavior verified.
 
-The installer supports the configured IDE and CLI user skill directories. Models may automatically select `full-track` or `fast-track` based on scope, whereas `one-shot` requires explicit user invocation.
+## Custom non-boost execution
+
+Full-track mandates custom implementation delegation and does not require boost. Experimental orchestration also mandates implementation slices and remains explicitly selected. Non-boost one-shot delegates where coordination helps. Fast-track implements bounded defects directly and permits read-only investigation agents.
+
+Select supported models through capability tiers:
+
+- Lightweight scanning for bounded retrieval, file discovery, and symbols.
+- Standard coding for scoped behavioral investigation and implementation.
+- High reasoning for demanding investigations, architecture, independent review, and fix escalation after round two.
+
+Use [discovery](../discovery.md#code-exploration-and-delegation) for focused read-only assignments. Give independent reviewers [the reviewer brief](../templates/reviewer-brief.md). Custom Antigravity coordinators use reactive wakeups on completion or background events rather than polling. Use available browser inspection tools for UI checks. Disclose unavailable delegation or model selection instead of guessing controls.
+
+Ordinary entry follows the planning and execution contract. Explicit execution of a named ready plan authorizes the execution phase. One-shot is an explicit autonomous exception with either executor. Fast-track follow-up defects inherit only the parent's approved behavior, and standalone fast-track fixes execute in a single chat.

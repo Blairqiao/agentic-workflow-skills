@@ -1,6 +1,8 @@
 # Independent review brief
 
-Provide this brief to a fresh review subagent or independent session. Exclude the implementer's conversation history and internal reasoning.
+Provide this brief to a fresh review subagent or independent session. Observable native boost review may supply equivalent scope, independence, findings, and disposition without a duplicate custom reviewer. If native evidence is absent, perform targeted review or report incomplete coverage. Exclude the implementer's conversation history and internal reasoning.
+
+Exact plan path and revision, execution slug, selected executor, and evidence ownership:
 
 ## Candidate context
 

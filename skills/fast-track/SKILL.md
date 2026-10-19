@@ -1,27 +1,28 @@
 ---
 name: fast-track
-description: Use for linear, single-session changes in the current workspace that do not require multi-step task decomposition or implementation subagents. Can be invoked by the user or selected automatically by the model.
+description: Use for bounded small fixes, especially follow-up defects within approved behavior. Direct non-boost implementation without implementation subagents.
 ---
 
 # Fast track
 
 Read [workflow core](../_workflow/core.md) and follow its phase sequence with track `fast`.
 
-## Fit check
+## Fit and authorization boundary
 
-Confirm the request fits linear execution in the current workspace before starting:
+Use direct non-boost execution for a bounded repair that fits a single linear task. A follow-up defect is a mismatch with approved behavior. New behavior is new scope even when the code change is small. File count alone does not establish fit. No implementation subagents are allowed. Read-only exploration is permitted under [discovery](../_workflow/discovery.md#code-exploration-and-delegation).
 
-- Implementable as a single linear sequence in the current session without multi-step orchestration or implementation subagents.
-- No new dependencies, database migrations, or changes to security or architectural boundaries.
+For an in-track follow-up in an active execution session, reuse the existing candidate checkout and exact parent plan. Inherit only authorization that covers the repair. State the defect, expected behavior, likely files, and verification inline in chat, then proceed without another approval. Do not turn diagnosis into an implicit promise that the repair remains small.
 
-Read-only code exploration subagents are permitted under [discovery](../_workflow/discovery.md#code-exploration-and-delegation). They do not count as implementation subagents or multi-step implementation orchestration. The orchestrator may read documentation directly.
+Standalone small fixes execute in a single chat. Write a two to three sentence mini-spec, numbered acceptance criteria, target files, and verification commands directly in `<main-repo>/.agent-docs/fast-track/<feature>.md` using [the fast-track template](../_workflow/templates/fast-track.md). Present the mini-spec inline in chat and pause for user approval before modifying code or tests. Always place a direct clickable link to the fast-track record at the very bottom of the chat response. No separate plan file is required for standalone fast-track.
 
-If the request exceeds this scope at the start or during implementation, stop, explain what outgrew the fit check, and escalate to [full-track](../full-track/SKILL.md).
+## Escalation
 
-## Execution and documentation
+If diagnosis requires a product decision, new dependency, migration, security change, architecture change, material risk, or multi-task coordination, stop dependent work and return the affected decision to the planning phase. Recommend [full-track](../full-track/SKILL.md) for wider implementation, or see [the Antigravity adapter](../_workflow/adapters/antigravity.md) for harness-specific orchestration. Continue independent authorized work. A revised ready plan needs a new execution instruction.
 
-Record the entire run in one file at `<main-repo>/.agent-docs/fast-track/<feature>.md` using [the fast-track template](../_workflow/templates/fast-track.md) and a short, stable `<feature>` slug. Update the file in place on retries or follow-ups rather than creating separate spec, plan, taskboard, proof, or walkthrough files.
+## Evidence and records
 
-Write a two to three sentence mini-spec, numbered acceptance criteria, and target files in `<main-repo>/.agent-docs/fast-track/<feature>.md`, present them inline in chat, and pause for approval before editing code or tests. For follow-up defect reports, update the diagnosis and criteria in place, present them inline, and pause for approval before modifying code.
+Add a focused regression test and observe its failure before a behavioral repair under [test integrity](../_workflow/testing.md). Record exact red and green commands and observed outputs. For purely visual issues, reproducible before-and-after browser evidence may prove the requirement more directly. Verify affected integration and rerun checks whose prior evidence the fix invalidates. Obtain focused [independent review](../_workflow/review.md) of the patch and integration boundary.
 
-Implement in the current session without making Git commits, preserving unrelated user changes. Follow [test integrity](../_workflow/testing.md) with recorded red and green command evidence, perform relevant UI verification, and obtain [independent review](../_workflow/review.md). If the three-attempt implementation or review-fix cap is reached, restore modified candidate files to their pre-task state while recording what was tried and what failed in `<main-repo>/.agent-docs/fast-track/<feature>.md`. At handoff, stage candidate changes and leave the final commit to the user.
+Append defect, cause, change, verification, review, and limitations to the parent's proof when available. Update affected parent task status and invalidated evidence. Do not duplicate the parent plan or create another taskboard for one fix. Without an active parent, keep the lean standalone record in `<main-repo>/.agent-docs/fast-track/<feature>.md`, updating it in place on retries.
+
+Preserve user changes, make no execution commits, and follow [handoff](../_workflow/handoff.md). Cap failed implementation attempts and review-fix rounds at three each. On an in-place cap, restore only modified candidate files to their pre-task state and record failed approaches in the active proof or standalone record. Stage candidate changes at handoff and leave the final commit to the user.

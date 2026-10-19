@@ -1,29 +1,39 @@
 # Portable agentic workflow skills
 
-Nine public skills run documented development tracks or provide standalone workflow tools. Shared phase procedures live in [skills/_workflow](skills/_workflow/README.md), which is installed alongside the skills by [install.sh](install.sh) and has no discoverable `SKILL.md`.
+Ten public skills run documented development tracks or provide standalone workflow tools. Shared phase procedures live in [skills/_workflow](skills/_workflow/README.md), which is installed alongside the skills by [install.sh](install.sh) and has no discoverable `SKILL.md`.
 
-## Choose a track
+## Universal two-phase workflow
 
-| Track | Selection | Execution | Approval | Documentation |
+The workflow provides a clean separation between planning and execution:
+
+1. **Planning phase.** Triggered by `/planning` or explicit planning requests. Consolidates exploratory problem framing, domain terminology modeling, and architectural stress-testing. Authors the authoritative plan at `plans/<feature>.md` using [the plan template](skills/_workflow/templates/plan.md). Never modifies code or tests. Finalizes by presenting scope, affected files, strategy, and acceptance criteria inline in chat, with a direct clickable link to the authoritative plan artifact placed at the very bottom of the chat response.
+2. **Execution phase.** Authorized by an explicit user instruction naming the ready plan. Adopts and validates the plan against workspace state, starting revision, and protected user edits without repeating interviews or approval gates. Runs under the chosen track. Material scope changes return to the planning phase for renewed authorization.
+
+## Choose an execution track
+
+| Track | Selection | Execution | Authorization | Documentation |
 | --- | --- | --- | --- | --- |
-| `full-track` | User request or automatic model selection for multi-step work | Prefer a worktree; mandate subagent delegation for task implementation | One combined spec-and-plan approval | `plans/<feature>.md`, `taskboard/<feature>.md`, and `proofs/<feature>.md` |
-| `fast-track` | User request or automatic model selection for linear single-session work | Current workspace; single linear execution without implementation subagents | One mini-spec approval | Single `fast-track/<feature>.md` record |
-| `one-shot` | Explicit user request only | Prefer a worktree; autonomous product and technical decisions | No feedback gates; pause only for critical access or authorization | Single `runs/<feature>.md` record |
+| `full-track` | User request or automatic model selection for multi-step work | Prefer a worktree; mandate subagent delegation for task implementation | User instruction naming ready plan | `plans/<feature>.md`, `taskboard/<feature>.md`, and `proofs/<feature>.md` |
+| `fast-track` | User request or automatic model selection for bounded linear fixes | Current workspace; direct execution without implementation subagents | Mini-spec inline approval or parent plan | Single `fast-track/<feature>.md` record or parent proof |
+| `one-shot` | Explicit user request only | Prefer a worktree; autonomous decisions and delivery with either executor | Explicit single-prompt request | Single `runs/<feature>.md` record |
 
 Every track verifies the delivery candidate and requires [independent review](skills/_workflow/review.md) packaged with [the reviewer brief](skills/_workflow/templates/reviewer-brief.md). Fast-track retains an independent review subagent and escalates to `full-track` if scope outgrows linear single-session execution. Full-track mandates subagent delegation for task implementation. Full-track and one-shot may use the current workspace for small tasks or explicit in-place requests. Failed task implementation attempts are capped at 3 and review-fix cycles are capped at 3 rounds. When an in-place run reaches a retry cap, the agent restores modified candidate files to their pre-task state while recording what was tried and what failed in `.agent-docs/`.
 
 Worktrees belong in `<main-repo>/.worktrees/<feature>`, using a distinct `<run-id>` only when concurrent checkouts are needed. Before creating a worktree or writing files in `.agent-docs/`, add `.worktrees` and `.agent-docs` ignore rules to `<main-repo>/.git/info/exclude` without modifying `<main-repo>/.gitignore`, verify with `git check-ignore`, and add root-anchored `.worktrees` exclusions to glob-based project tool configs. Use a harness worktree tool only when it honors `<main-repo>/.worktrees/`; otherwise use Git directly. See [workspace preparation](skills/_workflow/workspace.md).
 
-Behavior changes default to autopilot TDD, with human-guided TDD opt-in. Following [test integrity](skills/_workflow/testing.md), the agent runs the new or updated test first, records the verbatim red failure output before writing implementation code, implements the behavior without weakening assertions, records the verbatim green pass output, and logs any post-red test revisions under `Test amendments` for explicit reviewer acceptance. No intermediate `test(red)` or `feat(green)` Git commits or temporary-index tree snapshots are created. During in-place runs, the agent enforces a no-commits rule and stages candidate changes during [handoff](skills/_workflow/handoff.md), leaving publishing and the final target-branch commit to the user.
+Behavior changes default to autopilot TDD, with human-guided TDD opt-in. Following [test integrity](skills/_workflow/testing.md), the agent runs the new or updated test first, records the verbatim red failure output before writing implementation code, implements the behavior without weakening assertions, records the verbatim green pass output, and logs any post-red test revisions under `Test amendments` for explicit reviewer acceptance. No intermediate test or feat Git commits or temporary-index tree snapshots are created. During in-place runs, the agent enforces a no-commits rule and stages candidate changes during [handoff](skills/_workflow/handoff.md), leaving publishing and the final target-branch commit to the user.
 
-## Standalone tools
+## Universal tool skills
 
-- [brainstorm](skills/brainstorm/SKILL.md): explore unclear ideas and design alternatives, save completed or paused briefs, and carry decisions into the chosen track.
+- [planning](skills/planning/SKILL.md): consolidate problem exploration, domain modeling, and stress-testing into an authoritative plan with bottom-of-response link placement.
+- [brainstorm](skills/brainstorm/SKILL.md): explore unclear ideas and design alternatives, save completed plans or paused briefs, and carry decisions forward.
 - [domain-modeling](skills/domain-modeling/SKILL.md): build, challenge, and sharpen the project's shared domain dictionary in `<main-repo>/.agent-docs/CONTEXT.md`.
 - [grilling](skills/grilling/SKILL.md): stress-test thinking, architectural decisions, and tradeoffs in structured rounds, bounded to the supplied decision scope when one is given.
 - [human-tdd](skills/human-tdd/SKILL.md): agree on meaningful `[Specific]`, `[Intermediate]`, and `[Global]` tests before implementation.
 - [unslop](skills/unslop/SKILL.md): cut AI tells, filler, buzzwords, em dashes, prose parentheses, and decorative emojis from authored prose across user-facing documentation and internal `.agent-docs/` artifacts while preserving verbatim code blocks and command output.
 - [research](skills/research/SKILL.md): explain project documentation or audit the maintained codebase against it, creating missing guides and updating supported factual descriptions.
+
+Harness-specific tracks and capabilities, such as Antigravity native `/boost` execution or custom orchestration delegation, are documented under [harness adapters](skills/_workflow/adapters/) rather than included in the root public bundle.
 
 ## Explore an idea before choosing a track
 
@@ -67,7 +77,7 @@ Project installations copy the bundle into `.agents/skills/`. When both Claude a
 
 ## Invocation policy and adapters
 
-Models may automatically select `full-track` or `fast-track` for requested implementation planning or implementation based on task scope, while `one-shot` requires explicit user invocation. `brainstorm` is discoverable for exploration without selecting a track. In Codex, `skills/one-shot/agents/openai.yaml` sets `allow_implicit_invocation: false`; in Claude Code, the installed `one-shot` copy adds `disable-model-invocation: true`. Shared skill frontmatter contains only `name` and `description`.
+Models may automatically select `full-track` or `fast-track` for requested implementation planning or implementation based on task scope, while `one-shot` requires explicit user invocation. `brainstorm` and `planning` are discoverable for exploration without selecting an execution track. In Codex, `skills/one-shot/agents/openai.yaml` sets `allow_implicit_invocation: false`; in Claude Code, the installed `one-shot` copy adds `disable-model-invocation: true`. Shared skill frontmatter contains only `name` and `description`.
 
 [Harness adapters](skills/_workflow/adapters/) map subagent roles to universal capability tiers across Codex, Antigravity, Claude Code, and generic runners: lightweight scanning for discovery, standard coding for scoped implementation, and high-reasoning for independent review and escalated fixes.
 
@@ -95,12 +105,12 @@ Add a skill when users need an independently invocable capability. Keep its trig
 
 ## Upgrading from the sixteen-skill bundle
 
-The following former skills now live in `_workflow` procedures: `workflow-core`, `project-discovery`, `spec-alignment`, `implementation-planning`, `worktree-setup`, `tdd-integrity`, `task-dispatch`, `independent-review`, `verification-evidence`, and `integration-handoff`. Run `./install.sh --uninstall` followed by a fresh install, or pass `--force` to refresh the nine public skills and `_workflow`.
+The following former skills now live in `_workflow` procedures: `workflow-core`, `project-discovery`, `spec-alignment`, `implementation-planning`, `worktree-setup`, `tdd-integrity`, `task-dispatch`, `independent-review`, `verification-evidence`, and `integration-handoff`. Run `./install.sh --uninstall` followed by a fresh install, or pass `--force` to refresh the ten public skills and `_workflow`.
 
 ## Verification
 
 ```sh
-python3 -m unittest discover -s tests -v
+pytest
 bash -n install.sh
 ```
 

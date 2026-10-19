@@ -1,34 +1,40 @@
 # Fast-track record
 
-Feature slug, status, approval reference, base revision, and date:
+Execution slug, status, date, base revision, target checkout and branch:
 
-## Mini-spec and acceptance criteria
+## Authorization boundary
 
-Summarize the change in two to three sentences, list the target files, and state whether `.agent-docs/CONTEXT.md` was consulted or updated.
+Parent plan path and revision, parent proof, approved behavior, and execution instruction. For an in-track follow-up, append this entry to the parent proof when available rather than creating another record. State why the repair stays within existing authorization.
+
+For a standalone fix, record the mini-spec, scope, exclusions, files, strategy, acceptance criteria, verification, permissions, protected edits, and unresolved blockers directly in this file in a single chat. Present the mini-spec inline in chat and pause for approval before modifying code or tests.
+
+## Defect and acceptance criteria
+
+Observed defect, expected behavior, likely cause, target files, and relevant domain context:
 
 | ID | Observable requirement | Verification |
 | --- | --- | --- |
 
 ## Workspace and starting state
 
-Current workspace state and any pre-existing user changes preserved during the run.
+Current candidate checkout, starting revision, and pre-existing user changes:
 
-## Red and green test evidence
+## Red and green evidence
 
-Record the exact test command, verbatim red failure excerpt observed before implementation, and verbatim green pass output observed after implementation.
+Exact commands, verbatim observed red failure before implementation, and verbatim green pass output after implementation. For purely visual fixes, record reproducible before-and-after browser evidence when it proves the requirement more directly.
 
 ## Test amendments and attempted approaches
 
-List any test revision made after red with its reason, or state that none occurred. If retry caps were reached and candidate files were restored to their pre-task state, record what was tried and what failed.
+Post-red revisions with reasons, or none. Record failed approaches and restoration if a retry cap was reached.
+
+## Invalidated evidence
+
+Parent task status updated, affected integration boundaries, prior checks invalidated by this repair, and fresh results:
 
 ## Review
 
-Review method, independence, findings, resolutions, explicit sign-off on any test amendments, and verdict.
+Independent patch review, scope, findings, resolutions, amendment sign-off, and verdict:
 
 ## Proof and walkthrough
 
-Reproducible verification commands, observed output excerpts, what changed, UI or manual verification steps with embedded screenshots, and staged candidate paths.
-
-### Documentation impact
-
-Link project guides created or updated and record unresolved documentation gaps or contradictions, or explain why no documentation changes were needed.
+Cause, correction, acceptance evidence, limitations, screenshots for UI checks, documentation impact, and staged candidate paths. State any material scope blocker returned to the planning phase.

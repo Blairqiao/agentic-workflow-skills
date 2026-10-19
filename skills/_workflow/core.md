@@ -4,17 +4,29 @@ Inputs: the user's request, selected or inferred track, existing authorization, 
 
 ## Track policy
 
-| Track | Selection | Workspace | Implementation | Approval | Documentation |
-| --- | --- | --- | --- | --- | --- |
-| `full` | User request or automatic model selection for multi-step work | Prefer a worktree | Mandated subagent delegation | One combined spec-and-plan approval | Combined spec-and-plan in `plans/<feature>.md`, `taskboard/<feature>.md`, and combined proof-and-walkthrough in `proofs/<feature>.md` |
-| `fast` | User request or automatic model selection for linear single-session work | Current workspace | Current session only, no implementation subagents | One mini-spec approval after scope fit check | Single `fast-track/<feature>.md` record |
-| `one-shot` | Explicit user request only | Prefer a worktree | Direct or independent subagent delegation | No feedback gates | Single `runs/<feature>.md` record |
+| Track | Selection | Workspace | Implementation | Authorization and records |
+| --- | --- | --- | --- | --- |
+| `boost` | Explicit boosted entry with a ready plan | Named candidate checkout | Native boost owns decomposition, workers, implementation, and verification rounds | Execution instruction; plan and compact proof, taskboard only when useful |
+| `full` | Default for isolated features and subsystem debugging beyond fast-track | Prefer a worktree | Non-boost implementation with mandated subagent delegation | Execution instruction; plan, taskboard, and proof |
+| `fast` | Bounded small fix or follow-up defect | Current candidate checkout | Direct non-boost execution without implementation subagents | Inherited parent authorization for approved defects; standalone single-chat mini-spec and lean fast-track record |
+| `orchestration` | Explicit selection only, experimental pending further evaluation | Isolated worktree | Frontier orchestrator delegates vertical slices to standard coding subagents | Execution instruction; plan, taskboard, and proof |
+| `one-shot` | Explicit user request only | Prefer a worktree | Supports both boost and non-boost executors, recorded before execution | Autonomous planning and implementation; single run record |
 
-When the user requests implementation planning or implementation without naming a track, select `fast` for linear, single-session changes without new dependencies, migrations, or boundary shifts, and select `full` for multi-step features or architectural changes. A request to explore an idea through [brainstorm](../brainstorm/SKILL.md) does not by itself start a track or authorize implementation. Never enter `one-shot` unless the user explicitly asks for it.
+When no executor is named, recommend boost for visual work supported by the benchmark evidence, but require explicit boosted entry. Use full-track as the non-boost default for larger work. Select fast-track only for a bounded fix with settled expected behavior and no new dependency, migration, or boundary shift. Experimental orchestration requires explicit selection. Never enter one-shot without an explicit request or silently switch executors.
 
-Full and one-shot may use the current workspace for a small task or when the user asks. Fast-track escalates to `full-track` if scope outgrows linear single-session execution. Full-track mandates subagent delegation for task implementation. All tracks default to autopilot TDD for behavior changes; human-guided TDD requires a user request and never runs in `one-shot`.
+## Planning and execution contract
 
-All tracks permit read-only code exploration subagents under [discovery](discovery.md#code-exploration-and-delegation). This is distinct from implementation delegation and does not by itself require fast-track escalation. The orchestrator may read documentation directly.
+The planning phase owns discovery, brainstorming, consequential grilling, specification, and plan writing. A clear request needs no ceremonial interview. The planning phase never edits implementation code or tests. Its output is a complete ready plan and a copyable instruction naming that plan and the selected executor. Present the scope, expected files, strategy, and acceptance criteria inline in chat as part of this handoff. Always place a direct clickable file link to the authoritative plan artifact at the very bottom of the chat response.
+
+The execution phase is a separate implementation session. The user's explicit instruction to execute the named ready plan authorizes implementation within its scope. Ready status alone is not authorization. Load the exact plan, project constraints, and starting state, then check the checkout, branch, revision, and protected edits before execution. Do not repeat approval or reopen settled interviews. A plan with consequential unresolved blockers cannot start execution. Ask for the missing execution instruction when authorization is absent.
+
+Routine choices and repairs to approved behavior proceed in the execution phase. Fast-track follow-ups inherit only the parent's actual scope and append defect, cause, repair, verification, and review to the parent's proof when available. A standalone fast-track fix executes in a single chat after an inline mini-spec approval. Material changes to behavior, scope, dependencies, risk, or external effects return the affected decision to the planning phase. Record the blocker and continue independent authorized work. A revised ready plan needs a new explicit execution instruction for changed scope.
+
+One-shot is the autonomous exception that combines planning and implementation from a single prompt. It plans and implements autonomously in one run with both boost and non-boost execution supported. Record the chosen executor and preserve test integrity, verification, and Git safeguards under either executor.
+
+Full, orchestration, boost, and one-shot prefer an isolated candidate checkout at `<main-repo>/.worktrees/<feature>`. Native boost worker placement follows the verified harness adapter; require the final candidate in the named checkout without inventing guarantees about ephemeral workers. Fast-track reuses the current candidate checkout. Full and orchestration mandate custom implementation delegation; boost owns its internal delegation. All tracks default to autopilot TDD; human-guided TDD requires a user request and never runs in one-shot.
+
+All tracks permit read-only exploration subagents under [discovery](discovery.md#code-exploration-and-delegation). This does not itself require fast-track escalation. The orchestrator may read documentation directly. Antigravity custom orchestrators rely on reactive wakeups upon subagent completion, background events, or scheduled timers, and must never poll or loop on task status.
 
 ## Shared safeguards
 
@@ -28,7 +40,7 @@ Run relevant checks before claiming success. Report uncertainty, unresolved fail
 
 1. [Discover](discovery.md) relevant repository facts, `<main-repo>/.agent-docs/CONTEXT.md` when present, and the active harness adapter.
 2. [Prepare the workspace](workspace.md), configuring `<main-repo>/.git/info/exclude` for `.worktrees` and `.agent-docs` before creating worktrees or writing `.agent-docs/` files, and recording the starting state.
-3. [Design](design.md) the behavior and [plan](planning.md) its implementation, incorporating any existing brief and reusing settled decisions. Invoke [domain-modeling](../domain-modeling/SKILL.md) to create or update `<main-repo>/.agent-docs/CONTEXT.md` when domain terms are introduced or contested. Present the combined spec and plan or fast-track mini-spec inline in chat and pause for approval. Follow-up rounds or defect fixes that change the diagnosis or approach must update the active plan in place, present the revised plan inline, and pause before editing code. One-shot records decisions and proceeds without interactive brainstorming or grilling.
+3. In the planning phase, [design](design.md) and [plan](planning.md) the work using settled decisions and domain terms. Incorporate an existing brief and hand off the ready plan. In the execution phase, validate and adopt that plan before editing code or tests. One-shot records decisions and proceeds autonomously.
 4. [Execute](execution.md) dependency-ready tasks using [test integrity](testing.md).
 5. [Review](review.md) the complete candidate and resolve blocking findings, reviewing risky portions earlier when useful.
 6. Before final [verification](verification.md), check whether the target branch advanced, sync an isolated workspace when needed, verify the exact candidate to be delivered, and write the proof and walkthrough.
@@ -36,15 +48,17 @@ Run relevant checks before claiming success. Report uncertainty, unresolved fail
 
 ## Artifact naming, in-place updates, and archival
 
-All workflow documentation lives in `<main-repo>/.agent-docs/` directly by path, never inside a worktree. Keep `<feature>` slugs short and stable in `kebab-case`, such as `plans/oauth-token-refresh.md`, `taskboard/oauth-token-refresh.md`, `proofs/oauth-token-refresh.md`, `fast-track/oauth-token-refresh.md`, `runs/oauth-token-refresh.md`, and `.worktrees/oauth-token-refresh/`. Use a separate `<run-id>`, such as `oauth-token-refresh-2` or `2026-10-14-oauth-token-refresh`, only when distinguishing concurrent worktrees, a substantially different approach, or a point-in-time audit tied to a specific commit.
+All workflow documentation lives in the parent repository at `<main-repo>/.agent-docs/` directly by path, never inside a worktree. Keep a short stable feature slug for one execution. Before concurrent work, allocate a distinct execution identity `<feature>-<run-id>` and use it consistently in plan, taskboard, proof, image, and workspace names. Never let concurrent executions write the same active plan or evidence destination. Retries retain their execution identity and update the same record.
 
-Before a track starts, completed or paused brainstorms are saved in `briefs/<feature>.md` using [the brief template](templates/brief.md), unless the user explicitly requests chat-only exploration. Follow workspace ignore setup before writing these records; brainstorming does not need an execution worktree. During a track, save exploration directly in its existing artifact. On handoff, incorporate the standalone brief into that artifact and mark the brief handed off with a link to the authoritative document. Keep subsequent design updates in the track artifact rather than maintaining two active versions.
+Record the plan revision or identity in the execution record. Every worker receives the exact plan path, revision, target checkout, execution identity, and file ownership boundaries. Builders do not rewrite settled plan decisions. When the plan identity changes, reconcile the active record and plan before dependent work resumes. A material revision requires returning to the planning phase and renewed execution authorization.
+
+Completed planning exploration becomes `plans/<feature>.md` using [the plan template](templates/plan.md). Save paused or abandoned exploration in `briefs/<feature>.md` using [the brief template](templates/brief.md), unless the user requests chat-only work. Incorporate an existing brief once and mark it handed off with a link to the authoritative plan. During execution, put design updates in the active track record and preserve evidence history. Follow workspace ignore setup before writing any artifact.
 
 Distinguish current state from historical evidence rather than creating a new file for every retry:
 
 | Artifact | Default behavior |
 | --- | --- |
-| Brief | Update the active pre-track record in place; save completed and paused sessions, and mark it handed off when a track document takes ownership |
+| Brief | Save paused or abandoned exploration in place; incorporate legacy brief decisions into the authoritative plan once and mark the brief handed off |
 | Plan | Update main sections in place so they describe the current approach; keep a short decision history and move lengthy superseded material to `.agent-docs/archive/` |
 | Taskboard | Update in place so unfinished work is easy to find; keep small completed tasks as compact checkboxes and move detailed completed work to `.agent-docs/archive/` when the board grows large |
 | Research or audit | Update working notes in place; preserve a separate snapshot when later work needs to reference findings from a specific commit |
@@ -55,7 +69,7 @@ Distinguish current state from historical evidence rather than creating a new fi
 
 ## Decisions, failures, rollback, and resuming
 
-Full and fast reopen approval only for material changes to scope, external effects, dependencies, or risk. Incidental file changes and implementation choices within the approved design proceed. One-shot decides autonomously and pauses only for critical missing access or additional authorization.
+Interactive tracks return material changes to the planning phase. Incidental file changes, revised diagnoses within approved behavior, and implementation choices within the design proceed in the execution phase. One-shot decides autonomously and pauses only for critical missing access or additional authorization.
 
 After a failure, record the cause and try a concrete alternative without repeating unchanged attempts. Cap failed task implementation attempts at 3 and review-fix cycles at 3 rounds. When a cap is reached or reasonable technical alternatives are exhausted:
 
