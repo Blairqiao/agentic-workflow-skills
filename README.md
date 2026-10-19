@@ -1,20 +1,21 @@
 # Portable agentic workflow skills
 
-Nine public skills run documented development tracks or provide standalone workflow tools. Shared phase procedures live in [skills/_workflow](skills/_workflow/README.md), which is installed alongside the skills by [install.sh](install.sh) and has no discoverable `SKILL.md`.
+Ten public skills run documented development tracks or provide standalone workflow tools. Shared phase procedures live in [skills/_workflow](skills/_workflow/README.md), which is installed alongside the skills by [install.sh](install.sh) and has no discoverable `SKILL.md`.
 
 ## Choose a track
 
 | Track | Selection | Execution | Approval | Documentation |
 | --- | --- | --- | --- | --- |
-| `full-track` | User request or automatic model selection for multi-step work | Prefer a worktree; mandate subagent delegation for task implementation | One combined spec-and-plan approval | `plans/<feature>.md`, `taskboard/<feature>.md`, and `proofs/<feature>.md` |
-| `fast-track` | User request or automatic model selection for linear single-session work | Current workspace; single linear execution without implementation subagents | One mini-spec approval | Single `fast-track/<feature>.md` record |
-| `one-shot` | Explicit user request only | Prefer a worktree; autonomous product and technical decisions | No feedback gates; pause only for critical access or authorization | Single `runs/<feature>.md` record |
+| `orchestration-track` | User request or automatic model selection for big initiatives, jumpstarts, multi-service features, or full refactors | Isolated worktree; frontier orchestrator Argon delegates vertical slices to Flash subagents | One combined spec-and-plan approval | `plans/<feature>.md`, `taskboard/<feature>.md`, and `proofs/<feature>.md` |
+| `full-track` | User request or automatic model selection for isolated features or subsystem debugging | Prefer a worktree; mandate subagent delegation for task implementation | One combined spec-and-plan approval | `plans/<feature>.md`, `taskboard/<feature>.md`, and `proofs/<feature>.md` |
+| `fast-track` | User request or automatic model selection for small fixes or simple additions | Current workspace; single linear execution without implementation subagents | One mini-spec approval | Single `fast-track/<feature>.md` record |
+| `one-shot` | Explicit user request only | Prefer a worktree; autonomous execution with boost capabilities | No feedback gates; pause only for critical access or authorization | Single `runs/<feature>.md` record |
 
 Every track verifies the delivery candidate and requires [independent review](skills/_workflow/review.md) packaged with [the reviewer brief](skills/_workflow/templates/reviewer-brief.md). Fast-track retains an independent review subagent and escalates to `full-track` if scope outgrows linear single-session execution. Full-track mandates subagent delegation for task implementation. Full-track and one-shot may use the current workspace for small tasks or explicit in-place requests. Failed task implementation attempts are capped at 3 and review-fix cycles are capped at 3 rounds. When an in-place run reaches a retry cap, the agent restores modified candidate files to their pre-task state while recording what was tried and what failed in `.agent-docs/`.
 
 Worktrees belong in `<main-repo>/.worktrees/<feature>`, using a distinct `<run-id>` only when concurrent checkouts are needed. Before creating a worktree or writing files in `.agent-docs/`, add `.worktrees` and `.agent-docs` ignore rules to `<main-repo>/.git/info/exclude` without modifying `<main-repo>/.gitignore`, verify with `git check-ignore`, and add root-anchored `.worktrees` exclusions to glob-based project tool configs. Use a harness worktree tool only when it honors `<main-repo>/.worktrees/`; otherwise use Git directly. See [workspace preparation](skills/_workflow/workspace.md).
 
-Behavior changes default to autopilot TDD, with human-guided TDD opt-in. Following [test integrity](skills/_workflow/testing.md), the agent runs the new or updated test first, records the verbatim red failure output before writing implementation code, implements the behavior without weakening assertions, records the verbatim green pass output, and logs any post-red test revisions under `Test amendments` for explicit reviewer acceptance. No intermediate `test(red)` or `feat(green)` Git commits or temporary-index tree snapshots are created. During in-place runs, the agent enforces a no-commits rule and stages candidate changes during [handoff](skills/_workflow/handoff.md), leaving publishing and the final target-branch commit to the user.
+Behavior changes default to autopilot TDD, with human-guided TDD opt-in. Following [test integrity](skills/_workflow/testing.md), the agent runs the new or updated test first, records the verbatim red failure output before writing implementation code, implements the behavior without weakening assertions, records the verbatim green pass output, and logs any post-red test revisions under `Test amendments` for explicit reviewer acceptance. No intermediate test or feat Git commits or temporary-index tree snapshots are created. During in-place runs, the agent enforces a no-commits rule and stages candidate changes during [handoff](skills/_workflow/handoff.md), leaving publishing and the final target-branch commit to the user.
 
 ## Standalone tools
 
@@ -46,7 +47,6 @@ Existing documentation stays in its established location. New project guides def
 ```sh
 ./install.sh --project /path/to/repo
 ./install.sh --global
-./install.sh --global --harness claude,codex,antigravity
 ./install.sh --uninstall --project /path/to/repo
 ./install.sh --uninstall --global
 ```
@@ -55,21 +55,19 @@ Use `install.sh` rather than single-skill fetchers such as `npx skills` or `gemi
 
 The installer preserves existing destinations unless `--force` is supplied. Supplying `--force` replaces matching installed entries, including `_workflow`. Supplying `--uninstall` removes the installed workflow skills, `_workflow`, and retired entries from the earlier sixteen-skill bundle while leaving unrelated custom skills untouched.
 
-| Harness | Project location | User location |
+| Target | Location | Method |
 | --- | --- | --- |
-| Codex | `.agents/skills/` | `~/.agents/skills/` |
-| Antigravity | `.agents/skills/` | `~/.gemini/config/skills/` and `~/.gemini/antigravity-cli/skills/` |
-| Claude Code | `.claude/skills/` | `~/.claude/skills/` |
-| Gemini CLI | `.agents/skills/` | `~/.agents/skills/` |
-| opencode | `.agents/skills/` | `~/.agents/skills/` |
+| Antigravity project | `<repo>/.agents/skills/` | Copied bundle |
+| Antigravity IDE | `~/.gemini/config/skills/` | Symlinked bundle |
+| Antigravity CLI | `~/.gemini/antigravity-cli/skills/` | Symlinked bundle |
 
-Project installations copy the bundle into `.agents/skills/`. When both Claude and a shared harness are selected, Claude's skills and `_workflow` link to the shared project copies, except `one-shot`, which is copied to inject Claude's manual-invocation metadata. Claude-only installations are self-contained. Global installations link to this repository, with a copied `one-shot` entry for Claude.
+Project installations copy the bundle and shared workflow procedures into `<repo>/.agents/skills/`. Global installations link this repository directly into the Antigravity IDE and Antigravity CLI user skill directories.
 
 ## Invocation policy and adapters
 
-Models may automatically select `full-track` or `fast-track` for requested implementation planning or implementation based on task scope, while `one-shot` requires explicit user invocation. `brainstorm` is discoverable for exploration without selecting a track. In Codex, `skills/one-shot/agents/openai.yaml` sets `allow_implicit_invocation: false`; in Claude Code, the installed `one-shot` copy adds `disable-model-invocation: true`. Shared skill frontmatter contains only `name` and `description`.
+Models may automatically select `orchestration-track`, `full-track`, or `fast-track` for requested implementation planning or implementation based on task scope, while `one-shot` requires explicit user invocation. `brainstorm` is discoverable for exploration without selecting a track. Shared skill frontmatter contains only `name` and `description`.
 
-[Harness adapters](skills/_workflow/adapters/) map subagent roles to universal capability tiers across Codex, Antigravity, Claude Code, and generic runners: lightweight scanning for discovery, standard coding for scoped implementation, and high-reasoning for independent review and escalated fixes.
+[Harness adapters](skills/_workflow/adapters/) map subagent roles to universal capability tiers: lightweight scanning for discovery, standard coding for scoped implementation, and high-reasoning for independent review and escalated fixes.
 
 [Code exploration](skills/_workflow/discovery.md#code-exploration-and-delegation) defaults broad code reading to scoped read-only subagents in every track, including fast-track. The orchestrator may read documentation and make purposeful small code reads directly. It chooses supported models and reasoning settings by capability: lightweight retrieval, standard investigation, or demanding reasoning. Reports retain evidence, exceptions, uncertainties, and search coverage; findings require verification only when they support critical decisions. Focused follow-up and capability escalation preserve evidence quality while stronger-model usage remains a soft target. The shared procedure defines fallbacks when delegation is unavailable. The policy is adopted without a benchmark prerequisite; context and usage savings have not been measured.
 
@@ -79,9 +77,9 @@ All workflow documentation belongs in the parent repository at `<main-repo>/.age
 
 - `<main-repo>/.agent-docs/CONTEXT.md` and `<main-repo>/.agent-docs/CONTEXT-MAP.md` for the shared domain dictionary.
 - `<main-repo>/.agent-docs/briefs/<feature>.md` for completed or paused exploration before a track starts, using [the brief template](skills/_workflow/templates/brief.md).
-- `<main-repo>/.agent-docs/plans/<feature>.md` for the combined `full-track` specification and implementation plan.
-- `<main-repo>/.agent-docs/taskboard/<feature>.md` for `full-track` task orchestration and review status.
-- `<main-repo>/.agent-docs/proofs/<feature>.md` for the combined `full-track` verification proof and walkthrough.
+- `<main-repo>/.agent-docs/plans/<feature>.md` for the combined `orchestration-track` and `full-track` specification and implementation plan.
+- `<main-repo>/.agent-docs/taskboard/<feature>.md` for `orchestration-track` and `full-track` task orchestration and review status.
+- `<main-repo>/.agent-docs/proofs/<feature>.md` for the combined `orchestration-track` and `full-track` verification proof and walkthrough.
 - `<main-repo>/.agent-docs/fast-track/<feature>.md` for the single-file `fast-track` record.
 - `<main-repo>/.agent-docs/runs/<feature>.md` for the single-file `one-shot` record.
 - `<main-repo>/.agent-docs/research/<feature-or-run-id>.md` for `research audit` coverage and evidence.
@@ -95,7 +93,7 @@ Add a skill when users need an independently invocable capability. Keep its trig
 
 ## Upgrading from the sixteen-skill bundle
 
-The following former skills now live in `_workflow` procedures: `workflow-core`, `project-discovery`, `spec-alignment`, `implementation-planning`, `worktree-setup`, `tdd-integrity`, `task-dispatch`, `independent-review`, `verification-evidence`, and `integration-handoff`. Run `./install.sh --uninstall` followed by a fresh install, or pass `--force` to refresh the nine public skills and `_workflow`.
+The following former skills now live in `_workflow` procedures: `workflow-core`, `project-discovery`, `spec-alignment`, `implementation-planning`, `worktree-setup`, `tdd-integrity`, `task-dispatch`, `independent-review`, `verification-evidence`, and `integration-handoff`. Run `./install.sh --uninstall` followed by a fresh install, or pass `--force` to refresh the ten public skills and `_workflow`.
 
 ## Verification
 
