@@ -3,6 +3,7 @@
 .AppleDouble
 .LSOverride
 ._*
+.pytest_cache
 
 # Windows system files
 Thumbs.db
