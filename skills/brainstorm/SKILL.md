@@ -1,11 +1,11 @@
 ---
 name: brainstorm
-description: Explore unclear ideas, requirements, and design alternatives through conversation, and save a design brief for later planning. Use when the user wants to brainstorm or work out what to build; clear implementation requests do not require an interview.
+description: Explore unclear ideas, requirements, and design alternatives through conversation, and write a complete plan for execution. Use when the user wants to brainstorm or work out what to build; clear implementation requests do not require an interview.
 ---
 
 # Brainstorm
 
-Help the user describe the problem, explore possible directions, and settle enough of the design for the next step. Follow the [shared decision rules](../_workflow/design.md#shared-decision-rules), which apply before or during a track. Exploration alone does not select a track or authorize implementation.
+Help the user describe the problem, explore possible directions, and settle the design for a complete plan. Planning never edits implementation code or tests. Follow the [shared decision rules](../_workflow/design.md#shared-decision-rules), which apply before or during a track. Exploration alone does not select a track or authorize implementation.
 
 ## Ground the conversation
 
@@ -25,20 +25,18 @@ Stop exploring when the intended outcome, chosen direction, constraints, and con
 
 ## Save and resume
 
-Tentative ideas can remain in chat while exploring. Always save a completed brief, even a short one, and checkpoint decisions and open questions when the user pauses. Present a concise version inline and link the saved record. An explicit chat-only request overrides persistence; do not write the brief or domain dictionary in that case, and include settled definitions in the chat summary instead.
+Tentative ideas can remain in chat while exploring. Save the completed plan directly in `<main-repo>/.agent-docs/plans/<feature>.md` using [the plan template](../_workflow/templates/plan.md) and [planning](../_workflow/planning.md). Include scope, exclusions, acceptance criteria, expected files, checks, workspace, starting revision, protected edits, executor, permissions, and unresolved blockers. A blocked plan cannot be ready. Present the plan summary inline, provide the exact execution instruction, and place a direct clickable link to the plan file at the very bottom of the chat response.
 
-Before writing any workflow artifact, identify the main repository and follow the ignore setup in [workspace preparation](../_workflow/workspace.md). This does not require creating a worktree or starting an execution track. If no repository or destination is known, ask where to save and keep the summary inline until resolved. If a write is blocked, report that persistence is incomplete and retain the summary inline.
+Save paused or abandoned exploration to `<main-repo>/.agent-docs/briefs/<feature>.md` using [the brief template](../_workflow/templates/brief.md). Update that record in place. When its decisions become a complete plan, incorporate them once and mark the brief handed off with a link to the authoritative plan. Follow that link on resume. During an active track, update its authoritative record rather than creating another brief.
 
-- **Before a track exists.** Save to `<main-repo>/.agent-docs/briefs/<feature>.md` using [the brief template](../_workflow/templates/brief.md). Use a short, stable slug and update the same record in place. Use status `paused` for an interrupted exploration or `ready for planning` when consequential design questions are settled.
-- **During a track.** Write directly into its active `plans/<feature>.md`, `fast-track/<feature>.md`, or `runs/<feature>.md` document. Preserve existing plan, progress, approval, and evidence sections. Do not create a competing brief.
-- **On handoff.** When the user requests implementation planning or implementation, select or reuse the appropriate track, incorporate the brief into its active artifact, and mark the standalone brief `handed off` with a link to that document. The track document owns subsequent design updates. On resume, follow that link rather than treating the old brief as current.
+Before writing any artifact, identify the parent repository and follow [workspace preparation](../_workflow/workspace.md). Apply [execution identity rules](../_workflow/core.md#artifact-naming-in-place-updates-and-archival) so concurrent plans and evidence cannot overwrite each other. An explicit chat-only request overrides persistence and keeps decisions and definitions inline. If no destination is known or writing is blocked, retain the summary inline and report incomplete persistence.
 
 Saved briefs are local ignored workflow records. Do not claim they are shared across machines or available to another checkout without checking. Follow [core artifact guidance](../_workflow/core.md#artifact-naming-in-place-updates-and-archival) for updates and archival.
 
 ## Track boundaries
 
-Full and fast retain their existing implementation approval gates. Grilling confirms shared understanding; it adds no separate implementation approval. Reuse existing authorization within its scope. A request to plan authorizes preparation of the plan, not product implementation.
+Normal tracks use separate planning and implementation sessions. A ready plan alone is not authorization. The user's explicit instruction to execute that named plan authorizes execution within its scope, without repeated approval. Grilling confirms understanding without an extra gate. Material scope changes return to the planning phase. A request to plan authorizes plan preparation only.
 
 In an explicitly selected `one-shot` run, use the shared decision rules autonomously, record alternatives and material assumptions in the run document, and continue the authorized work without interactive brainstorming, grilling, or feedback gates.
 
-Completion: the brief is saved or incorporated into the active track artifact, its status and next step are clear, and any explicit chat-only exception or blocked persistence is disclosed.
+Completion: the ready plan or paused brief is saved, its status and next step are clear, and any explicit chat-only exception or blocked persistence is disclosed.

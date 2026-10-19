@@ -1,6 +1,18 @@
 # Feature specification and implementation plan
 
-Feature slug, status, approval reference, base revision, and testing style:
+## Execution identity and readiness
+
+- Feature slug and execution identity, distinct for concurrent runs:
+- Status, `draft`, `blocked`, `ready`, or `executing`:
+- Parent repository and shared artifact root:
+- Target checkout:
+- Target branch:
+- Starting revision:
+- Protected user edits and ownership boundaries:
+- Selected executor and testing style:
+- Plan revision:
+- Execution authorization reference:
+- Unresolved blockers, `none` required for ready status:
 
 ## Problem and goals
 
@@ -17,23 +29,24 @@ Describe normal use, edge cases, failure handling, compatibility, and affected d
 
 ## Design decisions and history
 
-Update this section in place so it always reflects the active design. Move lengthy superseded material to `.agent-docs/archive/`.
+Keep the active design current. Record rationale, tradeoffs, and any delegated details. Summarize abandoned approaches and link lengthy history in `.agent-docs/archive/`.
 
-- **Current approach.** State the chosen architecture, rationale, and tradeoffs.
-- **Previous attempts.** Summarize any abandoned or revised approaches in one or two sentences and link to `.agent-docs/archive/` when detailed notes were preserved.
+## Tasks and ownership
 
-## Tasks
-
-For each task, record its goal, acceptance criteria IDs, expected file scope, dependencies, risks, and expected red and green verification commands.
+Record task goals, acceptance criteria IDs, expected files, dependencies, risks, and red and green commands. Boost receives deliverables and constraints and owns internal scheduling. Workers receive the exact plan identity and their file boundaries.
 
 ## Dependencies and external effects
 
-List proposed additions or operations needing authorization and record authorization already granted.
+List additions, migrations, external operations, required permissions, and existing authorization. Unresolved consequential permissions block ready status.
 
 ## Verification strategy
 
-Relevant test commands, static checks, UI inspection viewports, and any known baseline failures.
+Record relevant tests, integration checks, static checks, UI viewports when applicable, content provenance checks, and known baseline failures.
 
 ## Delivery
 
-Workspace path, artifact locations in `<main-repo>/.agent-docs/`, and handoff method.
+Record the final candidate checkout and artifacts in the parent repository's `.agent-docs/`, review evidence, limitations, and handoff method. Use the execution identity consistently for plan, proof, taskboard, and screenshot names. Builders must reconcile changed plan decisions before dependent work.
+
+## Execution instruction
+
+Provide a copyable instruction naming this exact ready plan, target checkout, and selected executor. For example, `Execute /.agent-docs/plans/<feature>.md using full-track in the named checkout. Follow its scope, checks, and ownership boundaries.` Boost requires its explicit native entry sequence from the harness adapter. Ready status alone is not authorization. Material scope changes return to the planning phase and require a new execution instruction.

@@ -1,27 +1,25 @@
 # Shared workflow procedures
 
-This directory contains internal workflow procedures rather than discoverable skills. Entry skills select or confirm the track, while [core](core.md) owns shared policy, phase ordering, artifact lifecycle, and retry rules. Read only the procedure for the active phase rather than loading the entire directory at once.
+These internal procedures travel beside the installed skills and have no discoverable `SKILL.md`. [Core](core.md) owns routing, phase boundaries, authorization, records, and retry limits. Read procedures as needed.
 
-| Procedure | Inputs | Completion |
-| --- | --- | --- |
-| [Discovery](discovery.md) | Repository and task | Relevant commands, terminology, and constraints identified |
-| [Workspace](workspace.md) | Track and repository state | `.git/info/exclude` configured, safe working location prepared, and baseline recorded |
-| [Design](design.md) | Request, discovered facts, and existing brief or decisions | Shared decision rules applied; specification sections and domain terms recorded in the active track |
-| [Planning](planning.md) | Specification and commands | Ordered tasks, verification strategy, and approval completed |
-| [Execution](execution.md) | Plan and workspace | Required tasks implemented or rolled back and documented on cap exhaustion |
-| [Testing](testing.md) | Behavior and existing tests | Recorded red and green command evidence and logged test amendments |
-| [Review](review.md) | Requirements, diff, and test evidence | Findings resolved or escalated after three rounds |
-| [Verification](verification.md) | Reviewed candidate | Reproducible checks, embedded UI evidence, and combined proof and walkthrough |
-| [Handoff](handoff.md) | Verified candidate and records | In-place changes staged or worktree merge command provided without target-branch commits |
-| [Research Explain](research-explain.md) | Project documentation and learning goal | Source-linked project explanation, bootstrapping missing guides via Audit when permitted |
-| [Research Audit](research-audit.md) | Codebase and current documentation | Maintained guides updated and coverage record written in `.agent-docs/research/` |
+| Procedure | Purpose |
+| --- | --- |
+| [Discovery](discovery.md) | Inspect project facts, terminology, commands, and relevant constraints |
+| [Workspace](workspace.md) | Prepare candidate checkout and parent-root artifacts with safe isolation |
+| [Design](design.md) | Resolve design phase decisions and observable requirements |
+| [Planning](planning.md) | Write a ready plan and an explicit execution handoff |
+| [Execution](execution.md) | Execute the adopted plan using the selected executor |
+| [Testing](testing.md) | Capture meaningful red and green evidence and test amendments |
+| [Review](review.md) | Assess candidate requirements, test integrity, and integration risks |
+| [Verification](verification.md) | Check the actual candidate and write proof and walkthrough |
+| [Handoff](handoff.md) | Stage scoped changes and provide usable integration instructions |
+| [Research Explain](research-explain.md) | Explain project documentation with source evidence |
+| [Research Audit](research-audit.md) | Audit documentation against maintained code and record coverage |
 
-## Extracting a procedure into a skill
+[Planning](../planning/SKILL.md), [brainstorm](../brainstorm/SKILL.md), and [grilling](../grilling/SKILL.md) operate in the planning phase and write settled planning directly to the [plan](templates/plan.md). A [brief](templates/brief.md) holds paused or abandoned exploration. [Domain-modeling](../domain-modeling/SKILL.md) owns the canonical dictionary.
 
-[Brainstorm](../brainstorm/SKILL.md) owns the optional exploratory conversation. It reads the shared decision rules in [Design](design.md#shared-decision-rules), which also apply to tracks that skip brainstorming. Scoped interview behavior lives in [grilling](../grilling/SKILL.md), and canonical terminology lives under [domain-modeling](../domain-modeling/SKILL.md). A [brief](templates/brief.md) preserves exploration before a track exists; [core](core.md) defines its handoff into the active track artifact.
+The execution phase consumes a named ready plan when the user instructs execution. Boost owns its internal coordination; the custom layer supplies constraints and deliverables. Full-track uses custom non-boost delegation. Orchestration is experimental and explicit-only. Fast-track executes standalone fixes in a single chat and repairs approved behavior within the parent authorization. One-shot is the autonomous exception with either executor.
 
-Keep each procedure's purpose, inputs, steps, and completion criteria in one file. Link to [core](core.md), [workspace](workspace.md), [testing](testing.md), and [handoff](handoff.md) instead of duplicating shared policy. Use relative links so the installed bundle works outside this repository.
+Keep procedure ownership clear and link shared rules instead of repeating them in every skill. Installed resources need relative links. Templates describe document structure, not new approval gates. Rewrite instructional links for the destination when creating parent-root `.agent-docs` records. Concurrent runs use distinct execution identities.
 
-To expose a procedure as an independently invocable skill, add a directory under `skills/` with a focused `SKILL.md` that links to the procedure. The installer automatically discovers directories containing `SKILL.md` while copying or linking `_workflow` alongside them. Add manual-invocation adapter metadata only when the skill must never be selected automatically by a model.
-
-[Templates](templates/) define artifact structure and omit empty sections when unused. Resolve links relative to the installed bundle while reading templates, and rewrite or omit instructional links when writing files under `<main-repo>/.agent-docs/`. [Adapters](adapters/) hold harness-specific mechanics while shared procedures stay portable.
+The installer discovers directories containing `SKILL.md` and installs `_workflow` alongside them. Add a skill only for an independently invocable capability. Keep explicit-only invocation policy in supported metadata and prose rather than inventing runner APIs.
