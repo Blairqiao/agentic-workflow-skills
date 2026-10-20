@@ -2,6 +2,8 @@
 
 Inputs: repository, requested change, and existing project guidance or profile.
 
+Task exploration gathers enough evidence to resolve the current task's questions, then stops. Research may reuse the delegation mechanics below, but its requested depth and coverage determine completion.
+
 1. Read applicable repository instructions, `<main-repo>/.agent-docs/CONTEXT.md` or `<main-repo>/.agent-docs/CONTEXT-MAP.md` when present, and relevant project guides. Gather relevant scripts, CI configuration, manifests, and test configuration using the code exploration policy below. Follow the token-saving reading rule in [core](core.md): read only the active `.agent-docs/` records for the feature, including its brief before a track exists, and skip `.agent-docs/archive/` unless historical context is directly needed. A handed-off brief points to the authoritative track document. Cross-check documentation relevant to the requested change against source and record gaps or contradictions. Prefer directly observed facts over stale documentation, while instructions and the shared domain dictionary govern authorization, canonical terminology, and conventions.
 2. Identify the commands and test tiers needed for this change, relevant test layout, hooks that rewrite files, and affected service or security boundaries. Inspect environment variable file names and committed templates without reading local secret values.
 3. Reuse a verified profile where useful, checking facts affected by configuration changes. If repeated discovery warrants a profile, use [the profile template](templates/profile.md); otherwise record relevant findings in the combined plan, fast-track record, or one-shot run document. No separate confirmation gate is needed.

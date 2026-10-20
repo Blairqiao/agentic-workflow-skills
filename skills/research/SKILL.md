@@ -15,6 +15,10 @@ Read repository guidance and locate existing project documentation and the domai
 
 Load only the selected procedure. Explain bootstraps documentation through Audit when usable project documentation is absent, then returns to the explanation. Disclose that extra work before starting it, respect explicit read-only constraints, and report what cannot be created.
 
+## Depth and delegation
+
+Deep research systematically examines its declared scope, tracing relationships, contradictions, and gaps beyond immediate implementation needs. Match explanations to the requested depth and audits to their coverage inventory. Reuse [code delegation](../_workflow/discovery.md#code-exploration-and-delegation) for source inspection; the orchestrator may read documentation directly and owns the final synthesis. The selected mode's completion requirements govern when to stop.
+
 ## Shared boundaries
 
 Preserve established documentation locations. New project guides default to versioned `docs/`, while audit records belong in `<main-repo>/.agent-docs/research/` using [the research audit template](../_workflow/templates/research-audit.md). Keep the domain dictionary under [domain-modeling](../domain-modeling/SKILL.md) and apply [unslop](../unslop/SKILL.md) to authored prose.
