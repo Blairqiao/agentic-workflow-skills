@@ -5,7 +5,7 @@
 ## Skill activation announcement
 
 Whenever any skill is invoked or activated, such as `planning`, `brainstorm`, `grilling`, `domain-modeling`, `human-tdd`, `research`, `full-track`, `fast-track`, or `one-shot`, the agent must explicitly announce the skill activation in its chat response before executing steps:
-`> 🛠️ **Skill Activated:** \`<skill-name>\` - <brief reason or scope>`
+`> **Skill Activated:** \`<skill-name>\` - <brief reason or scope>`
 
 ## Two-phase workflow and link placement
 

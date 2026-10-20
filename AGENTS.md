@@ -18,7 +18,7 @@
 ## Execution and verification standards
 
 1. **Workflow tool skills.** Invoke specialized tool skills according to task needs. Whenever any skill is invoked or activated, such as `planning`, `brainstorm`, `grilling`, `domain-modeling`, `human-tdd`, `research`, `full-track`, `fast-track`, or `one-shot`, the agent must explicitly announce the skill activation in its chat response before executing steps:
-   `> 🛠️ **Skill Activated:** \`<skill-name>\` - <brief reason or scope>`
+   `> **Skill Activated:** \`<skill-name>\` - <brief reason or scope>`
    - **Planning.** Use [planning](skills/planning/SKILL.md) to consolidate discovery, domain modeling, and stress testing, author the authoritative plan at `plans/<feature>.md`, and place a direct clickable link to the plan artifact at the very bottom of the chat response.
    - **Brainstorm.** Use [brainstorm](skills/brainstorm/SKILL.md) to explore ideas and save every completed or paused brief. Before a track starts, use `<main-repo>/.agent-docs/briefs/<feature>.md`; during a track, update its existing artifact. On handoff, incorporate the decisions and mark the brief handed off with a link to the authoritative track document. Respect explicit chat-only requests and preserve each track's approval policy. One-shot applies shared design rules autonomously without interactive brainstorming or grilling.
    - **Domain modeling.** Use [domain-modeling](skills/domain-modeling/SKILL.md) to build and maintain the shared domain dictionary in `<main-repo>/.agent-docs/CONTEXT.md`.
