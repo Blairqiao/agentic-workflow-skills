@@ -1,6 +1,6 @@
 # Shared workflow procedures
 
-These internal procedures travel beside the installed skills and have no discoverable `SKILL.md`. [Core](core.md) owns routing, phase boundaries, authorization, records, and retry limits. Read procedures as needed.
+These internal procedures travel beside the installed skills and have no discoverable `SKILL.md`. [Core](core.md) owns routing, phase boundaries, authorization, records, and retry limits. Apply its supplied-context reuse policy and load current operation details only. Links are optional references unless a current step explicitly requires their contents.
 
 | Procedure | Purpose |
 | --- | --- |
@@ -18,8 +18,8 @@ These internal procedures travel beside the installed skills and have no discove
 
 [Planning](../planning/SKILL.md), [brainstorm](../brainstorm/SKILL.md), and [grilling](../grilling/SKILL.md) operate in the planning phase and write settled planning directly to the [plan](templates/plan.md). A [brief](templates/brief.md) holds paused or abandoned exploration. [Domain-modeling](../domain-modeling/SKILL.md) owns the canonical dictionary.
 
-The execution phase consumes a named ready plan when the user instructs execution. Boost owns its internal coordination; the custom layer supplies constraints and deliverables. Full-track uses custom non-boost delegation. Orchestration is experimental and explicit-only. Fast-track executes standalone fixes in a single chat and repairs approved behavior within the parent authorization. One-shot is the autonomous exception with either executor.
+The execution phase consumes a named ready plan when the user instructs execution. Boost owns its internal coordination; the custom layer supplies constraints and deliverables. Full-track uses custom non-boost delegation. Orchestration is experimental and explicit-only. Fast-track executes standalone fixes in a single chat. Every follow-up repair in interactive tracks requires new inline mini-spec approval before code or test edits, including repairs to parent-approved behavior. One-shot is the autonomous exception with either executor.
 
-Keep procedure ownership clear and link shared rules instead of repeating them in every skill. Installed resources need relative links. Templates describe document structure, not new approval gates. Rewrite instructional links for the destination when creating parent-root `.agent-docs` records. Concurrent runs use distinct execution identities.
+Keep procedure ownership clear and link shared rules instead of repeating them in every skill. Installed resources need relative links. Templates record the approval gates owned by core; they do not introduce independent gates. Rewrite instructional links for the destination when creating parent-root `.agent-docs` records. Concurrent runs use distinct execution identities.
 
 The installer discovers directories containing `SKILL.md` and installs `_workflow` alongside them. Add a skill only for an independently invocable capability. Keep explicit-only invocation policy in supported metadata and prose rather than inventing runner APIs.

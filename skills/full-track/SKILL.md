@@ -5,7 +5,7 @@ description: Use for isolated features and debugging beyond a bounded repair. Co
 
 # Full track
 
-Read [workflow core](../_workflow/core.md) and follow its phase sequence with track `full`.
+Apply [workflow core](../_workflow/core.md), including supplied-context reuse. Load the active adapter and procedure details only for the current operation; do not recursively load linked documents.
 
 ## Scope and records
 
@@ -17,10 +17,10 @@ Maintain the ready plan at `<main-repo>/.agent-docs/plans/<feature>.md`, the tas
 
 The planning phase writes the complete plan and presents its scope, affected files, strategy, and acceptance criteria inline in chat with the plan link at the bottom. Execution starts when the user instructs execution of the named ready plan. That instruction authorizes its scope. Load and validate the plan against the starting revision and protected edits, then execute without repeating approval or interviews. A ready status alone is not authorization. Consequential unresolved blockers prevent execution.
 
-Material scope changes return to the planning phase. Record the affected blocker and continue independent authorized work. A revised plan requires a new execution instruction for the changed scope. Bounded defects within approved behavior can use fast-track and append evidence to the parent proof.
+Material scope changes return to the planning phase. Record the affected blocker and continue independent authorized work. A revised plan requires a new execution instruction for the changed scope. Bounded defects within approved behavior can use fast-track and append evidence to the parent proof. Every follow-up repair requires its inline mini-spec and explicit approval before code or test edits under core; parent behavior approval does not replace this gate.
 
 ## Execution and handoff
 
-Prefer an isolated candidate worktree at `<main-repo>/.worktrees/<feature>`. Mandate subagent delegation for task implementation. The orchestrator assigns bounded tasks through [implementer briefs](../_workflow/templates/implementer-brief.md), coordinates dependencies, and verifies integration. Use supported standard coding models through [the adapter](../_workflow/adapters/antigravity.md). Obtain [independent review](../_workflow/review.md) of the candidate, with earlier reviews for high-risk boundaries. Follow [test integrity](../_workflow/testing.md), autopilot TDD unless human-guided testing was requested, and [verification](../_workflow/verification.md).
+Prefer an isolated candidate worktree at `<main-repo>/.worktrees/<feature>`. Mandate subagent delegation for task implementation. The orchestrator assigns bounded tasks through [implementer briefs](../_workflow/templates/implementer-brief.md), coordinates dependencies, and verifies integration. Use supported standard coding models through the active adapter. Obtain [independent review](../_workflow/review.md) of the candidate, with earlier reviews for high-risk boundaries. Follow [test integrity](../_workflow/testing.md), autopilot TDD unless human-guided testing was requested, and [verification](../_workflow/verification.md).
 
 Cap failed implementation attempts at three and review-fix rounds at three. Preserve unrelated edits and record failures. Follow [handoff](../_workflow/handoff.md), leaving publishing and the final target-branch commit to the user. Load linked procedures when their phase begins.

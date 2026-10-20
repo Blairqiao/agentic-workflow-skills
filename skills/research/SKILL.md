@@ -5,7 +5,7 @@ description: Use when explaining a project's documentation, auditing its codebas
 
 # Research
 
-Read repository guidance and locate existing project documentation and the domain dictionary. Identify the main repository and configure `.git/info/exclude` using [workspace preparation](../_workflow/workspace.md) before writing workflow records, especially when working in a linked worktree.
+Apply supplied-context reuse from [workflow core](../_workflow/core.md); load only current operation details. Read repository guidance and locate existing project documentation and the domain dictionary. Identify the main repository and configure `.git/info/exclude` using [workspace preparation](../_workflow/workspace.md) before writing workflow records, especially when working in a linked worktree.
 
 ## Select a mode
 

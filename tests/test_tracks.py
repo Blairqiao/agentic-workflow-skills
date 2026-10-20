@@ -23,13 +23,17 @@ class TrackContractTests(unittest.TestCase):
                          'Mandate subagent delegation', 'Material scope changes return to the planning phase'):
             self.assertIn(required, text)
 
-    def test_fast_reuses_only_approved_defect_authorization(self):
+    def test_fast_requires_approval_for_each_follow_up(self):
         text = skill('fast-track')
-        for required in ('approved behavior', 'parent plan', 'without another approval',
+        for required in ('approved behavior', 'parent plan', 'every follow-up repair',
                          "parent's proof", 'non-boost',
                          'No implementation subagents', 'regression test', 'independent review'):
             self.assertIn(required, text)
-        self.assertNotIn('pause for approval before modifying code', text)
+        self.assertIn('pause for explicit approval before editing code or tests', text)
+        self.assertNotIn('without another approval', text)
+        template = (ROOT / 'skills/_workflow/templates/fast-track.md').read_text()
+        self.assertIn('every follow-up repair', template)
+        self.assertIn('Parent behavior approval does not substitute', template)
         for obsolete in DEPRECATED_PHASE_TERMS:
             self.assertNotIn(obsolete, text)
 
@@ -43,6 +47,30 @@ class TrackContractTests(unittest.TestCase):
         template = (ROOT / 'skills/_workflow/templates/fast-track.md').read_text()
         for required in ('Parent plan', 'Authorization boundary', 'Invalidated evidence'):
             self.assertIn(required, template)
+
+    def test_fast_has_linear_checks_without_recursive_phase_loading(self):
+        text = skill('fast-track')
+        self.assertNotIn('follow its phase sequence', text)
+        for required in ('1. **Fit', '2. **Authorize', '3. **Starting state',
+                         '4. **Red and green', '5. **Review', '6. **Handoff',
+                         'git worktree list --porcelain', 'git status',
+                         'git check-ignore', '.git/info/exclude',
+                         'starting revision', 'pre-existing', 'CONTEXT.md',
+                         'active adapter', 'only when',
+                         'Test amendments', 'three', 'Stage candidate'):
+            self.assertIn(required, text)
+        self.assertIn('without loading the full discovery/design/planning chain', text)
+        self.assertIn('before writing workflow records', text.lower())
+
+    def test_entries_reuse_core_and_load_only_current_operations(self):
+        for name in ('fast-track', 'full-track', 'one-shot'):
+            text = skill(name)
+            self.assertIn('supplied-context reuse', text, name)
+            self.assertNotIn('follow its phase sequence', text, name)
+        planning = skill('planning')
+        self.assertIn('supplied-context reuse', planning)
+        self.assertIn('when requirements need exploration', planning.lower())
+        self.assertIn('supplied-context reuse', skill('research'))
 
     def test_harness_specific_tracks_removed_from_public_bundle(self):
         self.assertFalse((ROOT / 'skills/boost-track').exists(), 'boost-track must not be in public root bundle')

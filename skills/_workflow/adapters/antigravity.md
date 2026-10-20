@@ -22,4 +22,4 @@ Select supported models through capability tiers:
 
 Use [discovery](../discovery.md#code-exploration-and-delegation) for focused read-only assignments. Give independent reviewers [the reviewer brief](../templates/reviewer-brief.md). Custom Antigravity coordinators use reactive wakeups on completion or background events rather than polling. Use available browser inspection tools for UI checks. Disclose unavailable delegation or model selection instead of guessing controls.
 
-Ordinary entry follows the planning and execution contract. Explicit execution of a named ready plan authorizes the execution phase. One-shot is an explicit autonomous exception with either executor. Fast-track follow-up defects inherit only the parent's approved behavior, and standalone fast-track fixes execute in a single chat.
+Use [common policy](../core.md) for supplied-context reuse, conditional phase loading, and authorization. Every interactive follow-up repair needs its own approved mini-spec before code or test edits. Explicit one-shot retains its autonomous exception with either executor.

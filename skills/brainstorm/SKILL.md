@@ -29,13 +29,13 @@ Tentative ideas can remain in chat while exploring. Save the completed plan dire
 
 Save paused or abandoned exploration to `<main-repo>/.agent-docs/briefs/<feature>.md` using [the brief template](../_workflow/templates/brief.md). Update that record in place. When its decisions become a complete plan, incorporate them once and mark the brief handed off with a link to the authoritative plan. Follow that link on resume. During an active track, update its authoritative record rather than creating another brief.
 
-Before writing any artifact, identify the parent repository and follow [workspace preparation](../_workflow/workspace.md). Apply [execution identity rules](../_workflow/core.md#artifact-naming-in-place-updates-and-archival) so concurrent plans and evidence cannot overwrite each other. An explicit chat-only request overrides persistence and keeps decisions and definitions inline. If no destination is known or writing is blocked, retain the summary inline and report incomplete persistence.
+Before writing any artifact, identify the parent repository and follow [workspace preparation](../_workflow/workspace.md). Apply [execution identity rules](../_workflow/core.md#operation-routing-and-records) so concurrent plans and evidence cannot overwrite each other. An explicit chat-only request overrides persistence and keeps decisions and definitions inline. If no destination is known or writing is blocked, retain the summary inline and report incomplete persistence.
 
-Saved briefs are local ignored workflow records. Do not claim they are shared across machines or available to another checkout without checking. Follow [core artifact guidance](../_workflow/core.md#artifact-naming-in-place-updates-and-archival) for updates and archival.
+Saved briefs are local ignored workflow records. Do not claim they are shared across machines or available to another checkout without checking. Follow [core artifact guidance](../_workflow/core.md#operation-routing-and-records) for updates and archival.
 
 ## Track boundaries
 
-Normal tracks use separate planning and implementation sessions. A ready plan alone is not authorization. The user's explicit instruction to execute that named plan authorizes execution within its scope, without repeated approval. Grilling confirms understanding without an extra gate. Material scope changes return to the planning phase. A request to plan authorizes plan preparation only.
+Normal tracks use separate planning and implementation sessions. A ready plan alone is not authorization. The user's explicit instruction to execute that named plan authorizes execution within its scope, without repeating the initial plan approval. Every follow-up repair in interactive tracks requires new inline mini-spec approval before code or test edits under [core](../_workflow/core.md). Grilling confirms understanding without an extra gate. Material scope changes return to the planning phase. A request to plan authorizes plan preparation only.
 
 In an explicitly selected `one-shot` run, use the shared decision rules autonomously, record alternatives and material assumptions in the run document, and continue the authorized work without interactive brainstorming, grilling, or feedback gates.
 

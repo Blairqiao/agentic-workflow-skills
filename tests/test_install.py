@@ -109,7 +109,8 @@ class InstallTests(unittest.TestCase):
             {"name", "description"},
         )
         # Follow the skill's installed references, including shared procedures and templates.
-        pending = [brainstorm, planning]
+        pending = [brainstorm, planning, *(location / name / "SKILL.md"
+                                           for name in ("full-track", "fast-track", "one-shot"))]
         visited = set()
         while pending:
             resource = pending.pop().resolve()
@@ -122,6 +123,13 @@ class InstallTests(unittest.TestCase):
                     continue
                 linked = (resource.parent / target.split("#", 1)[0]).resolve()
                 self.assertTrue(linked.is_file(), f"Broken installed reference in {resource}: {target}")
+                if "#" in target:
+                    fragment = target.split("#", 1)[1]
+                    headings = re.findall(r"^#{1,6} (.+)$", linked.read_text(), re.MULTILINE)
+                    anchors = {re.sub(r"[^\w -]", "", heading.lower()).replace(" ", "-")
+                               for heading in headings}
+                    self.assertIn(fragment, anchors,
+                                  f"Broken installed anchor in {resource}: {target}")
                 if linked.suffix == ".md":
                     pending.append(linked)
         for name in PUBLIC:
@@ -277,7 +285,9 @@ class InstallTests(unittest.TestCase):
         for obsolete in DEPRECATED_PHASE_TERMS:
             self.assertNotIn(obsolete, full_track)
         fast_track = (self.project / ".agents/skills/fast-track/SKILL.md").read_text()
-        self.assertIn("without another approval", fast_track)
+        self.assertIn("every follow-up repair", fast_track)
+        self.assertIn("pause for explicit approval before editing code or tests", fast_track)
+        self.assertNotIn("without another approval", fast_track)
         for obsolete in DEPRECATED_PHASE_TERMS:
             self.assertNotIn(obsolete, fast_track)
         agents_guide = (ROOT / "AGENTS.md").read_text()
@@ -285,7 +295,8 @@ class InstallTests(unittest.TestCase):
             self.assertNotIn(obsolete, agents_guide)
         self.assertIn("Skill Activated:", agents_guide)
         gemini_rules = (ROOT / "GEMINI.md").read_text()
-        self.assertIn("Skill Activated:", gemini_rules)
+        self.assertIn("AGENTS.md", gemini_rules)
+        self.assertIn("common policy", gemini_rules)
 
     def test_existing_brainstorm_resources_are_preserved_then_refreshed(self):
         self.install("codex")

@@ -5,7 +5,7 @@ description: Use only when explicitly requested for autonomous planning and impl
 
 # One-shot
 
-Read [workflow core](../_workflow/core.md) and follow its phase sequence with track `one-shot`.
+Apply [workflow core](../_workflow/core.md), including supplied-context reuse. Load the active adapter and procedure details only for the current operation; do not recursively load linked documents.
 
 ## Autonomous exception and executor
 

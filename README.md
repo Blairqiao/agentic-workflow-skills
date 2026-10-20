@@ -7,14 +7,14 @@ Ten public skills run documented development tracks or provide standalone workfl
 The workflow provides a clean separation between planning and execution:
 
 1. **Planning phase.** Triggered by `/planning` or explicit planning requests. Consolidates exploratory problem framing, domain terminology modeling, and architectural stress-testing. Authors the authoritative plan at `plans/<feature>.md` using [the plan template](skills/_workflow/templates/plan.md). Never modifies code or tests. Finalizes by presenting scope, affected files, strategy, and acceptance criteria inline in chat, with a direct clickable link to the authoritative plan artifact placed at the very bottom of the chat response.
-2. **Execution phase.** Authorized by an explicit user instruction naming the ready plan. Adopts and validates the plan against workspace state, starting revision, and protected user edits without repeating interviews or approval gates. Runs under the chosen track. Material scope changes return to the planning phase for renewed authorization.
+2. **Execution phase.** Authorized by an explicit user instruction naming the ready plan. Adopts and validates the plan against workspace state, starting revision, and protected user edits without repeating settled interviews or the initial plan approval. Every follow-up repair in an interactive track requires inline mini-spec approval before code or test edits, even within the parent behavior. Explicit one-shot retains its autonomous exception. Runs under the chosen track. Material scope changes return to the planning phase for renewed authorization.
 
 ## Choose an execution track
 
 | Track | Selection | Execution | Authorization | Documentation |
 | --- | --- | --- | --- | --- |
 | `full-track` | User request or automatic model selection for multi-step work | Prefer a worktree; mandate subagent delegation for task implementation | User instruction naming ready plan | `plans/<feature>.md`, `taskboard/<feature>.md`, and `proofs/<feature>.md` |
-| `fast-track` | User request or automatic model selection for bounded linear fixes | Current workspace; direct execution without implementation subagents | Mini-spec inline approval or parent plan | Single `fast-track/<feature>.md` record or parent proof |
+| `fast-track` | User request or automatic model selection for bounded linear fixes | Current workspace; direct execution without implementation subagents | Mini-spec inline approval for standalone fixes and every follow-up repair | Single `fast-track/<feature>.md` record or parent proof |
 | `one-shot` | Explicit user request only | Prefer a worktree; autonomous decisions and delivery with either executor | Explicit single-prompt request | Single `runs/<feature>.md` record |
 
 Every track verifies the delivery candidate and requires [independent review](skills/_workflow/review.md) packaged with [the reviewer brief](skills/_workflow/templates/reviewer-brief.md). Fast-track retains an independent review subagent and escalates to `full-track` if scope outgrows linear single-session execution. Full-track mandates subagent delegation for task implementation. Full-track and one-shot may use the current workspace for small tasks or explicit in-place requests. Failed task implementation attempts are capped at 3 and review-fix cycles are capped at 3 rounds. When an in-place run reaches a retry cap, the agent restores modified candidate files to their pre-task state while recording what was tried and what failed in `.agent-docs/`.
@@ -61,7 +61,7 @@ Existing documentation stays in its established location. New project guides def
 ./install.sh --uninstall --global
 ```
 
-Use `install.sh` rather than single-skill fetchers such as `npx skills` or `gemini skills install`. The entry tracks read shared procedures in `_workflow` and invoke sibling tool skills, which single-directory fetchers do not bundle together.
+Use `install.sh` rather than single-skill fetchers such as `npx skills` or `gemini skills install`. Entry tracks load current operation details from `_workflow` and invoke sibling tool skills, which single-directory fetchers do not bundle together.
 
 The installer preserves existing destinations unless `--force` is supplied. Supplying `--force` replaces matching installed entries, including `_workflow`. Supplying `--uninstall` removes the installed workflow skills, `_workflow`, and retired entries from the earlier sixteen-skill bundle while leaving unrelated custom skills untouched.
 
@@ -97,7 +97,7 @@ All workflow documentation belongs in the parent repository at `<main-repo>/.age
 - `<main-repo>/.agent-docs/research/<feature-or-run-id>.md` for `research audit` coverage and evidence.
 - `<main-repo>/.agent-docs/archive/` for archived plans, detailed completed taskboards, and abandoned attempt details.
 
-Start each session by reading the feature's active brief before a track exists, or its active plan and unfinished tasks during a track. Follow handed-off briefs to their authoritative document, consulting `.agent-docs/archive/` only when historical context is directly needed.
+Apply [supplied-context reuse](skills/_workflow/core.md#supplied-context-and-loading) at startup. Links are optional references unless the current step explicitly requires their contents. Load only current operation details and the active adapter. Use the feature's active brief before a track exists, or its active plan and unfinished tasks during a track. Follow handed-off briefs to their authoritative document, consulting `.agent-docs/archive/` only when historical context is directly needed.
 
 ## Extending the suite
 

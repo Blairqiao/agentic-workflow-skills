@@ -1,40 +1,40 @@
 # Fast-track record
 
-Execution slug, status, date, base revision, target checkout and branch:
+Execution identity, status, date, checkout, branch, and base revision:
 
-## Authorization boundary
+## Authorization boundary and mini-spec
 
-Parent plan path and revision, parent proof, approved behavior, and execution instruction. For an in-track follow-up, append this entry to the parent proof when available rather than creating another record. State why the repair stays within existing authorization.
+Standalone fix or follow-up. Parent plan path/revision and parent proof when applicable. Append to the parent's proof when available rather than creating another record.
 
-For a standalone fix, record the mini-spec, scope, exclusions, files, strategy, acceptance criteria, verification, permissions, protected edits, and unresolved blockers directly in this file in a single chat. Present the mini-spec inline in chat and pause for approval before modifying code or tests.
+Record scope, exclusions, affected files, strategy, numbered acceptance criteria, verification commands, permissions, and blockers. Present these inline and pause for explicit approval before editing code or tests for the standalone fix and every follow-up repair. Parent behavior approval does not substitute for repair approval. Record the approval and link this authoritative artifact at the bottom of the gate response.
 
 ## Defect and acceptance criteria
 
-Observed defect, expected behavior, likely cause, target files, and relevant domain context:
+Observed defect, expected behavior, likely cause, and relevant domain context:
 
 | ID | Observable requirement | Verification |
 | --- | --- | --- |
 
 ## Workspace and starting state
 
-Current candidate checkout, starting revision, and pre-existing user changes:
+Main repository, candidate checkout/branch, starting revision, exclusions verified, pre-existing protected edits, restoration information, baseline, and conditional setup:
 
 ## Red and green evidence
 
-Exact commands, verbatim observed red failure before implementation, and verbatim green pass output after implementation. For purely visual fixes, record reproducible before-and-after browser evidence when it proves the requirement more directly.
+Exact commands and verbatim observed red failure before implementation and green pass output. Link lengthy logs stored once. For non-code or purely visual fixes, record suitable static, rendering, dry-run, or reproducible before/after browser evidence.
 
 ## Test amendments and attempted approaches
 
-Post-red revisions with reasons, or none. Record failed approaches and restoration if a retry cap was reached.
+Post-red changes and reasons, or none; independent reviewer sign-off. Failed approaches, attempt/review-round counts, and candidate-only restoration at a cap:
 
 ## Invalidated evidence
 
-Parent task status updated, affected integration boundaries, prior checks invalidated by this repair, and fresh results:
+Affected integration boundaries, parent task status, invalidated checks, and fresh results:
 
 ## Review
 
-Independent patch review, scope, findings, resolutions, amendment sign-off, and verdict:
+Fresh independent reviewer, candidate scope/base, evidence, findings, resolutions, amendment disposition, and verdict:
 
 ## Proof and walkthrough
 
-Cause, correction, acceptance evidence, limitations, screenshots for UI checks, documentation impact, and staged candidate paths. State any material scope blocker returned to the planning phase.
+Cause, correction, acceptance proof, limitations, UI screenshot embeds, documentation impact, and staged paths. Record scope blockers returned to planning and user-owned commit/handoff steps. Keep one lean record, updating it in place.

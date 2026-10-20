@@ -23,6 +23,64 @@ class ExecutorContractTests(unittest.TestCase):
         self.assertIn('incomplete', text)
         self.assertIn('test amendment', text)
 
+    def test_reviewer_brief_supplies_complete_candidate_inputs(self):
+        text = self.read('templates/reviewer-brief.md')
+        for requirement in (
+                'Exact plan path and revision', 'execution slug', 'selected executor',
+                'evidence ownership', 'Workspace, candidate branch, and base revision',
+                'git diff <base-revision>', 'untracked candidate files',
+                'Acceptance criteria', 'Settled design decisions', 'non-goals',
+                'Domain dictionary', 'Red and green test outputs',
+                'Exact commands and verbatim', 'Test amendments',
+                'every existing test expectation changed', 'Suite and UI evidence'):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, text)
+
+    def test_reviewer_contract_does_not_recursively_load_workflow(self):
+        text = self.read('templates/reviewer-brief.md')
+        self.assertIn('This brief is the complete reviewer contract', text)
+        self.assertIn('Applicable repository guidance', text)
+        self.assertIn('Exclude the implementer', text)
+        self.assertNotIn('](../review.md)', text)
+        self.assertNotIn('](review.md)', text)
+        for instruction in ('Read the track', 'Read workflow core',
+                            'Read the taskboard template', 'Read the proof template'):
+            self.assertNotIn(instruction, text)
+        procedure = self.read('review.md')
+        self.assertIn('templates/reviewer-brief.md', procedure)
+        self.assertIn('Keep the reviewer checklist in that contract', procedure)
+
+    def test_reviewer_contract_audits_evidence_and_missing_proof(self):
+        text = self.read('templates/reviewer-brief.md')
+        for requirement in (
+                'every acceptance criterion', 'complete candidate diff',
+                'weakened assertions', 'missing edge cases', 'fixture-specific production',
+                'inappropriate mocks', 'accept or reject every test amendment',
+                'Reproduce commands', 'Missing red evidence cannot be reconstructed',
+                'later passing run does not replace', 'review incomplete',
+                'input handling', 'authentication', 'authorization', 'stored data',
+                'dependencies', 'external boundaries', 'data loss', 'locking', 'rollback',
+                'documentation', 'requirements were not rewritten to hide defects'):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, text)
+
+    def test_reviewer_verdict_and_orchestrator_resolution_are_explicit(self):
+        brief = self.read('templates/reviewer-brief.md')
+        for requirement in (
+                'Method and independence', 'Candidate identity and base revision',
+                'pass, blocking findings, or incomplete', 'Criterion-by-criterion',
+                'exact file locations', 'consequences', 'Optional polish',
+                'Amendment dispositions', 'Missing evidence and limitations'):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, brief)
+        procedure = self.read('review.md')
+        for requirement in ('fresh review subagent', 'high-reasoning',
+                            'independent session', 'ask the user', 'loss of independence',
+                            '3 rounds', 'Re-review', 'restore modified candidate files',
+                            'retain isolated candidates', 'test amendment'):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, procedure)
+
     def test_native_workers_and_persistent_candidate_have_distinct_rules(self):
         text = self.read('workspace.md')
         self.assertIn('native ephemeral workers', text)
