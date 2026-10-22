@@ -5,7 +5,7 @@ description: Use when explaining a project's documentation, auditing its codebas
 
 # Research
 
-Read repository guidance and locate existing project documentation and the domain dictionary. Identify the main repository and configure `.git/info/exclude` using [workspace preparation](../_workflow/workspace.md) before writing workflow records, especially when working in a linked worktree.
+Apply supplied-context reuse from [workflow core](../_workflow/core.md); load only current operation details. Read repository guidance and locate existing project documentation and the domain dictionary. Identify the main repository and configure `.git/info/exclude` using [workspace preparation](../_workflow/workspace.md) before writing workflow records, especially when working in a linked worktree.
 
 ## Select a mode
 
@@ -14,6 +14,10 @@ Read repository guidance and locate existing project documentation and the domai
 - **Ambiguous requests.** Ask which mode the user wants before changing documentation, following the active track's ambiguity policy. One-shot selects and records the mode autonomously.
 
 Load only the selected procedure. Explain bootstraps documentation through Audit when usable project documentation is absent, then returns to the explanation. Disclose that extra work before starting it, respect explicit read-only constraints, and report what cannot be created.
+
+## Depth and delegation
+
+Deep research systematically examines its declared scope, tracing relationships, contradictions, and gaps beyond immediate implementation needs. Match explanations to the requested depth and audits to their coverage inventory. Reuse [code delegation](../_workflow/discovery.md#code-exploration-and-delegation) for source inspection; the orchestrator may read documentation directly and owns the final synthesis. The selected mode's completion requirements govern when to stop.
 
 ## Shared boundaries
 

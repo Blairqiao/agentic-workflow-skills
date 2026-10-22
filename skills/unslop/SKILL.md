@@ -6,7 +6,9 @@ description: >-
 
 # Unslop
 
-Edit authored prose and comments to remove AI patterns. Never alter fenced code blocks, terminal command output, logs, commit hashes, file paths, or verbatim quotes. Apply these rules to both user-facing documentation and internal workflow artifacts in `.agent-docs/`.
+Edit authored prose and comments to remove AI patterns. Never alter fenced code blocks, commands, terminal command output, logs, commit hashes, file paths, or verbatim quotes. Apply these rules to both user-facing documentation and internal workflow artifacts in `.agent-docs/`.
+
+Announce activation once when required by repository guidance. Reusing the same active use needs no repeat activation announcement.
 
 ## Process
 

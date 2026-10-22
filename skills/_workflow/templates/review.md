@@ -1,20 +1,24 @@
 # Review record
 
-Method: independent subagent, independent session, or disclosed self-review.
-Candidate identity and base revision:
-Verdict: pass or blocking findings.
+The populated reviewer brief owns the review checklist and required verdict. Use this optional outline to record its result inside the taskboard, fast-track record, proof, or one-shot run document.
+
+Method and independence, including limitations:
+Candidate identity, reviewed scope, and base revision:
+Verdict: pass, blocking findings, or incomplete.
 
 | Criterion | Result | Implementation and verification evidence |
 | --- | --- | --- |
 
 ## Blocking findings and resolutions
 
-Give file locations, consequences, and verification of fixes.
+Record file locations, consequences, disposition, and verification of fixes.
 
-## Test integrity and security findings
+## Amendment dispositions and boundary findings
 
-Verify that test changes in the candidate diff match the acceptance criteria and recorded red and green outputs, explicitly accept or reject each logged test amendment, and record relevant security checks.
+Record acceptance or rejection of every test amendment with reasons, or state none. Include test integrity and relevant security findings.
+
+## Missing evidence and limitations
 
 ## Optional polish
 
-Omit empty sections. This record lives inside the taskboard, fast-track record, or one-shot run document.
+Omit empty sections. No separate review file or numeric score is required.

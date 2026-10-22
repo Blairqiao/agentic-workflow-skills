@@ -14,7 +14,7 @@ Record the audit in `<main-repo>/.agent-docs/research/<feature-or-run-id>.md` us
 
 ## Cross-check and document
 
-For each subsystem, read its implementation, interfaces, relevant tests, configuration, and documentation. Trace entry points and key flows across subsystem boundaries. Verify claims about responsibilities, data, setup, commands, integrations, and behavior against source and command evidence. Tests express expectations, but their presence alone does not prove they pass.
+Partition substantial code inspection by subsystem under the research skill's [depth and delegation policy](../research/SKILL.md#depth-and-delegation). Each assignment covers implementation, interfaces, relevant tests, and configuration, identifying inspected paths and remaining gaps against the coverage inventory. A summary alone does not establish complete coverage. The orchestrator reconciles findings with documentation and traces entry points and key flows across subsystem boundaries. Support claims about responsibilities, data, setup, commands, integrations, and behavior with source and command evidence. Tests express expectations, but their presence alone does not prove they pass.
 
 Classify findings before editing:
 

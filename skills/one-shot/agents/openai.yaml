@@ -1,5 +1,5 @@
 interface:
   display_name: "One shot"
-  short_description: "Autonomous run with decisions and evidence"
+  short_description: "Autonomous planning and delivery with either executor"
 policy:
   allow_implicit_invocation: false

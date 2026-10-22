@@ -6,7 +6,7 @@ description: >-
 
 # Grilling
 
-Interview the user relentlessly until you reach a shared understanding. Map the discussion as a **design tree** where every decision branches into the downstream decisions that depend on it.
+In the planning phase, interview the user until you reach a shared understanding. Execution adopts a ready plan and returns material decisions to the planning phase rather than restarting this interview. Map the discussion as a **design tree** where every decision branches into the downstream decisions that depend on it.
 
 When invoked for a scoped decision, build the tree only for that decision and its relevant downstream branches. Reuse settled conversation and brainstorm decisions as prerequisites, without reopening unrelated product choices. If evidence contradicts a prerequisite or resolution requires expanding scope, surface the conflict and establish the revised boundary with the user before pursuing the affected branch. An explicit request to grill the whole design retains that broader scope.
 
@@ -32,4 +32,4 @@ Each round the user answers reshapes the tree. Settled decisions push the fronti
 
 Finding facts is your job, never the user's. When a frontier question depends on a fact from the environment, such as the filesystem or tools, inspect the repository or dispatch a subagent to find it rather than asking the user for something you can look up yourself. Do not block the whole round on exploration. Only the questions downstream of a running lookup wait for the result; ask the rest of the frontier immediately. Put only real decisions to the user and wait.
 
-The session ends when the frontier is empty, every branch within the agreed scope has been visited, and nothing remains silently assumed. Confirm shared understanding, then return settled decisions and their rationale to the calling conversation or active design record. This confirmation is not implementation approval; the active track retains its approval gate. Do not start implementation merely because the grilling session is complete.
+The session ends when the frontier is empty, every branch within the agreed scope has been visited, and nothing remains silently assumed. Confirm shared understanding, then return settled decisions and their rationale to the calling conversation or active design record. Write the resolved decisions into the active plan, or a paused brief when exploration remains blocked. Confirmation alone is not implementation authorization. Execution begins only after the user explicitly instructs execution of the named ready plan, without repeating settled questions or initial plan approval. Every follow-up repair in interactive tracks needs new inline mini-spec approval before code or test edits under [core](../_workflow/core.md). Follow [planning](../_workflow/planning.md) for readiness and handoff. Place a direct clickable file link to the plan artifact at the very bottom of the chat response.

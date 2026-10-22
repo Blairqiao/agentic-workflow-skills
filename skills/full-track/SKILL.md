@@ -1,26 +1,26 @@
 ---
 name: full-track
-description: Use for adding isolated features whether large or medium, or debugging specific parts of a program. Standard model with boost capabilities and mandated subagent delegation.
+description: Use for isolated features and debugging beyond a bounded repair. Complete non-boost workflow with delegated implementation and independent review.
 ---
 
 # Full track
 
-Read [workflow core](../_workflow/core.md) and follow its phase sequence with track `full`.
+Apply [workflow core](../_workflow/core.md), including supplied-context reuse. Load the active adapter and procedure details only for the current operation; do not recursively load linked documents.
 
-## Scope and purpose
+## Scope and records
 
-Use full-track for adding isolated features, whether large or medium, or debugging specific parts of a program. It employs the standard model with boost capabilities and mandates subagent delegation for task implementation.
+Use full-track as the non-boost default for feature work and debugging beyond [fast-track](../fast-track/SKILL.md). The custom orchestrator owns implementation delegation, task dependencies, evidence, and review.
 
-Maintain three workflow documents in `<main-repo>/.agent-docs/` using a short, stable `<feature>` slug:
+Maintain the ready plan at `<main-repo>/.agent-docs/plans/<feature>.md`, the taskboard at `<main-repo>/.agent-docs/taskboard/<feature>.md`, and proof with walkthrough at `<main-repo>/.agent-docs/proofs/<feature>.md`. Scale record detail to task size. Concurrent runs use a distinct execution slug consistently across records, images, and workspace references.
 
-- `<main-repo>/.agent-docs/plans/<feature>.md` for the combined specification and implementation plan.
-- `<main-repo>/.agent-docs/taskboard/<feature>.md` for task orchestration, progress, and the review verdict.
-- `<main-repo>/.agent-docs/proofs/<feature>.md` for the combined verification proof and change walkthrough.
+## Plan adoption and execution entry
 
-## Execution and approval gates
+The planning phase writes the complete plan and presents its scope, affected files, strategy, and acceptance criteria inline in chat with the plan link at the bottom. Execution starts when the user instructs execution of the named ready plan. That instruction authorizes its scope. Load and validate the plan against the starting revision and protected edits, then execute without repeating approval or interviews. A ready status alone is not authorization. Consequential unresolved blockers prevent execution.
 
-Present the combined spec and plan inline in chat for approval before implementation. For follow-up rounds or defect fixes that alter the approach, update the plan in place, present the revised approach inline in chat, and obtain approval before editing code. Resolve consequential questions beforehand and reuse prior approval only within its original scope.
+Material scope changes return to the planning phase. Record the affected blocker and continue independent authorized work. A revised plan requires a new execution instruction for the changed scope. Bounded defects within approved behavior can use fast-track and append evidence to the parent proof. Every follow-up repair requires its inline mini-spec and explicit approval before code or test edits under core; parent behavior approval does not replace this gate.
 
-Prefer an isolated worktree at `<main-repo>/.worktrees/<feature>`, or use a distinct `<run-id>` only when concurrent executions require separate checkouts. Mandate subagent delegation for task implementation; the orchestrator coordinates task assignments, dependencies, and review rather than implementing code directly. Require independent review of the completed candidate, with earlier reviews for high-risk tasks. Use autopilot TDD unless the user requests human-guided testing.
+## Execution and handoff
 
-Load each linked procedure when its phase begins. Deliver verified candidate changes and complete documentation, leaving publishing and the final target-branch commit to the user.
+Prefer an isolated candidate worktree at `<main-repo>/.worktrees/<feature>`. Mandate subagent delegation for task implementation. The orchestrator assigns bounded tasks through [implementer briefs](../_workflow/templates/implementer-brief.md), coordinates dependencies, and verifies integration. Use supported standard coding models through the active adapter. Obtain [independent review](../_workflow/review.md) of the candidate, with earlier reviews for high-risk boundaries. Follow [test integrity](../_workflow/testing.md), autopilot TDD unless human-guided testing was requested, and [verification](../_workflow/verification.md).
+
+Cap failed implementation attempts at three and review-fix rounds at three. Preserve unrelated edits and record failures. Follow [handoff](../_workflow/handoff.md), leaving publishing and the final target-branch commit to the user. Load linked procedures when their phase begins.

@@ -1,6 +1,6 @@
 # Design brief
 
-Feature slug, status, and updated date. Use `paused`, `ready for planning`, or `handed off`. For a handed-off brief, link the authoritative track document here and make further design updates there.
+Feature slug, execution identity when assigned, status, and updated date. Use `paused`, `abandoned`, or `handed off`. Briefs preserve interrupted exploration. Completed planning exploration goes directly into a plan without a brief intermediate. For a handed-off brief, link the authoritative plan here and make further design updates there.
 
 ## Purpose and desired outcome
 
@@ -16,8 +16,8 @@ Describe the chosen direction and rationale, meaningful alternatives and why the
 
 ## Open questions and delegated details
 
-Distinguish active blockers, deferred or out-of-scope questions, and routine choices left to the builder. For each active blocker in a paused session, identify the dependent decisions that must wait. Do not mark the brief ready for planning while consequential design questions remain unresolved.
+Distinguish active blockers, deferred or out-of-scope questions, and routine choices left to the builder. For each active blocker in a paused session, identify the dependent decisions that must wait. Keep consequential blockers explicit. Resolve them before producing a ready plan.
 
 ## Next step
 
-Record whether to resume exploration, prepare an implementation plan, or follow the linked track artifact. Record existing authorization accurately; a completed brief does not grant implementation approval.
+Record whether to resume exploration, leave the work abandoned, write the plan, or follow the linked authoritative plan. To migrate an existing brief, incorporate its settled decisions into that plan once and mark this brief handed off. Record existing authorization accurately. Neither a brief nor ready status grants permission to implement; execution requires the explicit execution instruction.

@@ -1,5 +1,7 @@
 # Verification proof and change walkthrough
 
+Execution slug, executor, exact plan path, plan revision, persistent candidate checkout, branch, base revision, protected user edits, and evidence ownership:
+
 Candidate identity, base revision, date, and workspace state:
 
 ## Coverage
@@ -20,7 +22,7 @@ List every revision made to a test after observing red, or to an existing test e
 
 ## UI or manual evidence
 
-Record interactive verification steps, expected results, desktop and mobile viewport checks, and embedded screenshots using `![<Descriptive Caption>](<path-to-image.png>)`.
+Record interactive verification steps, expected results, desktop and mobile viewport checks, and embedded screenshots using `![<Descriptive Caption>](/.agent-docs/proofs/images/<execution-slug>-<image>.png)`.
 
 ## Walkthrough of what changed
 
@@ -41,3 +43,7 @@ Record unrun checks, known baseline failures, unstable results, and any remainin
 ## Delivery
 
 Candidate location, staged paths or worktree merge command, and final commit or cleanup actions left to the user.
+
+## Review and follow-up defects
+
+Record independent review method, scope, findings, disposition, and test amendment sign-off. Observable native review may satisfy this section without a duplicate pipeline. For every follow-up repair in interactive tracks, record the mini-spec scope, affected files, strategy, acceptance criteria, verification, inline presentation, and explicit approval before code or test edits. Link this artifact at the bottom of the gate response. Parent behavior approval does not substitute; explicit one-shot remains autonomous. Append fast-track defects, expected approved behavior, cause, correction, affected checks, review, and invalidated earlier evidence here. Missing evidence stays missing.

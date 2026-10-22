@@ -6,4 +6,4 @@ Use available subagents for read-only code exploration under [discovery](../disc
 
 For review, prefer a native fresh-context subagent packaged with [the reviewer brief](../templates/reviewer-brief.md), then an available independent session. If neither exists, apply the selected track's fallback in [review](../review.md).
 
-Models may automatically select between `full-track` and `fast-track` based on scope, while `one-shot` requires explicit user invocation. Documentation lives beside the skill folders and can be read directly by relative path.
+Models may automatically select `orchestration-track`, `full-track`, or `fast-track` based on scope, while `one-shot` requires explicit user invocation. Documentation lives beside the skill folders and can be read directly by relative path.

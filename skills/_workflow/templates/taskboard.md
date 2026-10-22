@@ -1,5 +1,7 @@
 # Feature taskboard
 
+Execution slug, executor, exact plan path, plan revision, persistent candidate checkout, branch, base revision, protected user edits, and evidence ownership:
+
 Track, current phase, update date, and plan link:
 
 ## Workspace and starting state

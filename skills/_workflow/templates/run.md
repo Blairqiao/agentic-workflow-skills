@@ -1,6 +1,10 @@
 # One-shot run
 
+Execution slug, executor, exact plan path, plan revision, persistent candidate checkout, branch, base revision, protected user edits, and evidence ownership:
+
 Request, workspace, starting state, candidate identity, and status:
+
+Explicit one-shot is autonomous and supports boost or non-boost execution without a separate planning phase or approval gates. Record the selected executor and do not silently switch. Native boost owns internal delegation; non-boost execution uses custom coordination where useful.
 
 ## Design and acceptance criteria
 

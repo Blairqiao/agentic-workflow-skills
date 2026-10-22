@@ -21,6 +21,7 @@ PUBLIC = {
     "domain-modeling",
     "research",
     "brainstorm",
+    "planning",
 }
 
 
@@ -120,6 +121,7 @@ class InstallTests(unittest.TestCase):
     def test_project_install(self):
         self.install("--force")
         self.assert_bundle(self.project / ".agents/skills")
+        self.assertFalse((self.project / ".claude").exists())
 
     def test_source_bundle_exposes_only_public_skills(self):
         self.source = ROOT
@@ -130,6 +132,8 @@ class InstallTests(unittest.TestCase):
         self.install_global()
         config_skills = self.home / ".gemini/config/skills"
         cli_skills = self.home / ".gemini/antigravity-cli/skills"
+        self.assertFalse((self.home / ".agents").exists())
+        self.assertFalse((self.home / ".claude").exists())
         for location in (config_skills, cli_skills):
             self.assertTrue(location.is_dir(), f"{location} must be a directory")
             self.assert_bundle(location)
@@ -229,31 +233,43 @@ class InstallTests(unittest.TestCase):
 
     def test_approval_gate_and_inline_presentation_guidance(self):
         self.install()
-        core = (self.project / ".agents/skills/_workflow/core.md").read_text()
-        self.assertIn("inline in chat", core)
-        self.assertIn("orchestration", core)
-        orch_track = (self.project / ".agents/skills/orchestration-track/SKILL.md").read_text()
-        self.assertIn("inline in chat", orch_track)
-        full_track = (self.project / ".agents/skills/full-track/SKILL.md").read_text()
-        self.assertIn("inline in chat", full_track)
-        fast_track = (self.project / ".agents/skills/fast-track/SKILL.md").read_text()
-        self.assertIn("inline in chat", fast_track)
+        installed = self.project / ".agents/skills"
+        core = (installed / "_workflow/core.md").read_text()
+        self.assertIn("inline", core)
+        self.assertIn("explicit approval", core)
+        self.assertIn("follow-up repair", core)
+        self.assertIn("orchestration", core.lower())
+        for name in ("orchestration-track", "full-track", "fast-track", "planning"):
+            skill = (installed / name / "SKILL.md").read_text()
+            self.assertIn("../_workflow/core.md", skill, name)
+            self.assertIn("supplied-context", skill, name)
         agents_guide = (ROOT / "AGENTS.md").read_text()
-        self.assertIn("Approval gates and inline presentation", agents_guide)
+        self.assertIn("every follow-up repair", agents_guide)
         self.assertIn("Skill Activated:", agents_guide)
+        self.assertIn("/skills/_workflow/core.md", agents_guide)
+        self.assertIn("/skills/planning/SKILL.md", agents_guide)
+        self.assertLess(len(agents_guide.splitlines()), 40)
         gemini_rules = (ROOT / "GEMINI.md").read_text()
-        self.assertIn("Skill Activated:", gemini_rules)
+        self.assertIn("AGENTS.md", gemini_rules)
+        self.assertIn("adapters/antigravity.md", gemini_rules)
+        self.assertLess(len(gemini_rules.splitlines()), 15)
 
     def test_antigravity_tools_and_discovery_guidance(self):
         self.install()
-        discovery = (self.project / ".agents/skills/_workflow/discovery.md").read_text()
-        self.assertIn("invoke_subagent", discovery)
-        self.assertIn("view_file", discovery)
-        self.assertIn("run_command", discovery)
-        execution = (self.project / ".agents/skills/_workflow/execution.md").read_text()
-        self.assertIn("Argon", execution)
-        self.assertIn("flash", execution)
-        self.assertIn("invoke_subagent", execution)
+        installed = self.project / ".agents/skills"
+        adapter = (installed / "_workflow/adapters/antigravity.md").read_text()
+        for tool in ("invoke_subagent", "view_file", "run_command"):
+            self.assertIn(tool, adapter)
+        self.assertIn("exposed", adapter)
+        for name in ("discovery", "execution"):
+            procedure = (installed / f"_workflow/{name}.md").read_text()
+            self.assertIn("adapter", procedure)
+            self.assertNotIn("Argon", procedure)
+        agents_guide = (ROOT / "AGENTS.md").read_text()
+        self.assertIn("automatically", agents_guide)
+        self.assertIn("/skills/orchestration-track/SKILL.md", agents_guide)
+        self.assertIn("vertical slices", agents_guide)
+        self.assertNotIn("Gemini 4 Argon", agents_guide)
 
     def test_existing_brainstorm_resources_are_preserved_then_refreshed(self):
         self.install()
@@ -277,20 +293,24 @@ class InstallTests(unittest.TestCase):
 
     def test_antigravity_boost_guidance_and_gemini_rules(self):
         self.install()
-        adapter = (self.project / ".agents/skills/_workflow/adapters/antigravity.md").read_text()
+        installed = self.project / ".agents/skills"
+        adapter = (installed / "_workflow/adapters/antigravity.md").read_text()
         self.assertIn("/boost", adapter)
-        self.assertIn("workflow invariants", adapter)
+        self.assertIn("../core.md", adapter)
+        core = (installed / "_workflow/core.md").read_text()
+        for safeguard in ("test integrity", "independent", "verification"):
+            self.assertIn(safeguard, core)
+        self.assertIn("evidence", adapter)
+        self.assertIn("Do not claim a skill activates", adapter)
         gemini_rules = ROOT / "GEMINI.md"
         self.assertTrue(gemini_rules.is_file(), "GEMINI.md must exist at root")
-        self.assertIn("/boost", gemini_rules.read_text())
-        orch_track = (self.project / ".agents/skills/orchestration-track/SKILL.md").read_text()
-        self.assertIn("/boost", orch_track)
-        self.assertIn("workflow invariants", orch_track)
+        self.assertIn("adapters/antigravity.md", gemini_rules.read_text())
+        orch_track = (installed / "orchestration-track/SKILL.md").read_text()
+        self.assertIn("adapter", orch_track)
+        self.assertIn("../_workflow/core.md", orch_track)
 
     def test_reactive_wakeups_and_prose_parentheses(self):
         self.install()
-        core = (self.project / ".agents/skills/_workflow/core.md").read_text()
-        self.assertIn("reactive wakeups", core)
         execution = (self.project / ".agents/skills/_workflow/execution.md").read_text()
         self.assertIn("reactive wakeups", execution)
 
