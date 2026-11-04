@@ -1,42 +1,58 @@
 ---
 name: brainstorm
-description: Explore unclear ideas, requirements, and design alternatives through conversation, and write a complete plan for execution. Use when the user wants to brainstorm or work out what to build; clear implementation requests do not require an interview.
+description: Explore an idea before building it. Asks focused questions, lays out two or three distinct approaches with tradeoffs, and lets the user pick. Use when the user wants to brainstorm, is unsure what to build or how, or asks to be grilled on a design. Skip for clear, specific requests.
 ---
 
 # Brainstorm
 
-Help the user describe the problem, explore possible directions, and settle the design for a complete plan. Planning never edits implementation code or tests. Follow the [shared decision rules](../_workflow/design.md#shared-decision-rules), which apply before or during a track. Exploration alone does not select a track or authorize implementation.
+Turn a fuzzy idea into a chosen direction. Do not write code, tests, or a plan here. The output is a decision the user made, ready for the `planning` skill.
 
-## Ground the conversation
+## 1. Ground yourself first
 
-Read relevant code, documentation, and the domain dictionary before asking how the project currently works. Follow [discovery](../_workflow/discovery.md) for targeted fact checks. Read the feature's active brief or track document when one exists; a handed-off brief points to the authoritative track document. Check facts affected by repository changes and reuse settled decisions.
+Read the relevant code, README, and existing `.agent-docs/` notes before asking anything. Never ask the user a question you can answer by looking. If a lookup is slow, ask the questions that don't depend on it while it runs.
 
-Establish the intended user, concrete problem, and desired outcome. Ask about a real situation when the purpose is unclear. Keep questions focused on consequential choices the user needs to make, rather than facts you can inspect or routine details the builder can decide.
+## 2. Understand the problem
 
-## Explore and converge
+Ask one question at a time. Prefer multiple choice with your recommended answer marked. Cover only what changes the design:
 
-Ask one focused steering question at a time by default. Once the purpose is clear, sketch two or three concrete directions when meaningful alternatives exist, explain tradeoffs, and recommend one. Do not invent options for a settled choice. Summarize the emerging design for correction as understanding develops, distinguishing user decisions from your recommendations and assumptions.
+- Who uses this and what are they trying to do?
+- What does "done" look like?
+- Hard constraints: deadlines, stack, compatibility, things that must not change.
 
-Use [domain-modeling](../domain-modeling/SKILL.md) when a concept is introduced, overloaded, or contested. Resolve meanings needed by the chosen direction before making dependent choices; independent branches can continue. Record settled definitions in the domain dictionary immediately. Keep uncertainties about deferred alternatives, out-of-scope areas, or paused branches in the brief.
+Stop asking once you could explain the problem back in two sentences. Do that, and let the user correct it.
 
-Use [grilling](../grilling/SKILL.md) for a consequential decision needing deeper scrutiny or when the user requests stress-testing. Pass the named decision, its scope, settled prerequisites, and remaining uncertainty. Let grilling use its numbered frontier rounds, then resume this conversation with the resolved outcome. Do not require grilling for every brainstorm or repeat its questions.
+## 3. Offer approaches
 
-Stop exploring when the intended outcome, chosen direction, constraints, and consequential domain meanings are clear enough for planning. State remaining delegated details and deferred questions explicitly. A paused session may retain unresolved active questions; it must identify which dependent choices cannot yet proceed. Completion of exploration does not imply permission to implement.
+Present two or three approaches that are actually different, not one idea in three sizes. For each one:
 
-## Save and resume
+- **What it is.** One or two sentences.
+- **Cost.** Rough size, files or systems touched, new dependencies.
+- **Tradeoff.** What you gain and what you give up.
 
-Tentative ideas can remain in chat while exploring. Save the completed plan directly in `<main-repo>/.agent-docs/plans/<feature>.md` using [the plan template](../_workflow/templates/plan.md) and [planning](../_workflow/planning.md). Include scope, exclusions, acceptance criteria, expected files, checks, workspace, starting revision, protected edits, executor, permissions, and unresolved blockers. A blocked plan cannot be ready. Present the plan summary inline, provide the exact execution instruction, and place a direct clickable link to the plan file at the very bottom of the chat response.
+Then recommend one and say why. If there is only one sensible approach, say so and skip the menu. Apply YAGNI: cut features the user didn't ask for.
 
-Save paused or abandoned exploration to `<main-repo>/.agent-docs/briefs/<feature>.md` using [the brief template](../_workflow/templates/brief.md). Update that record in place. When its decisions become a complete plan, incorporate them once and mark the brief handed off with a link to the authoritative plan. Follow that link on resume. During an active track, update its authoritative record rather than creating another brief.
+Let the user pick. They can also mix parts of different options.
 
-Before writing any artifact, identify the parent repository and follow [workspace preparation](../_workflow/workspace.md). Apply [execution identity rules](../_workflow/core.md#operation-routing-and-records) so concurrent plans and evidence cannot overwrite each other. An explicit chat-only request overrides persistence and keeps decisions and definitions inline. If no destination is known or writing is blocked, retain the summary inline and report incomplete persistence.
+## 4. Stress-test (optional)
 
-Saved briefs are local ignored workflow records. Do not claim they are shared across machines or available to another checkout without checking. Follow [core artifact guidance](../_workflow/core.md#operation-routing-and-records) for updates and archival.
+Run this when the choice is costly to reverse (data model, public API, security, architecture) or when the user says "grill me". Walk the decision tree:
 
-## Track boundaries
+1. List the open decisions whose prerequisites are already settled.
+2. Ask them as a numbered round. Give each one a recommended answer.
+3. Use the answers to settle those decisions and unblock the next ones, then ask the next round.
+4. Stop when no open decisions remain and nothing is silently assumed.
 
-Normal tracks use separate planning and implementation sessions. A ready plan alone is not authorization. The user's explicit instruction to execute that named plan authorizes execution within its scope, without repeating the initial plan approval. Every follow-up repair in interactive tracks requires new inline mini-spec approval before code or test edits under [core](../_workflow/core.md). Grilling confirms understanding without an extra gate. Material scope changes return to the planning phase. A request to plan authorizes plan preparation only.
+Look up facts yourself. Only put real decisions to the user.
 
-In an explicitly selected `one-shot` run, use the shared decision rules autonomously, record alternatives and material assumptions in the run document, and continue the authorized work without interactive brainstorming, grilling, or feedback gates.
+## 5. Close
 
-Completion: the ready plan or paused brief is saved, its status and next step are clear, and any explicit chat-only exception or blocked persistence is disclosed.
+Summarize the decision in a short block:
+
+```markdown
+**Problem.** ...
+**Chosen approach.** ...
+**Out of scope.** ...
+**Open questions.** none | ...
+```
+
+Then offer to run `planning`. Keep the summary in chat unless the user asks to save it. If they do, write it to `.agent-docs/briefs/<topic>.md`.

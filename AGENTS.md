@@ -1,24 +1,28 @@
-# Agent guidelines for the agentic workflow
+# Agent guidelines
 
-Read [common policy](/skills/_workflow/core.md), applying its supplied-context reuse rule. Load current operation details and only the active harness adapter. Links are references, not a recursive reading checklist. Applicable project guidance and `/.agent-docs/CONTEXT.md` govern local constraints and terminology.
+## Skills
 
-## Routing
+| Skill | Use when |
+| --- | --- |
+| [brainstorm](/skills/brainstorm/SKILL.md) | The idea or approach is unclear, or the user wants options or wants to be grilled |
+| [planning](/skills/planning/SKILL.md) | Multi-step work needs a plan before building |
+| [orchestrate](/skills/orchestrate/SKILL.md) | The user wants a plan or slice built by cheap implementer models |
+| [final-review](/skills/final-review/SKILL.md) | Orchestration is done and the whole change needs one strong-model review |
+| [walkthrough](/skills/walkthrough/SKILL.md) | The user wants a project or change explained |
+| [visual-proof](/skills/visual-proof/SKILL.md) | A UI changed, or the user wants screenshots as proof |
+| [research](/skills/research/SKILL.md) | Docs need auditing against the code, or need writing |
+| [unslop](/skills/unslop/SKILL.md) | Authored repo artifacts: plans, specs, docs, proofs, PRs, and comments |
+| [caveman](/skills/caveman/SKILL.md) | Chat conversation: terse, token-saving responses without conversational fluff |
 
-Select the track automatically when implementation planning or execution is requested:
+Typical flow: `brainstorm` (optional), then `planning` (Opus or Astra), then `orchestrate` (Sol orchestrating Flash or Terra), then `final-review` (Opus or Astra). Run `visual-proof` during orchestration if the UI changed. Small, clear fixes skip all of it. Make the change directly, run the relevant tests, and report.
 
-- [Full-track](/skills/full-track/SKILL.md) for isolated features and subsystem debugging, with mandated implementation delegation.
-- [Fast-track](/skills/fast-track/SKILL.md) for a single bounded small fix or simple addition, without implementation subagents. Escalate when scope outgrows one linear task.
-- [One-shot](/skills/one-shot/SKILL.md) only on explicit request, with autonomous planning and execution.
+When you start using a skill, say so in one line: `> **Skill:** <name>. <reason>`
 
-Use [planning](/skills/planning/SKILL.md) for implementation planning, [brainstorm](/skills/brainstorm/SKILL.md) for exploratory framing, [grilling](/skills/grilling/SKILL.md) for consequential decisions, [domain-modeling](/skills/domain-modeling/SKILL.md) for shared terminology, and [research](/skills/research/SKILL.md) for project explanation or documentation audits. Clear requests need no ceremonial interview. Exploration and ready status alone never authorize implementation.
+## Rules
 
-Interactive approval gates, including every follow-up repair, follow core's inline mini-spec and explicit approval policy before code or test edits. One-shot retains its autonomous exception. End every gate response with the direct authoritative artifact link.
-
-## Repository constraints
-
-- Announce a skill's first activation before using it with `> **Skill Activated:** \`<skill-name>\` - <reason>`. Apply [unslop](/skills/unslop/SKILL.md) to all authored prose. Reusing the same active instructions needs no repeat announcement.
-- Follow [workspace preparation](/skills/_workflow/workspace.md) before creating worktrees or writing `.agent-docs/`. Keep records in the parent repository, use `.git/info/exclude` exclusively for workflow ignores, and preserve protected edits.
-- In authored `.agent-docs/`, `docs/`, and `AGENTS.md`, use repository-rooted internal links and image embeds. Never use host-absolute paths. Embed screenshot proof as `![Caption](/.agent-docs/proofs/images/<image>.png)`.
-- Follow [test integrity](/skills/_workflow/testing.md), [independent review](/skills/_workflow/review.md), and [handoff](/skills/_workflow/handoff.md) when those operations apply. Record terminal proof before claiming success. Stage changes for user-owned commits; never commit, push, or deploy during execution.
-- Ask about consequential ambiguous requirements in interactive tracks. Record one-shot decisions and rationale autonomously. Disclose missing evidence, shortcuts, and debt. Explain flawed approaches before implementing them.
-- Obtain explicit authorization for new third-party dependencies and destructive operations. Never overwrite unrelated work or silently change approved scope.
+- Never commit, push, or deploy. Stage changes with `git add` and let the user commit.
+- Ask before adding dependencies, running migrations, or anything destructive.
+- Don't overwrite uncommitted user changes.
+- Workflow files go in `.agent-docs/`, listed in `.git/info/exclude` and not in `.gitignore`.
+- In `.agent-docs/`, `docs/`, and this file, use repository-rooted links (`/skills/...`), never absolute machine paths. In chat, the reverse applies: link files with absolute paths so they're clickable.
+- Report honestly. Say what you didn't run or couldn't verify.

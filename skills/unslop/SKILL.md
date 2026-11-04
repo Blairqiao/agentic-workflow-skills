@@ -1,12 +1,14 @@
 ---
 name: unslop
 description: >-
-  Cut AI tells, empty corporate buzzwords, excessive hedging, and boilerplate from any writing, specs, plans, proofs, walkthroughs, or code comments. Must always apply.
+  Cut AI tells, empty corporate buzzwords, excessive hedging, and boilerplate from repo artifacts: specs, plans, proofs, walkthroughs, docs, and code comments.
 ---
 
 # Unslop
 
-Edit authored prose and comments to remove AI patterns. Never alter fenced code blocks, terminal command output, logs, commit hashes, file paths, or verbatim quotes. Apply these rules to both user-facing documentation and internal workflow artifacts in `.agent-docs/`.
+Edit authored repository prose and comments to remove AI patterns. Reserved for artifacts: plans and proofs in `.agent-docs/`, documentation, code comments, and PR summaries. For chat conversations, see `/skills/caveman/SKILL.md`.
+
+Never alter fenced code blocks, terminal command output, logs, commit hashes, file paths, or verbatim quotes.
 
 ## Process
 

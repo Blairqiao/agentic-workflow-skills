@@ -1,26 +1,39 @@
 ---
 name: research
-description: Use when explaining a project's documentation, auditing its codebase against documentation, or creating and maintaining missing project documentation. For project understanding and documentation, not general web research or code fixes.
+description: Audit a project's documentation against its actual code, then write or fix the docs. Use when the user asks to audit, cross-check, update, or create project documentation. For explaining a project, use `walkthrough`. Not for web research or code fixes.
 ---
 
 # Research
 
-Apply supplied-context reuse from [workflow core](../_workflow/core.md); load only current operation details. Read repository guidance and locate existing project documentation and the domain dictionary. Identify the main repository and configure `.git/info/exclude` using [workspace preparation](../_workflow/workspace.md) before writing workflow records, especially when working in a linked worktree.
+Make the project's documentation match the code. This skill edits docs only. It never changes application behavior.
 
-## Select a mode
+## 1. Scope
 
-- **Explain.** Use for requests to walk through a project, summarize documentation, or run `research explain`. Read [Explain](../_workflow/research-explain.md).
-- **Audit.** Use for codebase re-audits, documentation cross-checks, documentation updates, or `research audit` requests. Read [Audit](../_workflow/research-audit.md).
-- **Ambiguous requests.** Ask which mode the user wants before changing documentation, following the active track's ambiguity policy. One-shot selects and records the mode autonomously.
+Confirm what to cover: the whole repository, one subsystem, or one doc. Note the current commit (`git rev-parse --short HEAD`) and any uncommitted changes, since the docs should match the working tree.
 
-Load only the selected procedure. Explain bootstraps documentation through Audit when usable project documentation is absent, then returns to the explanation. Disclose that extra work before starting it, respect explicit read-only constraints, and report what cannot be created.
+## 2. Inventory
 
-## Depth and delegation
+List the maintained source with `git ls-files`, grouped into subsystems. Skip vendored, generated, and binary files. Next to each subsystem, note which doc covers it, or that none does.
 
-Deep research systematically examines its declared scope, tracing relationships, contradictions, and gaps beyond immediate implementation needs. Match explanations to the requested depth and audits to their coverage inventory. Reuse [code delegation](../_workflow/discovery.md#code-exploration-and-delegation) for source inspection; the orchestrator may read documentation directly and owns the final synthesis. The selected mode's completion requirements govern when to stop.
+For a large repository, give each subsystem to a read-only subagent. Ask each one for its responsibilities, entry points, public interfaces, config and env vars, commands, and file paths as evidence. Reconcile the results yourself.
 
-## Shared boundaries
+## 3. Cross-check
 
-Preserve established documentation locations. New project guides default to versioned `docs/`, while audit records belong in `<main-repo>/.agent-docs/research/` using [the research audit template](../_workflow/templates/research-audit.md). Keep the domain dictionary under [domain-modeling](../domain-modeling/SKILL.md) and apply [unslop](../unslop/SKILL.md) to authored prose.
+Read each doc against the code it describes and sort what you find:
 
-Support claims with documentation or source links and distinguish verified behavior, documented intent, and inference. Report code defects as findings. This skill changes documentation, not application behavior.
+| Finding | Action |
+| --- | --- |
+| Missing doc | Write it from the code you read |
+| Outdated doc | Fix it, citing the source file |
+| Code contradicts documented intent | Don't pick a side. Report it as a possible bug |
+| Unknown, such as rationale you can't see in the code | Leave a visible TODO. Don't guess |
+
+Run documented commands (setup, test, build) when that's safe, and note any that fail. Read a script before running it.
+
+## 4. Write
+
+Keep docs where they already live. New guides go in `docs/`, with an index in `docs/README.md` or the main README. Write only the guides the project needs, typically overview, architecture, setup, and one guide per complex subsystem. Link source as repository-relative paths. Check that every link resolves. Apply `unslop`.
+
+## 5. Report
+
+Leave changes uncommitted. In chat, list the docs created or updated, the code-versus-docs contradictions, the commands that failed, and the areas not covered. Don't fix code bugs you found. List them for the user.
