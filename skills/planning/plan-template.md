@@ -41,4 +41,4 @@ The full test and build commands, a manual flow to try, and the screenshots to t
 
 ## Notes
 
-The orchestrator records escalations, deviations, and follow-ups here. The final reviewer adds its verdict at the end.
+The orchestrator records the baseline (pass, fail, and skip counts, plus tests that already fail), escalations, deviations, follow-ups, and a `Handoff` entry if it stops mid-plan. The final reviewer adds its verdict at the end.

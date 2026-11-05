@@ -44,12 +44,25 @@ Tests are planned per task, not imposed everywhere. `planning` gives each task e
 ./install.sh --global                         # ~/.claude/skills and ~/.agents/skills
 ./install.sh --global --dir ~/.cursor/skills  # add any other provider's skills folder
 ./install.sh --project /path/to/repo          # copy into the repo
-./install.sh --global --uninstall
+./install.sh --global --hooks                 # skills plus the block-git-push hook
+./install.sh --global --uninstall             # add --hooks to remove the hook too
 ```
 
 Global installs are symlinks, so edits in this repository take effect immediately. Installing also removes entries left over from earlier versions of this pack (`_workflow`, `fast-track`, `full-track`, `one-shot`, `grilling`, `domain-modeling`, `human-tdd`).
 
 `~/.claude/skills` covers Claude Code. `~/.agents/skills` covers Codex, Gemini CLI, and opencode. In T3 Code, each provider reads its own location, so one global install covers every provider. The skills name the subagent tool for each harness: `Agent` in Claude Code, `spawn_agent` in Codex, and `delegate_task` in T3 Code when a different provider is needed.
+
+### Hooks
+
+`--hooks` installs [hooks/block-git-push.sh](hooks/block-git-push.sh), which stops agents from running `git push` while still allowing commits. The installer links the script to `~/.agents/hooks/` and registers it in each harness it finds:
+
+| Harness | Config file |
+| --- | --- |
+| Claude Code | `~/.claude/settings.json` |
+| Codex | `~/.codex/hooks.json` |
+| Antigravity | `~/.gemini/config/hooks.json` |
+
+The installer edits these files with `jq`, which it requires. It keeps your other settings and saves a `.bak` copy of each file first. Running it again replaces the hook entry instead of adding a duplicate. Codex asks you to trust a new hook the first time it loads. The hook only applies to commands an agent runs, so you can still push from your own terminal.
 
 ## Check
 
@@ -57,7 +70,7 @@ Global installs are symlinks, so edits in this repository take effect immediatel
 ./check.sh
 ```
 
-It checks that each skill's `name` matches its folder and has a description, that relative links resolve, and that the installer parses.
+It checks that each skill's `name` matches its folder and has a description, that relative links resolve, and that the installer and hooks parse.
 
 ## Credits
 

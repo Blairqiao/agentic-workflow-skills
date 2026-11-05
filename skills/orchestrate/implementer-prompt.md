@@ -30,9 +30,11 @@ You are implementing one task from a larger plan. Work only on this task.
 ## Before you report DONE
 Run the test, lint, and build commands. All must pass, except failures that existed before you started. If they don't pass, keep fixing or report BLOCKED.
 
+Send long output to a file (`<cmd> > .agent-docs/logs/<name>.log 2>&1`). On a failure, grep the whole log for every error, not just the last lines.
+
 ## Report back
 Start with exactly one status word:
-- DONE: changed files, one line on what each change does, and the trimmed command output showing everything passes.
+- DONE: changed files, one line on what each change does, and for each command its exit code and summary line, such as "tests: exit 0, 142 passed, 0 failed, 3 skipped". Don't paste full logs.
 - QUESTION: what you need to know and why.
-- BLOCKED: what stopped you, what you tried, and the exact error.
+- BLOCKED: what stopped you, what you tried, and the exact error. Include the full failure block, not the whole log.
 ```

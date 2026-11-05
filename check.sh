@@ -23,5 +23,6 @@ for md in AGENTS.md README.md skills/*/*.md; do
 done
 
 bash -n install.sh || fail=1
+for hook in hooks/*.sh; do bash -n "$hook" || fail=1; [ -x "$hook" ] || { echo "FAIL $hook: not executable"; fail=1; }; done
 [ "$fail" -eq 0 ] && echo "ok"
 exit "$fail"

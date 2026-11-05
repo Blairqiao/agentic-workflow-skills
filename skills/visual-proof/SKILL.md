@@ -38,7 +38,7 @@ Plan the shots from the task's done-when criteria. For each changed screen or st
 - **Desktop (1280×800) and mobile (390×844)** when layout changed.
 - **Interaction results.** Click, type, or submit, then capture the result, not just the initial page.
 
-Look at every screenshot after you take it. A blank page, a wrong route, or an error overlay is a failure. Fix it or report it. Never present it as proof.
+Screenshots and page snapshots are large, so take each shot once, and retake it only if it failed or the page changed. Look at every screenshot after you take it. A blank page, a wrong route, or an error overlay is a failure. Fix it or report it. Never present it as proof.
 
 Save images to `.agent-docs/proofs/images/<feature>-<shot>.png`, with `.agent-docs/` listed in `.git/info/exclude`.
 

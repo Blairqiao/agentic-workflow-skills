@@ -20,7 +20,7 @@ When you start using a skill, say so in one line: `> **Skill:** <name>. <reason>
 
 ## Rules
 
-- Never commit, push, or deploy. Stage changes with `git add` and let the user commit.
+- Committing is fine. Never push or deploy; a hook blocks `git push`, and the user pushes.
 - Ask before adding dependencies, running migrations, or anything destructive.
 - Don't overwrite uncommitted user changes.
 - Workflow files go in `.agent-docs/`, listed in `.git/info/exclude` and not in `.gitignore`.
