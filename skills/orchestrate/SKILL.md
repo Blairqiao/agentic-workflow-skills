@@ -41,7 +41,7 @@ Run tasks with no dependencies and no shared files in parallel. Run everything e
 
 1. **Dispatch** the implementer.
 2. **Gate.** An implementer may report `DONE` only after the task's tests, lint, and build pass. If the report shows failures, send it back. Don't review red work.
-3. **Review** the task's diff yourself. Start with `git diff --stat`, then read `git diff -- <files>` plus new files in full. Skip lockfiles, snapshots, and generated files, and check them instead:
+3. **Review** the task's uncommitted diff yourself. Start with `git diff --stat`, then read `git diff -- <files>` plus new files in full. Skip lockfiles, snapshots, and generated files, and check them instead:
    - A lockfile change needs a matching manifest change, such as in `package.json`, and a new dependency needs the user's approval.
    - A generated file that changed when its source didn't was probably edited by hand. Read it.
    - Otherwise, a passing build and typecheck verify the generated output.
@@ -55,7 +55,18 @@ Run tasks with no dependencies and no shared files in parallel. Run everything e
 4. **Fix or pass.**
    - A trivial issue, such as a typo, an import, or a few lines, you fix yourself.
    - A real issue goes back to the same implementer with file:line and what's wrong.
-   - On a pass, tick the task's boxes in the plan.
+   - On a pass, tick the task's boxes in the plan and commit the task (see below).
+
+## Committing
+
+Commit each task after it passes review. Never push or deploy. The user pushes.
+
+- Stage only the task's files by name, never `git add -A` or `git add .`, so uncommitted user changes stay out of the commit.
+- Message: `<feature>: <task title>`, with a short body if the change needs one.
+- Don't amend, rebase, reset, or skip hooks with `--no-verify`. If a pre-commit hook fails, fix the cause or send it back to the implementer.
+- `.agent-docs/` is excluded from git, so the plan and logs are never committed.
+
+A commit per task gives the final reviewer a history to read, and lets a bad task be reverted on its own.
 
 ## Escalation ladder
 
@@ -86,7 +97,7 @@ A fresh session that reads the plan costs less than compacting this one. Resume 
 
 1. Run the full test suite, lint, and build. Compare against the baseline from before you started.
 2. If the UI changed, dispatch `visual-proof` to a cheap model. Screenshots and page snapshots are large, so they should fill its context, not yours. Read its proof file and look at the key screenshots yourself.
-3. Stage the changes with `git add`. Don't commit, push, or deploy.
+3. Commit anything left over, such as small fixes after the last task, the same way as task commits. Don't push or deploy.
 4. Set the status to `ready for final review`. Add a short summary to the plan's Notes covering what was built, test and build results, escalations, deviations from the plan, and anything unverified.
 5. In chat, give that summary, then a copy-paste kickoff prompt for the final review session in its own code block, with the real plan path filled in:
 

@@ -36,4 +36,4 @@ Keep docs where they already live. New guides go in `docs/`, with an index in `d
 
 ## 5. Report
 
-Leave changes uncommitted. In chat, list the docs created or updated, the code-versus-docs contradictions, the commands that failed, and the areas not covered. Don't fix code bugs you found. List them for the user.
+Commit the doc changes, staging only the files you touched. Don't push. In chat, list the docs created or updated, the code-versus-docs contradictions, the commands that failed, and the areas not covered. Don't fix code bugs you found. List them for the user.

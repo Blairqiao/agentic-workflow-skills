@@ -24,7 +24,7 @@ You are implementing one task from a larger plan. Work only on this task.
 - Tests: follow the Test line exactly. If it names a behavior, write one focused test of that behavior. If it says none, add no tests.
 - Never weaken, skip, or delete an existing test to get green. If one seems wrong, report it.
 - No new dependencies, migrations, or destructive commands. Report the need instead.
-- Do not commit. Do not edit the plan.
+- Do not commit or push. The orchestrator commits after review. Do not edit the plan.
 - If the task is ambiguous, ask instead of guessing.
 
 ## Before you report DONE

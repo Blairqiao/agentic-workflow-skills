@@ -21,7 +21,7 @@ Keep the cap strict. If your fixes start to grow, stop and send the rest back to
 
 1. Read the plan at `.agent-docs/plans/<feature>.md`. For parallel slices, read the index and every slice file. Check that each one is at `ready for final review`. List any that aren't and ask whether to go ahead.
 2. Read the Notes for escalations, deviations, and things marked unverified. Those are where bugs hide.
-3. Start with `git diff --stat <base>` plus untracked new files. For slices in separate worktrees, do this for each one, or for the merged branch if the user has merged them.
+3. Start with `git log --oneline <base>..HEAD` to see the per-task commits, then `git diff --stat <base>` plus any untracked files. For slices in separate worktrees, do this for each one, or for the merged branch if the user has merged them.
 4. Pick what to read. Read the diffs of risky files in full: data, auth, concurrency, money, migrations, shared contracts, and anything that got escalated. Skim the rest. The orchestrator already read every task diff, so your reading goes to risk and integration.
 5. Don't read lockfiles, snapshots, or generated files. Check them instead:
    - A lockfile change needs a matching manifest change.
@@ -56,8 +56,8 @@ Review the files you picked in step 1. Read more if anything below looks off.
 
 Add the verdict to the plan's Notes under `Final review`, and say it in chat:
 
-- **PASS**: ready for the user to commit. Optional polish goes in a separate list.
-- **PASS after fixes**: you fixed every blocking issue yourself. List each fix with `file:line` and what changed, stage it with `git add`, and give the test results after the fixes. The user reviews your diff and commits.
+- **PASS**: ready for the user to push. Optional polish goes in a separate list.
+- **PASS after fixes**: you fixed every blocking issue yourself. List each fix with `file:line` and what changed, and give the test results after the fixes. Commit the fixes as `<feature>: final review fixes`, staging only the files you changed. The user reviews that commit and pushes.
 - **FIX**: some blocking issues are too big to fix yourself. List them, each with `file:line`, what's wrong, why it matters, and a suggested fix, in a form the orchestrator can turn straight into a task. Also list any fixes you did make.
 
 If the verdict is FIX, give a copy-paste kickoff prompt in its own code block, with the real plan path filled in:
@@ -66,6 +66,6 @@ If the verdict is FIX, give a copy-paste kickoff prompt in its own code block, w
 Run the orchestrate skill on .agent-docs/plans/<feature>.md, fixing the Final review findings
 ```
 
-On PASS or PASS after fixes, set the plan status to `done`. Don't commit. The user commits.
+On PASS or PASS after fixes, set the plan status to `done`. Never push or deploy. The user pushes.
 
 End your chat message with a clickable markdown link to the plan on its own line, using the absolute path: `[<feature>.md](/abs/path/to/repo/.agent-docs/plans/<feature>.md)`. A bare or relative path isn't clickable.
