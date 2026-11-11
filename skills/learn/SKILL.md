@@ -1,9 +1,9 @@
 ---
-name: retro
-description: Learn from past agent chat logs to cut repeated human work. Cheap readers scan distilled T3 Code threads for repeated requests, corrections, and manual relays. The main agent turns the cross-project patterns into ranked workflow changes such as skill edits, rules, hooks, or scripts. Use when the user asks for a retro, to learn from chat logs, or to find what they keep repeating. Not for project-specific bugs.
+name: learn
+description: Learn from past agent chat logs to cut repeated human work. Cheap readers scan distilled T3 Code threads for repeated requests, corrections, and manual relays. The main agent turns the cross-project patterns into ranked workflow changes such as skill edits, rules, hooks, or scripts. Use when the user asks to learn from chat logs, or to find what they keep repeating. Not for project-specific bugs.
 ---
 
-# Retro
+# Learn
 
 Find work the human keeps doing by hand across sessions, and propose workflow changes that remove it. The output is a short list of changes ranked by human time saved, not a summary of what happened.
 
@@ -13,14 +13,14 @@ Run this as a strong model (Opus or Astra). Cheap readers do the reading. You do
 
 ## 1. Scope
 
-Look for earlier retros in `.agent-docs/retros/`. If one exists, default `--since` to its date, and note what it proposed and what the user accepted or rejected, so you don't propose the same change twice. With no earlier retro, cover the last 30 days unless the user names a window.
+Look for earlier reports in `.agent-docs/learn/`. If one exists, default `--since` to its date, and note what it proposed and what the user accepted or rejected, so you don't propose the same change twice. With no earlier report, cover the last 30 days unless the user names a window.
 
 ## 2. Distill
 
 The source is T3 Code's state database (`~/.t3/userdata/statev2.sqlite`), which holds every thread across every provider T3 runs. Shrink it first:
 
 ```sh
-python3 -I <skill dir>/distill.py --out .agent-docs/retros/work --since <YYYY-MM-DD>
+python3 -I <skill dir>/distill.py --out .agent-docs/learn/work --since <YYYY-MM-DD>
 ```
 
 It opens the database read-only. It keeps the messages T3 records as written by the human, the end of the agent reply before each one, where the human interrupted a run, how often the agent stopped to ask, and tool counts. It skips subagent threads and messages written by agents or the server. It redacts obvious secrets. It writes one text file per thread and splits them into batches of about 120 KB in `batches.txt`. Work done outside T3 isn't covered. Say so in the report.
@@ -58,13 +58,13 @@ Prefer removing a step to automating it. Prefer one change that fixes several pa
 
 ## 5. Report
 
-Write `.agent-docs/retros/<YYYY-MM-DD>.md`:
+Write `.agent-docs/learn/<YYYY-MM-DD>.md`:
 
 - **Window:** dates, thread count, and projects.
 - **Changes**, ranked by estimated human turns saved per week. For each: the pattern, the evidence (counts plus 2 quotes with session file names), the cause, the exact change (file and wording, or a diff sketch), and the risk.
 - **Considered and dropped:** patterns that looked real but failed verification or were project-specific, one line each.
-- **Last retro's changes:** whether the patterns they targeted have gone down.
+- **Last run's changes:** whether the patterns they targeted have gone down.
 
-Apply `unslop`. Delete `.agent-docs/retros/work/` afterwards, since it holds log excerpts.
+Apply `unslop`. Delete `.agent-docs/learn/work/` afterwards, since it holds log excerpts.
 
-In chat, list the changes in one line each and ask which to apply. Apply only what the user picks. Changes to skills in this repository get committed, staging only the files you touched. Ask before editing global config such as `~/.claude/settings.json`. Record which changes were accepted at the bottom of the report, so the next retro can check them.
+In chat, list the changes in one line each and ask which to apply. Apply only what the user picks. Changes to skills in this repository get committed, staging only the files you touched. Ask before editing global config such as `~/.claude/settings.json`. Record which changes were accepted at the bottom of the report, so the next run can check them.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Distill T3 Code threads into small text transcripts for the retro skill.
+"""Distill T3 Code threads into small text transcripts for the learn skill.
 
 Reads T3 Code's state database (read-only). Covers every provider T3 runs: Claude, Codex,
 Antigravity, and others. Keeps messages the human wrote (createdBy = "user"), a short tail of
