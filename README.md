@@ -1,36 +1,39 @@
 # Agentic workflow skills
 
-Nine small, self-contained skills for coding agents. Each skill is one `SKILL.md`, plus at most a template or two in the same folder. Nothing loads shared files from elsewhere.
+Ten small, self-contained skills for coding agents. Each skill is one `SKILL.md`, plus at most a template, prompt, or script in the same folder. Nothing loads shared files from elsewhere.
 
 | Skill | What it does |
 | --- | --- |
 | [brainstorm](skills/brainstorm/SKILL.md) | Asks focused questions, offers 2 or 3 approaches with tradeoffs, and lets you pick. Includes an optional "grill me" stress test. |
-| [planning](skills/planning/SKILL.md) | Writes either one linear plan or parallel slices that each run in their own session. Tags every task with a builder model and a test decision. |
-| [orchestrate](skills/orchestrate/SKILL.md) | Dispatches cheap implementers task by task, reviews each diff, escalates stuck tasks, and stages the result. |
-| [final-review](skills/final-review/SKILL.md) | One review of the whole change against the plan, by a strong model. |
+| [planning](skills/planning/SKILL.md) | Writes a plan as slices grouped into phases, as many as the work needs. Tags every task with a builder model and a test decision. |
+| [orchestrate](skills/orchestrate/SKILL.md) | Coordinates a plan's phases, slices, merges, and review gates. Each slice orchestrator dispatches cheap implementers task by task, reviews each diff, escalates stuck tasks, and commits each task. |
+| [final-review](skills/final-review/SKILL.md) | Strong-model review gate after every phase. The last gate reviews the whole feature. |
 | [walkthrough](skills/walkthrough/SKILL.md) | Plain-language tour of a project or a change. |
 | [visual-proof](skills/visual-proof/SKILL.md) | Screenshots of the running app, embedded in `.agent-docs/proofs/<feature>.md`. |
 | [research](skills/research/SKILL.md) | Audits docs against code and writes or fixes them. |
+| [learn](skills/learn/SKILL.md) | Cheap models read distilled T3 Code threads for repeated requests and corrections. A strong model turns cross-project patterns into ranked workflow changes. |
 | [unslop](skills/unslop/SKILL.md) | Strips AI writing tells from authored repo artifacts, plans, and docs. |
 | [caveman](skills/caveman/SKILL.md) | Terse, token-saving conversational responses in chat. Strips fluff while preserving code and technical precision verbatim. |
 
 ## Workflow and roles
 
 ```text
-brainstorm (optional) -> planning -> orchestrate (one session, or one per slice) -> final-review
+brainstorm (optional) -> planning -> orchestrate (coordinator)
+                                       per phase: slice orchestrators in parallel -> merge -> final-review gate
 ```
 
 | Role | Default model | Can swap in |
 | --- | --- | --- |
 | Planner | Opus | GPT-6.1 Astra |
+| Coordinator | Gemini Flash | GPT-6.1 Sol |
 | Orchestrator and per-task reviewer | GPT-6.1 Sol, medium or high | |
-| Implementer | Gemini Flash or GPT-6.1 Terra, medium or high (set per task in the plan) | |
+| Implementer | Gemini Flash (default low, more complex medium) or GPT-6.1 Terra | |
 | Escalation debugger | Opus | GPT-6.1 Astra |
-| Final reviewer | Opus | GPT-6.1 Astra |
+| Final reviewer and phase gates | Opus | GPT-6.1 Astra |
 
-The expensive models plan once and review once. Cheap models do the implementation, plus the review of each task. Escalation goes Flash, then Terra, then high effort, then Opus or Astra. Small fixes skip the whole flow.
+The expensive models plan once and review once. Cheap models do the implementation, plus the review of each task. Escalation follows the hierarchy: Flash (low) -> Flash (medium) -> Terra -> high effort / Opus or Astra. Small fixes skip the whole flow.
 
-**Parallel slices.** `planning` can split a feature into slices that never touch the same file. Each slice gets its own plan file and kickoff prompt, and runs in its own session and worktree. `final-review` checks how the slices fit together.
+**Phases and slices.** `planning` splits every feature into slices grouped into phases. There's no fixed set: a small feature is one phase with one slice, and a big one might put shared contracts first, then parallel slices, then wiring. Slices in the same phase never touch the same file. You start one coordinator session on the index. For each phase, it starts a Sol orchestrator per slice in its own worktree, merges their branches into an integration branch, and sends the phase to a `final-review` gate. The reviewer fixes what it finds and commits the fixes. Only very large findings, such as a redesign or a missing piece of the feature, come back as a FIX verdict. That gets one round from a Sol fixer and a second review before the coordinator stops and asks you. The last gate is the whole-feature review. The coordinator never pushes, and it leaves the integration branch for you to merge. It relies on T3 Code's `delegate_task` for worktree isolation and nesting.
 
 **Open question.** Planners trust exploration reports from cheap subagents that cite `file:line`, and re-check only the claims a decision depends on. Whether that trust holds up hasn't been benchmarked yet.
 
@@ -48,9 +51,9 @@ Tests are planned per task, not imposed everywhere. `planning` gives each task e
 ./install.sh --global --uninstall             # add --hooks to remove the hook too
 ```
 
-Global installs are symlinks, so edits in this repository take effect immediately. Installing also removes entries left over from earlier versions of this pack (`_workflow`, `fast-track`, `full-track`, `one-shot`, `grilling`, `domain-modeling`, `human-tdd`).
+Global installs are symlinks, so edits in this repository take effect immediately. Installing also removes entries left over from earlier versions of this pack (`_workflow`, `fast-track`, `full-track`, `one-shot`, `grilling`, `domain-modeling`, `human-tdd`, `boost-track`, `orchestration-track`).
 
-`~/.claude/skills` covers Claude Code. `~/.agents/skills` covers Codex, Gemini CLI, and opencode. In T3 Code, each provider reads its own location, so one global install covers every provider. The skills name the subagent tool for each harness: `Agent` in Claude Code, `spawn_agent` in Codex, and `delegate_task` in T3 Code when a different provider is needed.
+`~/.claude/skills` covers Claude Code. `~/.agents/skills` covers Codex, Gemini CLI, and opencode. Antigravity skill directories (`~/.gemini/config/skills` and `~/.gemini/antigravity-cli/skills`) are also linked when present. In T3 Code, each provider reads its own location, so one global install covers every provider. The skills name the subagent tool for each harness: `Agent` in Claude Code, `spawn_agent` in Codex, and `delegate_task` in T3 Code when a different provider is needed.
 
 ### Hooks
 

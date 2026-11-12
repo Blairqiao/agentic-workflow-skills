@@ -1,14 +1,14 @@
-# <Feature name> [slice <n> of <N>: <slice name>]
+# <Feature name>: slice <n>, <slice name>
 
-**Goal.** One or two sentences on what the user gets. For a slice, what this slice delivers and how it fits the whole.
+**Goal.** One or two sentences on what the user gets. What this slice delivers and how it fits the whole.
 
 **Approach.** How it works and why. One line each for rejected alternatives.
 
-**Out of scope.** What this plan or slice deliberately does not do.
+**Out of scope.** What this slice deliberately does not do.
 
-**Base.** `<commit sha>`. Worktree: current checkout | `.worktrees/<feature>-<slice>`
+**Base.** `<commit sha>`. Worktree: assigned by the coordinator
 
-**Owns files.** Slices only. The files this slice may create or modify. Touch nothing else.
+**Owns files.** The files this slice may create or modify. Touch nothing else.
 
 **Shared contracts.** Types, API shapes, or interfaces this work must match, pasted verbatim.
 
@@ -24,7 +24,7 @@
 - **Do.** Names, signatures, data shapes. "Follow the pattern in `path/to/example.ts`."
 - **Done when.** Observable checks.
 - **Test.** `<behavior to test>` | none. Verify by `<how>`
-- **Builder.** flash | terra [high]
+- **Builder.** flash [low | medium] | terra
 - **Gotchas.** none | ...
 - **Depends on.** none | task N
 
@@ -41,4 +41,4 @@ The full test and build commands, a manual flow to try, and the screenshots to t
 
 ## Notes
 
-The orchestrator records the baseline (pass, fail, and skip counts, plus tests that already fail), escalations, deviations, follow-ups, and a `Handoff` entry if it stops mid-plan. The final reviewer adds its verdict at the end.
+The orchestrator records the baseline (pass, fail, and skip counts, plus tests that already fail), escalations, deviations, follow-ups, and a `Handoff` entry if it stops mid-plan.

@@ -1,6 +1,6 @@
 ---
 name: planning
-description: Write an implementation plan that cheaper models can execute without guessing, either as one linear plan or as parallel slices that each run in their own session. Use when the user asks for a plan or spec, or before multi-step work. Does not edit code.
+description: Write an implementation plan that cheaper models can execute without guessing, as slices grouped into phases, with as many of each as the work needs. Use when the user asks for a plan or spec, or before multi-step work. Does not edit code.
 ---
 
 # Planning
@@ -24,10 +24,12 @@ Ask the user only about decisions you can't make from the code. Ask them in one 
 
 ## 2. Choose the shape
 
-- **Linear.** One plan with ordered tasks, run by one session. Use it when tasks build on each other or share files, or when the feature is small (up to about 6 tasks).
-- **Parallel slices.** Independent slices, each run in its own session and worktree. Use it when the work splits cleanly by file ownership and slices don't need each other's unfinished code. Slices may depend on an interface you define in the plan, but not on code another slice is writing.
+Every plan is a set of **slices** grouped into **phases**. A coordinator runs the phases in order. Within a phase, it runs each slice as its own orchestrator in its own worktree, all in parallel. Then it merges them and sends the phase to an Opus or Astra review gate before the next phase starts.
 
-Recommend one shape and say why. If the user already picked, use that.
+- **Slice.** An ordered list of tasks that one orchestrator builds. Split the work into separate slices only where it divides cleanly by file ownership. Tasks that build on each other or share files belong in one slice.
+- **Phase.** A checkpoint. Start a new phase where later work needs earlier code merged and reviewed first, such as after shared contracts land, or before wiring that touches files several slices needed. A slice may depend on code from earlier phases, never on code from its own phase.
+
+Use as many phases and slices as the work needs, and no more. A small feature is one phase with one slice. Every phase costs a strong-model review, so don't add a phase that only splits work without protecting anything. If the user already described a shape, use it.
 
 ## 3. Write tasks a cheap model can't misread
 
@@ -41,10 +43,10 @@ Each task is a thin vertical slice that works end to end and touches a handful o
   - `Test: none. Verify by <how>` for UI, styling, config, glue, copy, and docs.
 
   Never plan tests that only check that a file, string, or mock exists. Follow the user's request if they asked for TDD or more coverage.
-- **Builder.** One of:
-  - `flash`: mechanical work. CRUD, UI, wiring, config, following an existing pattern.
-  - `terra`: logic, algorithms, cross-file refactors, unfamiliar APIs.
-  - Add `high` effort only for genuinely tricky tasks. The default is medium.
+- **Builder.** The hierarchy is `flash` (low) -> `flash medium` -> `terra`:
+  - `flash`: mechanical work (CRUD, UI, wiring, config, following an existing pattern). Default effort is `low`.
+  - `flash medium`: more complex work (non-trivial glue, tricky branching, multi-constraint formatting).
+  - `terra`: logic, algorithms, cross-file refactors, unfamiliar APIs, or tasks beyond Flash.
 - **Gotchas.** Anything a newcomer would trip on, such as a stale cache, a generated file to leave alone, or an env var.
 
 Prefer more, smaller tasks over fewer large ones. Flash does well on small, precise tasks and badly on vague ones.
@@ -53,19 +55,21 @@ Prefer more, smaller tasks over fewer large ones. Flash does well on small, prec
 
 Before writing, add `.agent-docs/` to `.git/info/exclude` if it isn't already there. Don't touch `.gitignore`.
 
-- **Linear.** Save to `.agent-docs/plans/<feature>.md` using [plan-template.md](plan-template.md).
-- **Parallel.** Save an index to `.agent-docs/plans/<feature>.md` with the goal, shared interfaces, the slice list, file ownership, and merge order. Save each slice to `.agent-docs/plans/<feature>/<n>-<slice>.md` using the same template. Each slice must stand alone: a session given only that file has everything it needs. No two slices may modify the same file. Shared contracts, such as types or API shapes, either go in a slice 0 that runs first or get pasted verbatim into each slice that uses them.
+- **Index.** Save to `.agent-docs/plans/<feature>.md` using [index-template.md](index-template.md). It holds the goal, the shared contracts, the commands, and the phases.
+- **Slices.** Save each slice to `.agent-docs/plans/<feature>/<n>-<slice>.md` using [plan-template.md](plan-template.md).
+
+Each slice must stand alone: a session given only that file has everything it needs. No two slices in the same phase may modify the same file. Paste shared contracts, such as types or API shapes, verbatim into every slice that uses them, or put them in an earlier phase.
 
 ## 5. Hand off
 
-In chat, give the goal, the shape, the tasks or slices (one line each), and the risks. Set the status to `ready`. Don't wait for approval and don't start building. The user will ask for changes if they want any, or start orchestration with the kickoff prompt.
+In chat, give the goal, the phases and their slices (one line each), and the risks. Set the status to `ready`. Don't wait for approval and don't start building. The user will ask for changes if they want any, or start orchestration with the kickoff prompt.
 
-Give a copy-paste kickoff prompt for each session:
+Give one copy-paste kickoff prompt:
 
 ```text
 Run the orchestrate skill on .agent-docs/plans/<feature>.md
 ```
 
-For parallel slices, give one kickoff prompt per slice and say which slices can start now and which must wait for slice 0.
+It starts the coordinator, which runs every phase, slice, and review gate. Say it can run with Gemini Flash.
 
-End your chat message with a clickable markdown link to the plan (the index, for parallel slices) on its own line, using the absolute path: `[<feature>.md](/abs/path/to/repo/.agent-docs/plans/<feature>.md)`. A bare or relative path isn't clickable.
+End your chat message with a clickable markdown link to the index on its own line, using the absolute path: `[<feature>.md](/abs/path/to/repo/.agent-docs/plans/<feature>.md)`. A bare or relative path isn't clickable.

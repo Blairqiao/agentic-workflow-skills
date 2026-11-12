@@ -8,7 +8,7 @@ set -euo pipefail
 PACK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC="$PACK_DIR/skills"
 # Entries left behind by earlier versions of this pack.
-RETIRED="_workflow domain-modeling fast-track full-track grilling human-tdd one-shot workflow-core project-discovery spec-alignment implementation-planning worktree-setup tdd-integrity task-dispatch independent-review verification-evidence integration-handoff"
+RETIRED="_workflow domain-modeling fast-track full-track grilling human-tdd one-shot workflow-core project-discovery spec-alignment implementation-planning worktree-setup tdd-integrity task-dispatch independent-review verification-evidence integration-handoff boost-track orchestration-track"
 
 usage() {
   cat <<'USAGE'
@@ -16,8 +16,8 @@ Usage:
   install.sh --global  [--dir <path>]... [--hooks] [--force] [--uninstall]
   install.sh --project <repo> [--force] [--uninstall]
 
-  --global       Link skills into ~/.claude/skills (Claude Code) and ~/.agents/skills
-                 (Codex, Gemini CLI, opencode, and other providers that read it).
+  --global       Link skills into ~/.claude/skills (Claude Code), ~/.agents/skills
+                 (Codex, Gemini CLI, opencode), and ~/.gemini (Antigravity).
   --project      Copy skills into <repo>/.agents/skills and link <repo>/.claude/skills to them.
   --dir <path>   With --global, also link into this skills directory. Repeatable.
   --hooks        With --global, also install the block-git-push hook for Claude Code,
@@ -87,13 +87,26 @@ if [ "$MODE" = project ]; then
   [ -d "$TARGET" ] || { echo "Not a directory: $TARGET" >&2; exit 1; }
   TARGET="$(cd "$TARGET" && pwd)"
   SHARED="$TARGET/.agents/skills"; CLAUDE="$TARGET/.claude/skills"
-  if [ "$UNINSTALL" -eq 1 ]; then uninstall_dir "$CLAUDE"; uninstall_dir "$SHARED"; exit 0; fi
+  GEMINI="$TARGET/.gemini/skills"
+  if [ "$UNINSTALL" -eq 1 ]; then
+    uninstall_dir "$CLAUDE"
+    if [ -d "$TARGET/.gemini" ]; then uninstall_dir "$GEMINI"; fi
+    uninstall_dir "$SHARED"
+    exit 0
+  fi
   mkdir -p "$SHARED" "$CLAUDE"
   remove_retired "$SHARED"; remove_retired "$CLAUDE"
   for name in $(skills); do
     place "$SHARED" "$name" copy "$SRC/$name"
     place "$CLAUDE" "$name" link "../../.agents/skills/$name"
   done
+  if [ -d "$TARGET/.gemini" ]; then
+    mkdir -p "$GEMINI"
+    remove_retired "$GEMINI"
+    for name in $(skills); do
+      place "$GEMINI" "$name" link "../../.agents/skills/$name"
+    done
+  fi
   exit 0
 fi
 
@@ -161,6 +174,8 @@ install_hooks() {
 }
 
 DIRS=("$HOME/.claude/skills" "$HOME/.agents/skills")
+if [ -d "$HOME/.gemini/config" ]; then DIRS+=("$HOME/.gemini/config/skills"); fi
+if [ -d "$HOME/.gemini/antigravity-cli" ]; then DIRS+=("$HOME/.gemini/antigravity-cli/skills"); fi
 if [ ${#EXTRA_DIRS[@]} -gt 0 ]; then DIRS+=("${EXTRA_DIRS[@]}"); fi
 for dir in "${DIRS[@]}"; do
   if [ "$UNINSTALL" -eq 1 ]; then uninstall_dir "$dir"; continue; fi
